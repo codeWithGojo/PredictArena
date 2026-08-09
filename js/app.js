@@ -1,376 +1,224 @@
-// ========== NAVIGATION ==========
+// ========== NAV ==========
 function showSection(id) {
   document.querySelectorAll('.section').forEach(s => s.classList.add('hidden'));
-  document.getElementById(`section-${id}`).classList.remove('hidden');
-
-  document.querySelectorAll('.nav-btn').forEach(btn => {
-    btn.classList.toggle('active', btn.dataset.section === id);
+  document.getElementById('section-' + id).classList.remove('hidden');
+  document.querySelectorAll('.nav-btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.section === id);
   });
-
-  // Lazy load data
-  if (id === 'football') {
-    loadFootballStandings();
-    loadFootballMatches();
-  }
+  if (id === 'football') { loadFootballStandings(); loadFootballMatches(); }
   if (id === 'nba') loadNbaMatches();
-  if (id === 'codm') renderCodmTeams();
+  if (id === 'codm') renderCodm();
+  if (id === 'eafc') renderEafc();
 }
 
-function toggleMobile() {
-  document.getElementById('mobileMenu').classList.toggle('hidden');
-}
-
-document.getElementById('mobileMenuBtn').addEventListener('click', toggleMobile);
-
-// ========== SPORTSCORE HELPERS ==========
-const SS_BASE = 'https://sportscore.com/api/widget';
-
+// ========== API ==========
+const SS = 'https://sportscore.com/api/widget';
 async function fetchJSON(url) {
   try {
-    const res = await fetch(url);
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    return await res.json();
-  } catch (err) {
-    console.error(err);
-    return null;
-  }
+    const r = await fetch(url);
+    if (!r.ok) throw new Error(r.status);
+    return await r.json();
+  } catch (e) { console.error(e); return null; }
 }
 
 // ========== FOOTBALL ==========
-const leagueSelect = document.getElementById('leagueSelect');
-leagueSelect.addEventListener('change', () => {
-  loadFootballStandings();
-  loadFootballMatches();
+document.getElementById('leagueSelect')?.addEventListener('change', () => {
+  loadFootballStandings(); loadFootballMatches();
 });
 
 async function loadFootballStandings() {
-  const slug = leagueSelect.value;
-  const container = document.getElementById('footballStandings');
-  container.innerHTML = `<div class="text-center py-8 text-slate-500">Loading ${slug} standings...</div>`;
-
-  const data = await fetchJSON(`${SS_BASE}/standings/?sport=football&slug=${slug}`);
-  
-  if (!data || !data.standings || !data.standings.length) {
-    container.innerHTML = `
-      <div class="text-center py-6 text-slate-400">
-        <p>Could not load live standings right now.</p>
-        <p class="text-sm mt-2">SportScore may be rate-limited or the slug changed. Try refreshing later.</p>
-      </div>`;
+  const slug = document.getElementById('leagueSelect').value;
+  const el = document.getElementById('footballStandings');
+  el.innerHTML = '<div style="text-align:center;padding:32px;color:var(--text-faint)">Loading...</div>';
+  const data = await fetchJSON(`${SS}/standings/?sport=football&slug=${slug}`);
+  if (!data || !data.standings?.length) {
+    el.innerHTML = '<div style="text-align:center;padding:32px;color:var(--text-dim)">Standings unavailable right now. Try again later.</div>';
     return;
   }
-
-  let rows = data.standings;
-  if (data.standings[0] && data.standings[0].rows) {
-    rows = data.standings[0].rows;
-  }
-
-  let html = `
-    <table class="standings-table">
-      <thead>
-        <tr>
-          <th>#</th>
-          <th>Team</th>
-          <th>P</th>
-          <th>W</th>
-          <th>D</th>
-          <th>L</th>
-          <th>GD</th>
-          <th>Pts</th>
-        </tr>
-      </thead>
-      <tbody>`;
-
-  rows.slice(0, 20).forEach((row, i) => {
-    const team = row.team?.name || row.name || row.team_name || 'Team';
-    const pos = row.position || row.rank || (i + 1);
-    const played = row.played || row.matches || row.p || '-';
-    const won = row.won || row.wins || row.w || '-';
-    const draw = row.draw || row.draws || row.d || '-';
-    const lost = row.lost || row.losses || row.l || '-';
-    const gd = row.goal_diff || row.gd || row.goalsDiff || '-';
-    const pts = row.points || row.pts || '-';
-
-    html += `
-      <tr>
-        <td class="font-medium text-slate-400">${pos}</td>
-        <td class="font-medium">${team}</td>
-        <td>${played}</td>
-        <td>${won}</td>
-        <td>${draw}</td>
-        <td>${lost}</td>
-        <td>${gd}</td>
-        <td class="font-bold text-blue-400">${pts}</td>
-      </tr>`;
+  let rows = data.standings[0]?.rows || data.standings;
+  let html = `<table class="standings-table"><thead><tr><th>#</th><th>Team</th><th>P</th><th>W</th><th>D</th><th>L</th><th>GD</th><th>Pts</th></tr></thead><tbody>`;
+  rows.slice(0,20).forEach((row,i) => {
+    const team = row.team?.name || row.name || 'Team';
+    html += `<tr>
+      <td style="color:var(--text-faint)">${row.position||row.rank||i+1}</td>
+      <td style="font-weight:500">${team}</td>
+      <td>${row.played||row.p||'-'}</td>
+      <td>${row.won||row.w||'-'}</td>
+      <td>${row.draw||row.d||'-'}</td>
+      <td>${row.lost||row.l||'-'}</td>
+      <td>${row.goal_diff||row.gd||'-'}</td>
+      <td style="font-weight:700;color:var(--red-bright)">${row.points||row.pts||'-'}</td>
+    </tr>`;
   });
-
-  html += `</tbody></table>`;
-  container.innerHTML = html;
+  el.innerHTML = html + '</tbody></table>';
 }
 
 async function loadFootballMatches() {
-  const container = document.getElementById('footballMatches');
-  container.innerHTML = `<div class="text-center py-8 text-slate-500">Loading matches...</div>`;
-
-  const data = await fetchJSON(`${SS_BASE}/matches/?sport=football&limit=25`);
-
-  if (!data || !data.matches || !data.matches.length) {
-    container.innerHTML = `
-      <div class="text-center py-6 text-slate-400">
-        <p>No match data returned.</p>
-        <p class="text-sm mt-1">You can still use the prediction engine manually later.</p>
-      </div>`;
+  const el = document.getElementById('footballMatches');
+  el.innerHTML = '<div style="text-align:center;padding:32px;color:var(--text-faint)">Loading...</div>';
+  const data = await fetchJSON(`${SS}/matches/?sport=football&limit=20`);
+  if (!data?.matches?.length) {
+    el.innerHTML = '<div style="text-align:center;padding:32px;color:var(--text-dim)">No matches returned.</div>';
     return;
   }
-
-  let matches = data.matches;
-  let html = '';
-  matches.slice(0, 15).forEach(m => {
-    const home = m.home?.name || m.home_team || m.team1 || 'Home';
-    const away = m.away?.name || m.away_team || m.team2 || 'Away';
-    const status = m.status || m.state || 'scheduled';
-    const score = (m.home_score != null) ? `${m.home_score} - ${m.away_score}` : 'vs';
-    const time = m.start_time || m.date || m.time || '';
-
-    const homeStr = 0.85 + (home.length % 10) / 30;
-    const awayStr = 0.85 + (away.length % 10) / 30;
-
-    html += `
-      <div class="match-card" onclick="showFootballPrediction('${home.replace(/'/g, "\\'")}', '${away.replace(/'/g, "\\'")}', ${homeStr.toFixed(2)}, ${awayStr.toFixed(2)})">
-        <div class="flex-1">
-          <div class="flex items-center gap-3">
-            <span class="font-semibold">${home}</span>
-            <span class="text-slate-500 text-sm">${score}</span>
-            <span class="font-semibold">${away}</span>
-          </div>
-          <div class="text-xs text-slate-500 mt-1">${status} · ${time}</div>
-        </div>
-        <div class="text-blue-400 text-sm font-medium">Predict →</div>
-      </div>`;
-  });
-
-  container.innerHTML = html || '<p class="text-slate-500">No matches found.</p>';
+  el.innerHTML = data.matches.slice(0,14).map(m => {
+    const home = m.home?.name || m.home_team || 'Home';
+    const away = m.away?.name || m.away_team || 'Away';
+    const score = m.home_score != null ? `${m.home_score} - ${m.away_score}` : 'vs';
+    const hStr = (0.9 + (home.length % 9)/28).toFixed(2);
+    const aStr = (0.9 + (away.length % 9)/28).toFixed(2);
+    return `<div class="match-card" onclick="showFootballPred('${home.replace(/'/g,"\\'")}','${away.replace(/'/g,"\\'")}',${hStr},${aStr})">
+      <div><div style="font-weight:600">${home} <span style="color:var(--text-faint);font-weight:400;margin:0 6px">${score}</span> ${away}</div>
+      <div style="font-size:0.75rem;color:var(--text-faint);margin-top:4px">${m.status||'scheduled'}</div></div>
+      <div style="color:var(--red-bright);font-size:0.85rem;font-weight:500">Predict →</div>
+    </div>`;
+  }).join('');
 }
 
-function showFootballPrediction(home, away, hStr, aStr) {
+function showFootballPred(home, away, hStr, aStr) {
   const panel = document.getElementById('footballPredictionPanel');
-  const content = document.getElementById('footballPredictionContent');
   panel.classList.remove('hidden');
-
-  const pred = predictFootball(home, away, hStr, aStr);
-
-  content.innerHTML = `
-    <div class="text-center mb-6">
-      <div class="text-xl font-bold">${pred.homeName} <span class="text-slate-500">vs</span> ${pred.awayName}</div>
-      <div class="text-sm text-slate-400 mt-1">Expected goals: ${pred.homeXG} – ${pred.awayXG}</div>
+  const p = predictFootball(home, away, +hStr, +aStr);
+  panel.innerHTML = `
+    <h2 style="margin:0 0 20px;font-size:1.1rem;text-align:center">${p.homeName} <span style="color:var(--text-faint)">vs</span> ${p.awayName}</h2>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;text-align:center;margin-bottom:20px;">
+      <div style="background:var(--surface-2);border-radius:12px;padding:16px"><div style="font-size:1.8rem;font-weight:700;color:var(--red-bright)">${p.homeWin}%</div><div style="font-size:0.75rem;color:var(--text-faint)">Home</div></div>
+      <div style="background:var(--surface-2);border-radius:12px;padding:16px"><div style="font-size:1.8rem;font-weight:700">${p.draw}%</div><div style="font-size:0.75rem;color:var(--text-faint)">Draw</div></div>
+      <div style="background:var(--surface-2);border-radius:12px;padding:16px"><div style="font-size:1.8rem;font-weight:700;color:#fca5a5">${p.awayWin}%</div><div style="font-size:0.75rem;color:var(--text-faint)">Away</div></div>
     </div>
-
-    <div class="grid grid-cols-3 gap-3 mb-6 text-center">
-      <div class="bg-arena-800 rounded-xl p-4">
-        <div class="text-2xl font-bold text-blue-400">${pred.homeWin}%</div>
-        <div class="text-xs text-slate-400 mt-1">Home Win</div>
-      </div>
-      <div class="bg-arena-800 rounded-xl p-4">
-        <div class="text-2xl font-bold text-slate-300">${pred.draw}%</div>
-        <div class="text-xs text-slate-400 mt-1">Draw</div>
-      </div>
-      <div class="bg-arena-800 rounded-xl p-4">
-        <div class="text-2xl font-bold text-cyan-400">${pred.awayWin}%</div>
-        <div class="text-xs text-slate-400 mt-1">Away Win</div>
-      </div>
+    <div class="prob-bar" style="margin-bottom:20px">
+      <div style="width:${p.homeWin}%;background:var(--red)"></div>
+      <div style="width:${p.draw}%;background:#52525b"></div>
+      <div style="width:${p.awayWin}%;background:#fca5a5"></div>
     </div>
-
-    <div class="prob-bar mb-6">
-      <div style="width:${pred.homeWin}%; background:#3b82f6"></div>
-      <div style="width:${pred.draw}%; background:#64748b"></div>
-      <div style="width:${pred.awayWin}%; background:#22d3ee"></div>
-    </div>
-
-    <div class="grid sm:grid-cols-2 gap-4">
-      <div class="bg-arena-800/70 rounded-xl p-4">
-        <div class="text-sm text-slate-400">Most likely score</div>
-        <div class="text-2xl font-bold mt-1">${pred.predictedScore}</div>
-        <div class="text-xs text-slate-500">${pred.predictedScoreProb}% probability</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;">
+      <div style="background:var(--surface-2);border-radius:12px;padding:16px;text-align:center">
+        <div style="font-size:0.75rem;color:var(--text-faint)">Most likely score</div>
+        <div style="font-size:1.5rem;font-weight:700;margin-top:4px">${p.predictedScore}</div>
       </div>
-      <div class="bg-arena-800/70 rounded-xl p-4">
-        <div class="text-sm text-slate-400">Over / Under 2.5</div>
-        <div class="text-lg font-bold mt-1">
-          <span class="text-emerald-400">O ${pred.over25}%</span> · 
-          <span class="text-rose-400">U ${pred.under25}%</span>
-        </div>
+      <div style="background:var(--surface-2);border-radius:12px;padding:16px;text-align:center">
+        <div style="font-size:0.75rem;color:var(--text-faint)">Over / Under 2.5</div>
+        <div style="font-size:1.1rem;font-weight:600;margin-top:4px"><span style="color:#4ade80">O ${p.over25}%</span> · <span style="color:#f87171">U ${p.under25}%</span></div>
       </div>
     </div>
-
-    <div class="mt-5 text-center">
-      <span class="inline-block px-3 py-1 rounded-full bg-blue-500/10 text-blue-400 text-sm">
-        Confidence: ${pred.confidence}%
-      </span>
-    </div>
+    <div style="text-align:center"><span style="background:rgba(239,68,68,0.12);color:var(--red-bright);padding:6px 14px;border-radius:99px;font-size:0.85rem;">Confidence ${p.confidence}%</span></div>
   `;
-
-  panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  panel.scrollIntoView({behavior:'smooth',block:'nearest'});
 }
 
 // ========== NBA ==========
 async function loadNbaMatches() {
-  const container = document.getElementById('nbaMatches');
-  container.innerHTML = `<div class="text-center py-8 text-slate-500">Loading NBA matches...</div>`;
-
-  const data = await fetchJSON(`${SS_BASE}/matches/?sport=basketball&limit=20`);
-
-  if (!data || !data.matches || !data.matches.length) {
-    container.innerHTML = `<div class="text-center py-6 text-slate-400">Could not load NBA matches right now.</div>`;
+  const el = document.getElementById('nbaMatches');
+  el.innerHTML = '<div style="text-align:center;padding:32px;color:var(--text-faint)">Loading...</div>';
+  const data = await fetchJSON(`${SS}/matches/?sport=basketball&limit=16`);
+  if (!data?.matches?.length) {
+    el.innerHTML = '<div style="text-align:center;padding:32px;color:var(--text-dim)">No NBA matches right now.</div>';
     return;
   }
-
-  let html = '';
-  data.matches.slice(0, 12).forEach(m => {
-    const home = m.home?.name || m.home_team || 'Home';
-    const away = m.away?.name || m.away_team || 'Away';
-    const status = m.status || 'scheduled';
-    const score = (m.home_score != null) ? `${m.home_score} - ${m.away_score}` : 'vs';
-
-    const homeStr = 0.9 + (home.length % 8) / 25;
-    const awayStr = 0.9 + (away.length % 8) / 25;
-
-    html += `
-      <div class="match-card" onclick="showNbaPrediction('${home.replace(/'/g, "\\'")}', '${away.replace(/'/g, "\\'")}', ${homeStr.toFixed(2)}, ${awayStr.toFixed(2)})">
-        <div class="flex-1">
-          <div class="flex items-center gap-3">
-            <span class="font-semibold">${home}</span>
-            <span class="text-slate-500 text-sm">${score}</span>
-            <span class="font-semibold">${away}</span>
-          </div>
-          <div class="text-xs text-slate-500 mt-1">${status}</div>
-        </div>
-        <div class="text-blue-400 text-sm font-medium">Predict →</div>
-      </div>`;
-  });
-
-  container.innerHTML = html;
+  el.innerHTML = data.matches.slice(0,12).map(m => {
+    const home = m.home?.name || 'Home';
+    const away = m.away?.name || 'Away';
+    const score = m.home_score != null ? `${m.home_score} - ${m.away_score}` : 'vs';
+    const hStr = (0.95 + (home.length % 8)/30).toFixed(2);
+    const aStr = (0.95 + (away.length % 8)/30).toFixed(2);
+    return `<div class="match-card" onclick="showNbaPred('${home.replace(/'/g,"\\'")}','${away.replace(/'/g,"\\'")}',${hStr},${aStr})">
+      <div><div style="font-weight:600">${home} <span style="color:var(--text-faint);margin:0 6px">${score}</span> ${away}</div>
+      <div style="font-size:0.75rem;color:var(--text-faint);margin-top:4px">${m.status||'scheduled'}</div></div>
+      <div style="color:var(--red-bright);font-size:0.85rem;font-weight:500">Predict →</div>
+    </div>`;
+  }).join('');
 }
 
-function showNbaPrediction(home, away, hStr, aStr) {
+function showNbaPred(home, away, hStr, aStr) {
   const panel = document.getElementById('nbaPredictionPanel');
-  const content = document.getElementById('nbaPredictionContent');
   panel.classList.remove('hidden');
-
-  const pred = predictNBA(home, away, hStr, aStr);
-
-  content.innerHTML = `
-    <div class="text-center mb-6">
-      <div class="text-xl font-bold">${pred.homeName} <span class="text-slate-500">vs</span> ${pred.awayName}</div>
+  const p = predictNBA(home, away, +hStr, +aStr);
+  panel.innerHTML = `
+    <h2 style="margin:0 0 20px;font-size:1.1rem;text-align:center">${p.homeName} <span style="color:var(--text-faint)">vs</span> ${p.awayName}</h2>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;text-align:center;margin-bottom:20px;">
+      <div style="background:var(--surface-2);border-radius:12px;padding:20px"><div style="font-size:2rem;font-weight:700;color:var(--red-bright)">${p.homeWin}%</div><div style="font-size:0.8rem;color:var(--text-faint)">Home Win</div></div>
+      <div style="background:var(--surface-2);border-radius:12px;padding:20px"><div style="font-size:2rem;font-weight:700;color:#fca5a5">${p.awayWin}%</div><div style="font-size:0.8rem;color:var(--text-faint)">Away Win</div></div>
     </div>
-
-    <div class="grid grid-cols-2 gap-4 mb-6 text-center">
-      <div class="bg-arena-800 rounded-xl p-5">
-        <div class="text-3xl font-bold text-blue-400">${pred.homeWin}%</div>
-        <div class="text-sm text-slate-400 mt-1">Home Win</div>
-      </div>
-      <div class="bg-arena-800 rounded-xl p-5">
-        <div class="text-3xl font-bold text-cyan-400">${pred.awayWin}%</div>
-        <div class="text-sm text-slate-400 mt-1">Away Win</div>
-      </div>
+    <div class="prob-bar" style="margin-bottom:20px">
+      <div style="width:${p.homeWin}%;background:var(--red)"></div>
+      <div style="width:${p.awayWin}%;background:#fca5a5"></div>
     </div>
-
-    <div class="prob-bar mb-6">
-      <div style="width:${pred.homeWin}%; background:#3b82f6"></div>
-      <div style="width:${pred.awayWin}%; background:#22d3ee"></div>
+    <div style="background:var(--surface-2);border-radius:12px;padding:16px;text-align:center;margin-bottom:16px;">
+      <div style="font-size:0.75rem;color:var(--text-faint)">Projected score</div>
+      <div style="font-size:1.5rem;font-weight:700;margin-top:4px">${p.predictedScore}</div>
     </div>
-
-    <div class="bg-arena-800/70 rounded-xl p-4 text-center">
-      <div class="text-sm text-slate-400">Projected score</div>
-      <div class="text-2xl font-bold mt-1">${pred.predictedScore}</div>
-    </div>
-
-    <div class="mt-5 text-center">
-      <span class="inline-block px-3 py-1 rounded-full bg-blue-500/10 text-blue-400 text-sm">
-        Confidence: ${pred.confidence}%
-      </span>
-    </div>
+    <div style="text-align:center"><span style="background:rgba(239,68,68,0.12);color:var(--red-bright);padding:6px 14px;border-radius:99px;font-size:0.85rem;">Confidence ${p.confidence}%</span></div>
   `;
-
-  panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  panel.scrollIntoView({behavior:'smooth',block:'nearest'});
 }
 
 // ========== CODM ==========
-function renderCodmTeams() {
-  const container = document.getElementById('codmTeams');
-  const selectA = document.getElementById('codmTeamA');
-  const selectB = document.getElementById('codmTeamB');
-
-  let cards = '';
-  let options = '';
-
-  CODM_TEAMS.forEach(t => {
-    cards += `
-      <div class="bg-arena-800/60 border border-arena-700 rounded-xl p-4">
-        <div class="font-bold">${t.name}</div>
-        <div class="text-xs text-slate-400 mt-0.5">${t.region}</div>
-        <div class="flex items-center gap-1 mt-2">${formHtml(t.form)}</div>
-        <div class="text-xs text-slate-500 mt-2">${t.note}</div>
-        <div class="mt-2 text-sm">
-          Strength: <span class="text-blue-400 font-semibold">${t.strength}</span>
-        </div>
-      </div>`;
-
-    options += `<option value="${t.id}">${t.name}</option>`;
-  });
-
-  container.innerHTML = cards;
-  selectA.innerHTML = options;
-  selectB.innerHTML = options;
-  if (CODM_TEAMS.length > 1) selectB.selectedIndex = 1;
+function renderCodm() {
+  const grid = document.getElementById('codmTeams');
+  const selA = document.getElementById('codmTeamA');
+  const selB = document.getElementById('codmTeamB');
+  grid.innerHTML = CODM_TEAMS.map(t => `
+    <div style="background:var(--surface-2);border:1px solid var(--border);border-radius:12px;padding:16px;">
+      <div style="font-weight:700">${t.name}</div>
+      <div style="font-size:0.75rem;color:var(--text-faint);margin-top:2px">${t.region}</div>
+      <div style="display:flex;gap:4px;margin-top:10px">${formHtml(t.form)}</div>
+      <div style="font-size:0.8rem;color:var(--text-dim);margin-top:8px">${t.note}</div>
+      <div style="margin-top:8px;font-size:0.85rem">Strength <span style="color:var(--red-bright);font-weight:600">${t.strength}</span></div>
+    </div>`).join('');
+  selA.innerHTML = selB.innerHTML = CODM_TEAMS.map(t => `<option value="${t.id}">${t.name}</option>`).join('');
+  if (CODM_TEAMS.length > 1) selB.selectedIndex = 1;
 }
 
 function runCodmPrediction() {
-  const idA = document.getElementById('codmTeamA').value;
-  const idB = document.getElementById('codmTeamB').value;
-
-  if (idA === idB) {
-    alert('Pick two different teams');
-    return;
-  }
-
-  const teamA = CODM_TEAMS.find(t => t.id === idA);
-  const teamB = CODM_TEAMS.find(t => t.id === idB);
-
-  const pred = predictCodm(teamA, teamB);
-  const result = document.getElementById('codmPredictionResult');
-  result.classList.remove('hidden');
-
-  result.innerHTML = `
-    <div class="bg-arena-800/80 border border-arena-700 rounded-2xl p-6">
-      <div class="text-center mb-5">
-        <div class="text-lg font-bold">${pred.teamA} <span class="text-slate-500">vs</span> ${pred.teamB}</div>
+  const a = CODM_TEAMS.find(t => t.id === document.getElementById('codmTeamA').value);
+  const b = CODM_TEAMS.find(t => t.id === document.getElementById('codmTeamB').value);
+  if (a.id === b.id) return alert('Pick two different teams');
+  const p = predictEsports(a, b);
+  document.getElementById('codmResult').innerHTML = `
+    <div style="background:var(--surface-2);border:1px solid var(--border);border-radius:16px;padding:24px;">
+      <div style="text-align:center;font-weight:700;font-size:1.1rem;margin-bottom:20px">${p.teamA} <span style="color:var(--text-faint)">vs</span> ${p.teamB}</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;text-align:center;margin-bottom:16px;">
+        <div><div style="font-size:2rem;font-weight:700;color:var(--red-bright)">${p.winA}%</div><div style="font-size:0.8rem;color:var(--text-faint)">${p.teamA}</div><div style="display:flex;justify-content:center;gap:4px;margin-top:8px">${formHtml(p.formA)}</div></div>
+        <div><div style="font-size:2rem;font-weight:700;color:#fca5a5">${p.winB}%</div><div style="font-size:0.8rem;color:var(--text-faint)">${p.teamB}</div><div style="display:flex;justify-content:center;gap:4px;margin-top:8px">${formHtml(p.formB)}</div></div>
       </div>
-
-      <div class="grid grid-cols-2 gap-4 mb-5 text-center">
-        <div>
-          <div class="text-3xl font-bold text-blue-400">${pred.winA}%</div>
-          <div class="text-sm text-slate-400">${pred.teamA} series win</div>
-          <div class="flex justify-center gap-1 mt-2">${formHtml(pred.formA)}</div>
-        </div>
-        <div>
-          <div class="text-3xl font-bold text-cyan-400">${pred.winB}%</div>
-          <div class="text-sm text-slate-400">${pred.teamB} series win</div>
-          <div class="flex justify-center gap-1 mt-2">${formHtml(pred.formB)}</div>
-        </div>
-      </div>
-
-      <div class="prob-bar mb-4">
-        <div style="width:${pred.winA}%; background:#3b82f6"></div>
-        <div style="width:${pred.winB}%; background:#22d3ee"></div>
-      </div>
-
-      <div class="text-center text-sm text-slate-400">
-        Confidence: <span class="text-blue-400 font-medium">${pred.confidence}%</span>
-      </div>
-      <p class="text-xs text-slate-500 text-center mt-3">Based on relative strength ratings from recent African tournaments. Best-of series approximation.</p>
-    </div>
-  `;
+      <div class="prob-bar" style="margin-bottom:16px"><div style="width:${p.winA}%;background:var(--red)"></div><div style="width:${p.winB}%;background:#fca5a5"></div></div>
+      <div style="text-align:center;font-size:0.85rem;color:var(--text-dim)">Confidence <span style="color:var(--red-bright)">${p.confidence}%</span> · Based on recent African tournament results</div>
+    </div>`;
 }
 
-// ========== INIT ==========
-document.addEventListener('DOMContentLoaded', () => {
-  showSection('home');
-});
+// ========== EA FC ==========
+function renderEafc() {
+  const grid = document.getElementById('eafcPlayers');
+  const selA = document.getElementById('eafcPlayerA');
+  const selB = document.getElementById('eafcPlayerB');
+  grid.innerHTML = EAFC_PLAYERS.map(t => `
+    <div style="background:var(--surface-2);border:1px solid var(--border);border-radius:12px;padding:16px;">
+      <div style="font-weight:700">${t.name}</div>
+      <div style="font-size:0.75rem;color:var(--text-faint);margin-top:2px">${t.region}</div>
+      <div style="display:flex;gap:4px;margin-top:10px">${formHtml(t.form)}</div>
+      <div style="font-size:0.8rem;color:var(--text-dim);margin-top:8px">${t.note}</div>
+      <div style="margin-top:8px;font-size:0.85rem">Strength <span style="color:var(--red-bright);font-weight:600">${t.strength}</span></div>
+    </div>`).join('');
+  selA.innerHTML = selB.innerHTML = EAFC_PLAYERS.map(t => `<option value="${t.id}">${t.name}</option>`).join('');
+  if (EAFC_PLAYERS.length > 1) selB.selectedIndex = 1;
+}
+
+function runEafcPrediction() {
+  const a = EAFC_PLAYERS.find(t => t.id === document.getElementById('eafcPlayerA').value);
+  const b = EAFC_PLAYERS.find(t => t.id === document.getElementById('eafcPlayerB').value);
+  if (a.id === b.id) return alert('Pick two different players');
+  const p = predictEsports(a, b);
+  document.getElementById('eafcResult').innerHTML = `
+    <div style="background:var(--surface-2);border:1px solid var(--border);border-radius:16px;padding:24px;">
+      <div style="text-align:center;font-weight:700;font-size:1.1rem;margin-bottom:20px">${p.teamA} <span style="color:var(--text-faint)">vs</span> ${p.teamB}</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;text-align:center;margin-bottom:16px;">
+        <div><div style="font-size:2rem;font-weight:700;color:var(--red-bright)">${p.winA}%</div><div style="font-size:0.8rem;color:var(--text-faint)">${p.teamA}</div><div style="display:flex;justify-content:center;gap:4px;margin-top:8px">${formHtml(p.formA)}</div></div>
+        <div><div style="font-size:2rem;font-weight:700;color:#fca5a5">${p.winB}%</div><div style="font-size:0.8rem;color:var(--text-faint)">${p.teamB}</div><div style="display:flex;justify-content:center;gap:4px;margin-top:8px">${formHtml(p.formB)}</div></div>
+      </div>
+      <div class="prob-bar" style="margin-bottom:16px"><div style="width:${p.winA}%;background:var(--red)"></div><div style="width:${p.winB}%;background:#fca5a5"></div></div>
+      <div style="text-align:center;font-size:0.85rem;color:var(--text-dim)">Confidence <span style="color:var(--red-bright)">${p.confidence}%</span> · Based on eAFCON & FC Pro Africa results</div>
+    </div>`;
+}
+
+// INIT
+document.addEventListener('DOMContentLoaded', () => showSection('home'));
