@@ -1,33 +1,40 @@
 # PredictArena
 
-Dark + blue pure-frontend sports prediction site.
+PredictArena is a dark, high-density sports prediction dashboard built for quickly scanning real upcoming matches and understanding the model behind each probability. It covers Europe’s major football leagues, NBA, tennis, CODM Africa, and EA FC Africa without presenting probabilities as betting odds.
 
-## Features
-- Football (Europe Top 5 leagues) – standings + matches + detailed score predictions
-- NBA – matches + win probability + projected score
-- CODM Africa – curated teams + series win predictions
-- Poisson-based football model (win/draw/loss %, most likely score, Over/Under 2.5)
-- Fully client-side (no backend)
+## What is included
 
-## How to run
-1. Open `index.html` in any modern browser.
-2. Or enable GitHub Pages on this repo for a live link.
-3. Or deploy to Netlify / Vercel.
+- Real upcoming match schedules from [TheSportsDB](https://www.thesportsdb.com/), refreshed through a server-side API route
+- A football league selector for the Premier League, La Liga, Serie A, Bundesliga, Ligue 1, and Champions League
+- Win/draw/loss, over/under, likely score, and confidence predictions
+- A transparent football Poisson model with expected-goal inputs, score matrix, factors, sample size, and caveats
+- Sport-specific basketball margin and tennis form models
+- Community-labelled CODM Africa and EA FC Africa fixtures when no reliable public schedule API is available
+- Knowledge Test mode with generated history question pools, sport selection, score tracking, and a local-storage leaderboard
+- Responsive sportsbook-inspired interface with probability chips rather than wagers or stakes
 
-## Files
+## Data and prediction approach
+
+`GET /api/matches` loads each supported league’s active season plus a historical sample. Football fixtures pass through a Poisson goal model; NBA fixtures use a margin model; tennis uses a form model. Predictions are informational estimates, not betting advice.
+
+The public TheSportsDB test key (`123`) works for development. Set `THE_SPORTS_DB_API_KEY` in production if you have a paid key. CODM Africa and EA FC Africa are deliberately marked as community-maintained because their public historical coverage is not deep enough to imply false certainty.
+
+## Run locally
+
+```bash
+npm install
+npm run dev
 ```
-PredictArena/
-├── index.html
-├── css/style.css
-├── js/
-│   ├── app.js
-│   └── predictions.js
-└── data/codm.js
+
+Open [http://localhost:3000](http://localhost:3000).
+
+## Verify
+
+```bash
+npm run lint
+npm run build
 ```
 
-## Notes
-- Live data from SportScore (free, CORS-open).
-- CODM data curated from recent African tournaments (Carry1st, Kon10dr, etc.).
-- Predictions are statistical models for analysis/entertainment only.
+## Why African esports is here
 
-Built by Favour Imegu (codeWithGojo).
+I wanted CODM and EA FC competition in Africa represented beside the world’s biggest leagues, not buried as an afterthought. PredictArena treats the limits of the available data honestly while making space for those scenes to become first-class parts of the product.

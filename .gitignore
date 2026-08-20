@@ -1,0 +1,25 @@
+# dependencies
+/node_modules
+
+# Next.js
+/.next
+/out
+
+# production
+/build
+
+# local configuration
+.env*
+!.env.example
+
+# logs and editor files
+npm-debug.log*
+.DS_Store
+
+# Vercel
+.vercel
+
+# workspace-only assets
+/upload
+/generated_images
+/predictarena-og.png
