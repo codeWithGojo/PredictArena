@@ -1,5 +1,5 @@
 import { GET as getLegacyPayload } from "../matches-v2/route";
-import { buildFootballPayload } from "../football-free/route";
+import { buildFootballPayload } from "../../../lib/api-football";
 
 export const dynamic = "force-dynamic";
 
