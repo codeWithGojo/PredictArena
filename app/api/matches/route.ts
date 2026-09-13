@@ -10,14 +10,11 @@ import {
 
 export const dynamic = "force-dynamic";
 
-type ApiEvent = {
+type LegacyApiEvent = {
   idEvent?: string;
   strTimestamp?: string | null;
   dateEvent?: string | null;
   strTime?: string | null;
-  strEvent?: string | null;
-  strSport?: string | null;
-  strLeague?: string | null;
   strHomeTeam?: string | null;
   strAwayTeam?: string | null;
   strHomeTeamBadge?: string | null;
@@ -27,42 +24,112 @@ type ApiEvent = {
   strVenue?: string | null;
 };
 
-type LeagueConfig = {
+type FootballFixture = {
+  fixture?: {
+    id?: number;
+    date?: string;
+    venue?: { name?: string | null };
+    status?: { short?: string | null };
+  };
+  league?: {
+    id?: number;
+    name?: string;
+    logo?: string;
+  };
+  teams?: {
+    home?: { id?: number; name?: string; logo?: string };
+    away?: { id?: number; name?: string; logo?: string };
+  };
+  goals?: {
+    home?: number | null;
+    away?: number | null;
+  };
+};
+
+type FootballLeagueConfig = {
   id: string;
-  sport: "football" | "basketball" | "tennis";
+  sport: "football";
+  short: string;
+  name: string;
+};
+
+type LegacyLeagueConfig = {
+  id: string;
+  sport: "basketball" | "tennis";
   short: string;
   name: string;
   calendarSeason?: boolean;
 };
 
-const leagues: LeagueConfig[] = [
-  { id: "4328", sport: "football", short: "PL", name: "Premier League" },
-  { id: "4335", sport: "football", short: "LL", name: "La Liga" },
-  { id: "4332", sport: "football", short: "SA", name: "Serie A" },
-  { id: "4331", sport: "football", short: "BL", name: "Bundesliga" },
-  { id: "4334", sport: "football", short: "L1", name: "Ligue 1" },
-  { id: "4480", sport: "football", short: "UCL", name: "Champions League" },
+type LeagueConfig = FootballLeagueConfig | LegacyLeagueConfig;
+
+const footballLeagues: FootballLeagueConfig[] = [
+  { id: "39", sport: "football", short: "PL", name: "Premier League" },
+  { id: "140", sport: "football", short: "LL", name: "La Liga" },
+  { id: "135", sport: "football", short: "SA", name: "Serie A" },
+  { id: "78", sport: "football", short: "BL", name: "Bundesliga" },
+  { id: "61", sport: "football", short: "L1", name: "Ligue 1" },
+  { id: "2", sport: "football", short: "UCL", name: "Champions League" },
+];
+
+const legacyLeagues: LegacyLeagueConfig[] = [
   { id: "4387", sport: "basketball", short: "NBA", name: "NBA" },
   { id: "4464", sport: "tennis", short: "ATP", name: "ATP World Tour", calendarSeason: true },
 ];
 
-const API_ROOT = "https://www.thesportsdb.com/api/v1/json";
-const CACHE_MS = 30 * 60 * 1000;
+const leagues: LeagueConfig[] = [...footballLeagues, ...legacyLeagues];
+
+const FOOTBALL_API_ROOT = "https://v3.football.api-sports.io";
+const LEGACY_API_ROOT = "https://www.thesportsdb.com/api/v1/json";
+const CACHE_MS = 3 * 60 * 60 * 1000;
 let memoryCache: { timestamp: number; payload: unknown } | null = null;
 
-function apiKey() {
+function env() {
   const runtime = globalThis as typeof globalThis & {
     process?: { env?: Record<string, string | undefined> };
   };
-  return runtime.process?.env?.THE_SPORTS_DB_API_KEY || "123";
+  return runtime.process?.env || {};
 }
 
-async function fetchEvents(endpoint: string): Promise<ApiEvent[]> {
-  const response = await fetch(`${API_ROOT}/${apiKey()}/${endpoint}`, {
-    headers: { Accept: "application/json", "User-Agent": "PredictArena/1.0" },
+function footballApiKey() {
+  return env().API_FOOTBALL_KEY;
+}
+
+function legacyApiKey() {
+  return env().THE_SPORTS_DB_API_KEY || "123";
+}
+
+async function fetchFootballFixtures(config: FootballLeagueConfig, season: number): Promise<FootballFixture[]> {
+  const key = footballApiKey();
+  if (!key) throw new Error("API_FOOTBALL_KEY is not configured");
+
+  const url = new URL(`${FOOTBALL_API_ROOT}/fixtures`);
+  url.searchParams.set("league", config.id);
+  url.searchParams.set("season", String(season));
+
+  const response = await fetch(url, {
+    headers: {
+      Accept: "application/json",
+      "x-apisports-key": key,
+    },
+    next: { revalidate: 10800 },
   });
-  if (!response.ok) throw new Error(`Sports feed returned ${response.status}`);
-  const payload = await response.json() as { events?: ApiEvent[] | null };
+
+  if (!response.ok) throw new Error(`API-Football returned ${response.status}`);
+  const payload = await response.json() as {
+    response?: FootballFixture[];
+    errors?: unknown;
+  };
+  return Array.isArray(payload.response) ? payload.response : [];
+}
+
+async function fetchLegacyEvents(endpoint: string): Promise<LegacyApiEvent[]> {
+  const response = await fetch(`${LEGACY_API_ROOT}/${legacyApiKey()}/${endpoint}`, {
+    headers: { Accept: "application/json", "User-Agent": "PredictArena/1.0" },
+    next: { revalidate: 10800 },
+  });
+  if (!response.ok) throw new Error(`Legacy sports feed returned ${response.status}`);
+  const payload = await response.json() as { events?: LegacyApiEvent[] | null };
   return Array.isArray(payload.events) ? payload.events : [];
 }
 
@@ -71,21 +138,35 @@ function seasonStart(now = new Date()) {
   return now.getUTCMonth() >= 6 ? year : year - 1;
 }
 
-function currentSeason(config: LeagueConfig, now = new Date()) {
+function legacyCurrentSeason(config: LegacyLeagueConfig, now = new Date()) {
   if (config.calendarSeason) return `${now.getUTCFullYear()}`;
   const start = seasonStart(now);
   return `${start}-${start + 1}`;
 }
 
-function previousSeason(config: LeagueConfig, now = new Date()) {
+function legacyPreviousSeason(config: LegacyLeagueConfig, now = new Date()) {
   if (config.calendarSeason) return `${now.getUTCFullYear() - 1}`;
   const start = seasonStart(now);
   return `${start - 1}-${start}`;
 }
 
-function toHistory(events: ApiEvent[]): HistoricalEvent[] {
+function footballToHistory(fixtures: FootballFixture[]): HistoricalEvent[] {
+  return fixtures.flatMap((item) => {
+    const home = item.teams?.home?.name;
+    const away = item.teams?.away?.name;
+    const homeScore = item.goals?.home;
+    const awayScore = item.goals?.away;
+    if (!home || !away || homeScore == null || awayScore == null) return [];
+    return [{ homeTeam: home, awayTeam: away, homeScore, awayScore }];
+  });
+}
+
+function legacyToHistory(events: LegacyApiEvent[]): HistoricalEvent[] {
   return events.flatMap((event) => {
-    if (event.intHomeScore === null || event.intHomeScore === undefined || event.intHomeScore === "" || event.intAwayScore === null || event.intAwayScore === undefined || event.intAwayScore === "") return [];
+    if (
+      event.intHomeScore === null || event.intHomeScore === undefined || event.intHomeScore === "" ||
+      event.intAwayScore === null || event.intAwayScore === undefined || event.intAwayScore === ""
+    ) return [];
     const homeScore = Number(event.intHomeScore);
     const awayScore = Number(event.intAwayScore);
     if (!event.strHomeTeam || !event.strAwayTeam || !Number.isFinite(homeScore) || !Number.isFinite(awayScore)) return [];
@@ -93,20 +174,26 @@ function toHistory(events: ApiEvent[]): HistoricalEvent[] {
   });
 }
 
-function isUpcoming(event: ApiEvent, now = new Date()) {
-  const hasScore = event.intHomeScore !== null && event.intHomeScore !== undefined && event.intHomeScore !== "";
-  if (hasScore) return false;
-  const time = kickoff(event).getTime();
-  return Number.isFinite(time) && time >= now.getTime() - 60 * 60 * 1000;
+function isFootballUpcoming(item: FootballFixture, now = new Date()) {
+  const kickoff = item.fixture?.date ? new Date(item.fixture.date) : null;
+  if (!kickoff || !Number.isFinite(kickoff.getTime())) return false;
+  const status = item.fixture?.status?.short || "";
+  return ["NS", "TBD"].includes(status) && kickoff.getTime() >= now.getTime() - 60 * 60 * 1000;
 }
 
-function kickoff(event: ApiEvent) {
+function legacyKickoff(event: LegacyApiEvent) {
   const raw = event.strTimestamp || `${event.dateEvent || new Date().toISOString().slice(0, 10)}T${event.strTime || "12:00:00"}`;
   return new Date(raw.endsWith("Z") ? raw : `${raw}Z`);
 }
 
-function displayKickoff(event: ApiEvent) {
-  const date = kickoff(event);
+function isLegacyUpcoming(event: LegacyApiEvent, now = new Date()) {
+  const hasScore = event.intHomeScore !== null && event.intHomeScore !== undefined && event.intHomeScore !== "";
+  if (hasScore) return false;
+  const time = legacyKickoff(event).getTime();
+  return Number.isFinite(time) && time >= now.getTime() - 60 * 60 * 1000;
+}
+
+function displayKickoff(date: Date) {
   const dateText = new Intl.DateTimeFormat("en-NG", {
     timeZone: "Africa/Lagos",
     weekday: "short",
@@ -131,16 +218,56 @@ function makeTeam(name: string, badge?: string | null) {
   };
 }
 
-function normalizeApiMatch(event: ApiEvent, config: LeagueConfig, history: HistoricalEvent[]): Match | null {
+function normalizeFootballMatch(
+  item: FootballFixture,
+  config: FootballLeagueConfig,
+  history: HistoricalEvent[],
+): Match | null {
+  const home = item.teams?.home?.name;
+  const away = item.teams?.away?.name;
+  const kickoffRaw = item.fixture?.date;
+  if (!home || !away || !kickoffRaw) return null;
+
+  const kickoff = new Date(kickoffRaw);
+  if (!Number.isFinite(kickoff.getTime())) return null;
+  const formatted = displayKickoff(kickoff);
+  const model = runFootballPoisson(home, away, history);
+
+  return {
+    id: `api-football-${item.fixture?.id || `${config.id}-${formatted.iso}`}`,
+    sport: "football",
+    leagueId: config.id,
+    league: item.league?.name || config.name,
+    leagueShort: config.short,
+    date: formatted.dateText,
+    time: formatted.timeText,
+    kickoffISO: formatted.iso,
+    venue: item.fixture?.venue?.name || undefined,
+    home: makeTeam(home, item.teams?.home?.logo),
+    away: makeTeam(away, item.teams?.away?.logo),
+    probabilities: model.probabilities,
+    predictions: model.predictions,
+    confidence: model.confidence,
+    model: model.model,
+    source: "live-api",
+    sourceLabel: "API-Football fixture · PredictArena model",
+    featured: model.confidence >= 62,
+  };
+}
+
+function normalizeLegacyMatch(
+  event: LegacyApiEvent,
+  config: LegacyLeagueConfig,
+  history: HistoricalEvent[],
+): Match | null {
   if (!event.strHomeTeam || !event.strAwayTeam) return null;
-  const formatted = displayKickoff(event);
+  const formatted = displayKickoff(legacyKickoff(event));
   const model = config.sport === "basketball"
     ? runBasketballMarginModel(event.strHomeTeam, event.strAwayTeam, history)
-    : config.sport === "football"
-      ? runFootballPoisson(event.strHomeTeam, event.strAwayTeam, history)
-      : runTennisFormModel(event.strHomeTeam, event.strAwayTeam, history);
+    : runTennisFormModel(event.strHomeTeam, event.strAwayTeam, history);
+
   return {
-    id: `api-${event.idEvent || `${config.id}-${formatted.iso}`}`,
+    id: `legacy-${event.idEvent || `${config.id}-${formatted.iso}`}`,
     sport: config.sport,
     leagueId: config.id,
     league: config.name,
@@ -251,58 +378,112 @@ function communityMatches(): Match[] {
   ];
 }
 
-async function buildPayload() {
-  const now = new Date();
-  const bundles = await Promise.all(leagues.map(async (config) => {
-    const activeSeason = currentSeason(config, now);
-    const historySeason = previousSeason(config, now);
+async function buildFootballBundles(now: Date) {
+  const season = seasonStart(now);
+
+  return Promise.all(footballLeagues.map(async (config) => {
+    try {
+      const fixtures = await fetchFootballFixtures(config, season);
+      const history = footballToHistory(fixtures);
+      const upcoming = fixtures
+        .filter((item) => isFootballUpcoming(item, now))
+        .sort((a, b) => new Date(a.fixture?.date || 0).getTime() - new Date(b.fixture?.date || 0).getTime());
+
+      return { config, upcoming, history, available: true };
+    } catch {
+      return { config, upcoming: [] as FootballFixture[], history: [] as HistoricalEvent[], available: false };
+    }
+  }));
+}
+
+async function buildLegacyBundles(now: Date) {
+  return Promise.all(legacyLeagues.map(async (config) => {
+    const activeSeason = legacyCurrentSeason(config, now);
+    const historySeason = legacyPreviousSeason(config, now);
     const [current, historical] = await Promise.allSettled([
-      fetchEvents(`eventsseason.php?id=${config.id}&s=${activeSeason}`),
-      fetchEvents(`eventsseason.php?id=${config.id}&s=${historySeason}`),
+      fetchLegacyEvents(`eventsseason.php?id=${config.id}&s=${activeSeason}`),
+      fetchLegacyEvents(`eventsseason.php?id=${config.id}&s=${historySeason}`),
     ]);
+
     const currentEvents = current.status === "fulfilled" ? current.value : [];
-    let upcoming = currentEvents.filter((event) => isUpcoming(event, now)).sort((a, b) => kickoff(a).getTime() - kickoff(b).getTime());
-    let scheduleAvailable = current.status === "fulfilled";
+    let upcoming = currentEvents
+      .filter((event) => isLegacyUpcoming(event, now))
+      .sort((a, b) => legacyKickoff(a).getTime() - legacyKickoff(b).getTime());
+
+    let available = current.status === "fulfilled";
     if (!upcoming.length) {
       try {
-        upcoming = await fetchEvents(`eventsnextleague.php?id=${config.id}`);
-        scheduleAvailable = true;
+        upcoming = await fetchLegacyEvents(`eventsnextleague.php?id=${config.id}`);
+        available = true;
       } catch {
-        scheduleAvailable = false;
+        available = false;
       }
     }
+
     const previousEvents = historical.status === "fulfilled" ? historical.value : [];
     return {
       config,
       upcoming,
-      history: toHistory([...currentEvents, ...previousEvents]),
-      available: scheduleAvailable,
+      history: legacyToHistory([...currentEvents, ...previousEvents]),
+      available,
     };
   }));
+}
 
-  const apiMatches = bundles.flatMap((bundle) => {
-    return bundle.upcoming
+async function buildPayload() {
+  const now = new Date();
+  const [footballBundles, legacyBundles] = await Promise.all([
+    buildFootballBundles(now),
+    buildLegacyBundles(now),
+  ]);
+
+  const footballMatches = footballBundles.flatMap((bundle) =>
+    bundle.upcoming
       .slice(0, 6)
-      .map((event) => normalizeApiMatch(event, bundle.config, bundle.history))
-      .filter((match): match is Match => Boolean(match));
-  });
+      .map((item) => normalizeFootballMatch(item, bundle.config, bundle.history))
+      .filter((match): match is Match => Boolean(match)),
+  );
+
+  const legacyMatches = legacyBundles.flatMap((bundle) =>
+    bundle.upcoming
+      .slice(0, 6)
+      .map((event) => normalizeLegacyMatch(event, bundle.config, bundle.history))
+      .filter((match): match is Match => Boolean(match)),
+  );
+
+  const apiMatches = [...footballMatches, ...legacyMatches];
   const matches = [...apiMatches, ...communityMatches()].sort((a, b) =>
     new Date(a.kickoffISO).getTime() - new Date(b.kickoffISO).getTime(),
   );
 
-  return {
-    matches,
-    generatedAt: new Date().toISOString(),
-    provider: "TheSportsDB",
-    seasonSample: previousSeason(leagues[0], now),
-    leagueCatalog: bundles.map((bundle) => ({
+  const catalog = [
+    ...footballBundles.map((bundle) => ({
       id: bundle.config.id,
       name: bundle.config.name,
       short: bundle.config.short,
       sport: bundle.config.sport,
-      matchCount: apiMatches.filter((match) => match.leagueId === bundle.config.id).length,
+      matchCount: footballMatches.filter((match) => match.leagueId === bundle.config.id).length,
       available: bundle.available,
+      provider: "API-Football",
     })),
+    ...legacyBundles.map((bundle) => ({
+      id: bundle.config.id,
+      name: bundle.config.name,
+      short: bundle.config.short,
+      sport: bundle.config.sport,
+      matchCount: legacyMatches.filter((match) => match.leagueId === bundle.config.id).length,
+      available: bundle.available,
+      provider: "TheSportsDB",
+    })),
+  ];
+
+  return {
+    matches,
+    generatedAt: new Date().toISOString(),
+    provider: "API-Football + TheSportsDB",
+    footballProvider: "API-Football",
+    seasonSample: String(seasonStart(now)),
+    leagueCatalog: catalog,
     liveCount: apiMatches.length,
     communityCount: matches.length - apiMatches.length,
     status: apiMatches.length ? "live" : "fallback",
@@ -314,22 +495,25 @@ export async function GET(request: Request) {
     const forceRefresh = new URL(request.url).searchParams.has("refresh");
     const cacheAge = memoryCache ? Date.now() - memoryCache.timestamp : Number.POSITIVE_INFINITY;
     const canForceRefresh = forceRefresh && cacheAge >= 60 * 1000;
+
     if (!canForceRefresh && memoryCache && cacheAge < CACHE_MS) {
       return Response.json(memoryCache.payload, {
-        headers: { "Cache-Control": "public, max-age=300, s-maxage=1800, stale-while-revalidate=86400" },
+        headers: { "Cache-Control": "public, max-age=300, s-maxage=10800, stale-while-revalidate=86400" },
       });
     }
+
     const payload = await buildPayload();
     memoryCache = { timestamp: Date.now(), payload };
     return Response.json(payload, {
-      headers: { "Cache-Control": "public, max-age=300, s-maxage=1800, stale-while-revalidate=86400" },
+      headers: { "Cache-Control": "public, max-age=300, s-maxage=10800, stale-while-revalidate=86400" },
     });
   } catch {
     const payload = {
       matches: communityMatches(),
       generatedAt: new Date().toISOString(),
-      provider: "TheSportsDB",
-      seasonSample: previousSeason(leagues[0]),
+      provider: "API-Football + TheSportsDB",
+      footballProvider: "API-Football",
+      seasonSample: String(seasonStart()),
       leagueCatalog: leagues.map((league) => ({ ...league, matchCount: 0, available: false })),
       liveCount: 0,
       communityCount: 2,
