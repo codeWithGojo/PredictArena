@@ -1,0 +1,36 @@
+{
+  "sources": [
+    {
+      "file": "football-2223.csv",
+      "url": "https://www.football-data.co.uk/mmz4281/2223/E0.csv",
+      "sha256": "8442792d3b614c94ea3cf381bd2736805889cc1713169035368fff19c3d02380"
+    },
+    {
+      "file": "source-0.csv",
+      "url": "https://www.football-data.co.uk/mmz4281/2324/E0.csv",
+      "sha256": "b2e057b0ed959f198b0f63d2391c01239f3608e6de5db68edab3f88e04d07ff3"
+    },
+    {
+      "file": "source-2.csv",
+      "url": "https://raw.githubusercontent.com/fivethirtyeight/data/master/nba-elo/nbaallelo.csv",
+      "sha256": "d46ed3540ee8d9eca31b3e94cc8c777e0be5156173d814ebf65b8195e8d616bc"
+    },
+    {
+      "file": "tennis-2022.csv",
+      "url": "https://raw.githubusercontent.com/Kadantte/tennis_atp/master/atp_matches_2022.csv",
+      "sha256": "7190042565ab8400e74f44fda60700acb36ddf3c82d393f331a07589e05b5f52"
+    },
+    {
+      "file": "tennis-2023.csv",
+      "url": "https://raw.githubusercontent.com/Kadantte/tennis_atp/master/atp_matches_2023.csv",
+      "sha256": "9b9671aa7c8156e74c2e4466675b7ed4e762bb8a58b7237a30daefd84ffceff5"
+    }
+  ],
+  "tennisExcludedRows": 612,
+  "note": "Historical result dates only. No genuine observation, health or injury timestamps. See README for replay assumptions.",
+  "datasets": {
+    "football.json": "b6862100eb2dcecff8b9645e4138df0da071c943ccfbb10d8c07abc658c529ca",
+    "basketball.json": "2a7d1625999735737a934f64bd9248dc788cb51666120553be8e285d7b1f977f",
+    "tennis.json": "2f7cbbcdfdd053e73fcafa1df7654c4cbbd75bd1509d3d2979ecd86f31bad9d2"
+  }
+}
