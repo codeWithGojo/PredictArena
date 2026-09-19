@@ -6,7 +6,8 @@ export const VERSIONS = { football: 'PA-DixonColes 2.0', basketball: 'PA-Margin 
 // Fixed before holdout evaluation. These are regularizers, not learned claims about players.
 export const PARAMETERS = {
   footballHalfLife: 90, footballPrior: 6, rhoPenalty: 100,
-  basketballHalfLife: 45, basketballPrior: 4, basketballScale: 8,
+  basketballHalfLife: 180, basketballPrior: 0, basketballScale: 8,
+  basketballMarginCoefficient: 0.7, basketballRestCoefficient: 0.5,
   tennisHalfLife: 120, tennisK: 32, tennisPrior: 5,
 } as const;
 
@@ -173,14 +174,15 @@ export function predict(input: ModelInput, publication: Publication, options: { 
     if (sport === 'basketball') {
       const home = weightedRecord(input, rows, f.homeId, PARAMETERS.basketballHalfLife);
       const away = weightedRecord(input, rows, f.awayId, PARAMETERS.basketballHalfLife);
-      const homeMargin = home.margin / (home.weight + PARAMETERS.basketballPrior), awayMargin = away.margin / (away.weight + PARAMETERS.basketballPrior);
+      const homeMargin = home.weight ? home.margin / (home.weight + PARAMETERS.basketballPrior) : 0;
+      const awayMargin = away.weight ? away.margin / (away.weight + PARAMETERS.basketballPrior) : 0;
       const weighted = rows.map(r => ({ r, w: decay((timestamp(input.asOf) - timestamp(r.completedAt)) / DAY, PARAMETERS.basketballHalfLife) }));
       const total = weighted.reduce((s, {r,w}) => s + w * (r.homeScore + r.awayScore), 0) / weighted.reduce((s,r) => s+r.w,0);
-      const margin = clamp((homeMargin - awayMargin) * 0.55 + (f.neutralVenue ? 0 : 3.1) + restDifference * 0.75, -Math.min(30,total), Math.min(30,total));
+      const margin = clamp((homeMargin - awayMargin) * PARAMETERS.basketballMarginCoefficient + (f.neutralVenue ? 0 : 3.1) + restDifference * PARAMETERS.basketballRestCoefficient, -Math.min(30,total), Math.min(30,total));
       probability = sigmoid(margin / PARAMETERS.basketballScale);
       s.expectedScore = { home:(total+margin)/2, away:(total-margin)/2, total, unit:'points' };
       a.projectedMargin = margin; a.featuresUsed.push(f.neutralVenue ? 'neutralVenue' : 'homeAdvantage');
-      a.factors = [factor('Home recent margin',homeMargin,'Decayed scoring margin with a four-game neutral prior.'), factor('Away recent margin',awayMargin,'Same weighting and prior.')];
+      a.factors = [factor('Home recent margin',homeMargin,'Decayed scoring margin; unseen teams use zero.'), factor('Away recent margin',awayMargin,'Same weighting and cold-start fallback.')];
     } else {
       const home = weightedRecord(input, rows, f.homeId, PARAMETERS.tennisHalfLife), away = weightedRecord(input, rows, f.awayId, PARAMETERS.tennisHalfLife);
       const rate = (r: ReturnType<typeof weightedRecord>) => (r.wins + PARAMETERS.tennisPrior / 2) / (r.weight + PARAMETERS.tennisPrior);
