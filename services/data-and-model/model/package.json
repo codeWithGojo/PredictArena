@@ -1,0 +1,10 @@
+{
+  "name": "@predictarena/model",
+  "private": true,
+  "type": "module",
+  "engines": { "node": ">=22.18.0" },
+  "scripts": {
+    "test": "node --test tests/*.test.ts",
+    "backtest": "node backtest/run.ts"
+  }
+}
