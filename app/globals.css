@@ -392,6 +392,29 @@ button:disabled {
   gap: 13px;
 }
 
+.auth-controls { display:flex; align-items:center; gap:8px; }
+.auth-link,.auth-signup,.account-link { border:0; background:transparent; color:var(--muted); font-size:11px; font-weight:700; white-space:nowrap; }
+.auth-signup { padding:9px 12px; background:var(--accent); color:#fff; }
+.account-link:hover,.auth-link:hover { color:var(--text); }
+.auth-loading { color:var(--muted); font-size:10px; white-space:nowrap; }
+.auth-error { position:fixed; z-index:30; right:18px; bottom:18px; max-width:320px; padding:12px 14px; background:#442525; border:1px solid #d46767; color:#ffe8e8; font-size:12px; line-height:1.45; box-shadow:0 8px 30px rgba(0,0,0,.3); }
+.auth-error button { float:right; border:0; background:transparent; color:#fff; font-size:18px; line-height:12px; cursor:pointer; }
+.premium-gate { margin-top:18px; padding:18px; border:1px solid #39506f; background:linear-gradient(120deg,rgba(35,55,86,.65),rgba(21,30,47,.9)); }
+.premium-gate p { margin:0 0 7px; color:#7ca8ff; font-size:10px; font-weight:800; letter-spacing:.09em; }
+.premium-gate h3 { margin:0 0 7px; color:#f5f8ff; font-size:17px; }
+.premium-gate span { display:block; color:#a9b4c6; font-size:12px; line-height:1.55; }
+.premium-gate button { margin-top:14px; padding:9px 13px; border:1px solid #91b4ff; background:#91b4ff; color:#0b1424; font-size:11px; font-weight:800; cursor:pointer; }
+.premium-gate button:disabled { opacity:.8; cursor:not-allowed; }
+.premium-analysis { margin-top:18px; padding:16px; background:rgba(57,89,147,.2); border-left:3px solid #7ca8ff; }
+.premium-analysis p { margin:0 0 6px; color:#91b4ff; font-size:10px; font-weight:800; letter-spacing:.08em; }
+.premium-analysis strong { color:#edf3ff; font-size:13px; line-height:1.55; }
+.private-page,.auth-callback { min-height:100vh; padding:clamp(36px,9vw,120px); color:#f0f4fb; background:radial-gradient(circle at top right,#203b68,transparent 37%),#0d1420; }
+.private-page>p,.auth-callback>p { color:#91b4ff; font-size:11px; font-weight:800; letter-spacing:.1em; }
+.private-page h1,.auth-callback h1 { max-width:680px; margin:14px 0 36px; font-size:clamp(45px,8vw,100px); letter-spacing:-.06em; }
+.private-page section { max-width:650px; padding:25px; border:1px solid #2d466b; background:#131f31; }
+.private-page section h2 { margin-top:0; font-size:23px; }.private-page section p,.auth-callback>span { color:#b9c5d7; line-height:1.7; }.auth-callback button { display:block; margin-top:24px; padding:11px 15px; border:0; background:#91b4ff; color:#0d1420; font-weight:800; cursor:pointer; }
+@media (max-width: 760px) { .account-link { display:none; } .auth-signup { display:none; } .auth-link { padding:6px; } }
+
 .search-button {
   display: flex;
   height: 35px;
