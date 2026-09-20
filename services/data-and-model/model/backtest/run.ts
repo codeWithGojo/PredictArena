@@ -3,6 +3,8 @@ import { createHash } from 'node:crypto';
 import type { History, ModelInput, Sport, Surface } from '../types.ts';
 import { baseline } from '../baseline.ts';
 import { predict, PARAMETERS, VERSIONS } from '../engine.ts';
+import { PREVIOUS_FOOTBALL } from '../football.ts';
+import type { FootballConfig } from '../football.ts';
 import { DAY, properScores } from '../math.ts';
 import { eligibleHistory } from '../input.ts';
 
@@ -46,7 +48,7 @@ function interval(blocks: Map<string, number[]>) {
   samples.sort((a,b)=>a-b);
   return [samples[25],samples[974]];
 }
-export function evaluateArchive(sport: Sport, split:'development'|'holdout') {
+export function evaluateArchive(sport: Sport, split:'development'|'holdout', football?:FootballConfig) {
   const settings=config[sport], file=new URL(`./data/${sport}.json`,import.meta.url);
   const bytes=readFileSync(file), source:ArchiveRow[]=JSON.parse(bytes.toString());
   const history:History[]=source.map(r=>({fixtureId:r.id,competitionId:settings.competitionId,homeId:r.home,awayId:r.away,
@@ -71,7 +73,7 @@ export function evaluateArchive(sport: Sport, split:'development'|'holdout') {
     const eligible=eligibleHistory(input);
     if(eligible.length<50){skipped++;continue;}
     input.history=eligible;
-    const old=baseline(input)!, result=predict(input,{id:'backtest:'+row.id,generatedAt:asOf,isStale:false},{restAdjustment:sport!=='tennis'});
+    const old=baseline(input)!, result=predict(input,{id:'backtest:'+row.id,generatedAt:asOf,isStale:false},{restAdjustment:sport!=='tennis',football});
     const p=result.summary.winProbability!;
     const outcome=sport==='football'?(row.homeScore>row.awayScore?0:row.homeScore===row.awayScore?1:2):(row.homeScore>row.awayScore?0:1);
     const os=properScores(old.probabilities.map(p=>p/100),outcome), ns=properScores(sport==='football'?[p.home,p.draw!,p.away]:[p.home,p.away],outcome);
@@ -97,14 +99,15 @@ if(process.argv[1] && import.meta.url===new URL('file:'+process.argv[1]).href) {
   if(recordsIndex>=0) console.log(JSON.stringify(evaluateRecorded(JSON.parse(readFileSync(process.argv[recordsIndex+1],'utf8'))),null,2));
   else {
     const split=process.argv.includes('--development')?'development':'holdout';
-    const report={mode:'retrospective-date-replay',split,parameters:PARAMETERS,versions:VERSIONS,
+    const previousFootball=process.argv.includes('--previous-football');
+    const report={footballConfiguration:previousFootball?PREVIOUS_FOOTBALL:PARAMETERS.football,mode:'retrospective-date-replay',split,parameters:PARAMETERS,versions:VERSIONS,
       baselineCommit:'bb18ff4c35fabba335763b127de6450a1b2f45e2',brierDefinition:'Mean sum of squared errors across all outcome classes (binary range 0..2).',
       notes:['No historical observedAt or health observations are available. This is not a point-in-time audit.',
         'Football and NBA results become eligible the next day; all same-day matches withheld.',
         'Tennis uses tournament start dates with a 21-day availability embargo and no rest adjustment.',
         'All models see the latest 200 eligible competition results within 365 days. Minimum 50 league results for warm-up.',
         'Intervals use 1000 seeded paired date-block bootstrap replicates, or tournament blocks for tennis.'],
-      results:(['football','basketball','tennis'] as Sport[]).map(s=>evaluateArchive(s,split))};
+      results:(['football','basketball','tennis'] as Sport[]).map(s=>evaluateArchive(s,split,previousFootball?PREVIOUS_FOOTBALL:undefined))};
     console.log(JSON.stringify(report,null,2));
     const output=process.argv.indexOf('--output');
     if(output>=0)writeFileSync(process.argv[output+1],JSON.stringify(report,null,2)+'\n');

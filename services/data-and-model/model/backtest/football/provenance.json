@@ -1,0 +1,91 @@
+{
+  "sources": [
+    {
+      "file": "E0-2018.csv",
+      "url": "https://football-data.co.uk/mmz4281/1819/E0.csv",
+      "sha256": "7c096b3c2ecd54c6993d22eeea73450c2bde11e3457238b226b8f43c62dfc35e",
+      "matches": 380
+    },
+    {
+      "file": "SP1-2018.csv",
+      "url": "https://football-data.co.uk/mmz4281/1819/SP1.csv",
+      "sha256": "9b8cece2c85e90e382b30dc4fc5046534f12c6d2b0efa74cd7d1d52e90a0c201",
+      "matches": 380
+    },
+    {
+      "file": "E0-2019.csv",
+      "url": "https://football-data.co.uk/mmz4281/1920/E0.csv",
+      "sha256": "100037618b94f94057400bb02bf6bac4ef74ddaa58cde4b38370839c39caee61",
+      "matches": 380
+    },
+    {
+      "file": "SP1-2019.csv",
+      "url": "https://football-data.co.uk/mmz4281/1920/SP1.csv",
+      "sha256": "a05d5d60eee0b1414c56d6d6817f860cdc620e206234069a1886c98a8cb318da",
+      "matches": 380
+    },
+    {
+      "file": "E0-2020.csv",
+      "url": "https://football-data.co.uk/mmz4281/2021/E0.csv",
+      "sha256": "5afe63f69401457b8354eaacee24f9a3e520b3c3af6329564a9783e20d789c62",
+      "matches": 380
+    },
+    {
+      "file": "SP1-2020.csv",
+      "url": "https://football-data.co.uk/mmz4281/2021/SP1.csv",
+      "sha256": "b4137db923101f464e8403c4973acbfaf7d71724ce93b4336fad580e894d9591",
+      "matches": 380
+    },
+    {
+      "file": "E0-2021.csv",
+      "url": "https://football-data.co.uk/mmz4281/2122/E0.csv",
+      "sha256": "335afcbabeb2939fa10ab39ba3e8215072d0b577cb8d0705c1e44c56e934e703",
+      "matches": 380
+    },
+    {
+      "file": "SP1-2021.csv",
+      "url": "https://football-data.co.uk/mmz4281/2122/SP1.csv",
+      "sha256": "2d9e619700712823d15716c07715133f8c3b1a09046930dcfc785a38633dee2e",
+      "matches": 380
+    },
+    {
+      "file": "E0-2022.csv",
+      "url": "https://football-data.co.uk/mmz4281/2223/E0.csv",
+      "sha256": "8442792d3b614c94ea3cf381bd2736805889cc1713169035368fff19c3d02380",
+      "matches": 380
+    },
+    {
+      "file": "SP1-2022.csv",
+      "url": "https://football-data.co.uk/mmz4281/2223/SP1.csv",
+      "sha256": "53348112526b5165539df240be350083989bb258f30c0ff7cacbc0165ca7e4b3",
+      "matches": 380
+    },
+    {
+      "file": "E0-2023.csv",
+      "url": "https://football-data.co.uk/mmz4281/2324/E0.csv",
+      "sha256": "b2e057b0ed959f198b0f63d2391c01239f3608e6de5db68edab3f88e04d07ff3",
+      "matches": 380
+    },
+    {
+      "file": "SP1-2023.csv",
+      "url": "https://football-data.co.uk/mmz4281/2324/SP1.csv",
+      "sha256": "5323f596c7ed318e4bce95557a369d809d98501fa499ea5f41350cd45cf3c7d9",
+      "matches": 380
+    },
+    {
+      "file": "E0-2024.csv",
+      "url": "https://football-data.co.uk/mmz4281/2425/E0.csv",
+      "sha256": "d0c8ce4a96d886cf60cf101f570f4a3893844226f91c7bd769eb568c49edbfa4",
+      "matches": 380
+    },
+    {
+      "file": "SP1-2024.csv",
+      "url": "https://football-data.co.uk/mmz4281/2425/SP1.csv",
+      "sha256": "c086e96d6a53f6e6c0fce4e35db0d1728c773b4362323da0161a34769e315a36",
+      "matches": 380
+    }
+  ],
+  "datasetSha256": "93e5544401204891374b553b50a5bd9ecb63256010d96a14d855cd9f17fc1acd",
+  "matches": 5320,
+  "note": "Retrospective date-only results; no historical observation snapshots. Scores only, no odds."
+}

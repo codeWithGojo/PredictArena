@@ -2,6 +2,7 @@ import {test} from 'node:test';
 import assert from 'node:assert/strict';
 import {predict,fitFootball} from '../engine.ts';
 import {eligibleHistory} from '../input.ts';
+import {PREVIOUS_FOOTBALL} from '../football.ts';
 import {baseline} from '../baseline.ts';
 import type {History,ModelInput,Sport} from '../types.ts';
 import {DAY} from '../math.ts';
@@ -81,11 +82,11 @@ test('unseen participants use league priors and LOW_SAMPLE, with reduced confide
 test('football time weighting changes strength towards more recent results',()=>{
   const i=input();const rows=i.history.map((r,n)=>({...r,homeId:'A',awayId:'B',homeScore:n<10?0:4,awayScore:1}));
   const reversed=rows.map((r,n)=>({...r,homeScore:n<10?4:0}));
-  assert.ok(predict({...i,history:rows},pub).summary.expectedScore!.home>predict({...i,history:reversed},pub).summary.expectedScore!.home);
+  assert.ok(predict({...i,history:rows},pub,{football:PREVIOUS_FOOTBALL}).summary.expectedScore!.home>predict({...i,history:reversed},pub,{football:PREVIOUS_FOOTBALL}).summary.expectedScore!.home);
 });
 test('neutral football removes the fitted home venue baseline',()=>{
   const i=input();i.fixture.homeId='unknown-1';i.fixture.awayId='unknown-2';i.fixture.neutralVenue=true;
-  const s=predict(i,pub).summary;close(s.expectedScore!.home,s.expectedScore!.away);close(s.winProbability!.home,s.winProbability!.away);
+  const s=predict(i,pub,{football:PREVIOUS_FOOTBALL}).summary;close(s.expectedScore!.home,s.expectedScore!.away);close(s.winProbability!.home,s.winProbability!.away);
   const fit=fitFootball(eligibleHistory(i),asOf);assert.ok(Number.isFinite(fit.rho));
 });
 test('missing, null, stale and future health gracefully match the no-health prediction',()=>{
@@ -95,12 +96,13 @@ test('missing, null, stale and future health gracefully match the no-health pred
   assert.deepEqual(p,predict({...i,injuries:[{participantId:'A',athleteId:'athlete',status:'out',observedAt:'2024-01-01T00:00:00.000Z',source:'test'}]},pub));
 });
 test('football injuries reduce own strength and are deduplicated, bounded, and not double-counted with health',()=>{
-  const i=input(),p=predict(i,pub);
+  const opts={football:PREVIOUS_FOOTBALL,experimentalFootballHealth:true};
+  const i=input(),p=predict(i,pub,opts);
   const injury={participantId:'A',athleteId:'athlete',status:'out' as const,observedAt:asOf,source:'test'};
-  const injured=predict({...i,injuries:[injury]},pub);assert.ok(injured.summary.expectedScore!.home<p.summary.expectedScore!.home);
-  assert.deepEqual(injured,predict({...i,injuries:[injury,injury]},pub));assert.ok(injured.analysis.featuresUsed.includes('injuries'));
+  const injured=predict({...i,injuries:[injury]},pub,opts);assert.ok(injured.summary.expectedScore!.home<p.summary.expectedScore!.home);
+  assert.deepEqual(injured,predict({...i,injuries:[injury,injury]},pub,opts));assert.ok(injured.analysis.featuresUsed.includes('injuries'));
   const health={participantId:'A',availabilityScore:0.5,restDays:3,observedAt:asOf,source:'test'};
-  close(predict({...i,teamHealth:[health]},pub).summary.expectedScore!.home,predict({...i,teamHealth:[health],injuries:[injury]},pub).summary.expectedScore!.home);
+  close(predict({...i,teamHealth:[health]},pub,opts).summary.expectedScore!.home,predict({...i,teamHealth:[health],injuries:[injury]},pub,opts).summary.expectedScore!.home);
 });
 test('basketball rest advantage raises win probability without breaking expected scores',()=>{
   const i=input('basketball');const h=(participantId:string,restDays:number)=>({participantId,availabilityScore:1,restDays,observedAt:asOf,source:'test'});

@@ -2,9 +2,13 @@
   "name": "@predictarena/model",
   "private": true,
   "type": "module",
-  "engines": { "node": ">=22.18.0" },
+  "engines": {
+    "node": ">=22.18.0"
+  },
   "scripts": {
     "test": "node --test tests/*.test.ts",
-    "backtest": "node backtest/run.ts"
+    "backtest": "node backtest/run.ts",
+    "backtest:football:select": "node backtest/football/walk-forward.ts --select",
+    "backtest:football": "node backtest/football/walk-forward.ts --test"
   }
 }

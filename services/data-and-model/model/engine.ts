@@ -1,11 +1,15 @@
 import type { History, ModelInput, Publication, PredictionDetail, Factor, Market, Surface } from './types.ts';
-import { clamp, DAY, decay, dcBounds, dcCoefficient, logit, scoreDistribution, sigmoid } from './math.ts';
+import { clamp, DAY, decay, logit, sigmoid } from './math.ts';
+import { footballForecast } from './football.ts';
+import type { FootballConfig } from './football.ts';
+import { DEFAULT_FOOTBALL } from './football-default.ts';
+export { fitFootball } from './football.ts';
 import { eligibleHistory, timestamp, validateInput } from './input.ts';
 
-export const VERSIONS = { football: 'PA-DixonColes 2.0', basketball: 'PA-Margin 2.0', tennis: 'PA-Tennis 2.0' } as const;
+export const VERSIONS = { football: 'PA-Poisson 1.2 adapter 2.1', basketball: 'PA-Margin 2.0', tennis: 'PA-Tennis 2.0' } as const;
 // Fixed before holdout evaluation. These are regularizers, not learned claims about players.
 export const PARAMETERS = {
-  footballHalfLife: 90, footballPrior: 6, rhoPenalty: 100,
+  football: DEFAULT_FOOTBALL,
   basketballHalfLife: 180, basketballPrior: 0, basketballScale: 8,
   basketballMarginCoefficient: 0.7, basketballRestCoefficient: 0.5,
   tennisHalfLife: 120, tennisK: 32, tennisPrior: 5,
@@ -48,48 +52,6 @@ function context(input: ModelInput, rows: readonly History[], id: string) {
   return { loss, healthUsed: !!validHealth, injuriesUsed: observedAthletes > 0, restDays };
 }
 
-/** Opponent- and venue-adjusted, time-weighted rates with neutral-strength priors. */
-export function fitFootball(rows: readonly History[], asOf: string) {
-  const weighted = rows.map(row => ({ row, w: decay((timestamp(asOf) - timestamp(row.completedAt)) / DAY, PARAMETERS.footballHalfLife) }));
-  const sumW = weighted.reduce((s, r) => s + r.w, 0);
-  const homeBase = (weighted.reduce((s, r) => s + r.w * r.row.homeScore, 0) + 20 * 1.45) / (sumW + 20);
-  const awayBase = (weighted.reduce((s, r) => s + r.w * r.row.awayScore, 0) + 20 * 1.15) / (sumW + 20);
-  const ids = [...new Set(rows.flatMap(r => [r.homeId, r.awayId]))].sort();
-  let attack = new Map(ids.map(id => [id, 1]));
-  let defence = new Map(ids.map(id => [id, 1]));
-  const prior = PARAMETERS.footballPrior * (homeBase + awayBase) / 2;
-  for (let iteration = 0; iteration < 24; iteration++) {
-    const totals = new Map(ids.map(id => [id, { scored: prior, conceded: prior, attackExposure: prior, defenceExposure: prior }]));
-    for (const { row: r, w } of weighted) {
-      const h = totals.get(r.homeId)!, a = totals.get(r.awayId)!;
-      h.scored += w * r.homeScore; h.conceded += w * r.awayScore;
-      a.scored += w * r.awayScore; a.conceded += w * r.homeScore;
-      h.attackExposure += w * homeBase * defence.get(r.awayId)!;
-      a.attackExposure += w * awayBase * defence.get(r.homeId)!;
-      h.defenceExposure += w * awayBase * attack.get(r.awayId)!;
-      a.defenceExposure += w * homeBase * attack.get(r.homeId)!;
-    }
-    attack = new Map(ids.map(id => [id, Math.sqrt(attack.get(id)! * clamp(totals.get(id)!.scored / totals.get(id)!.attackExposure, 0.25, 3))]));
-    defence = new Map(ids.map(id => [id, Math.sqrt(defence.get(id)! * clamp(totals.get(id)!.conceded / totals.get(id)!.defenceExposure, 0.25, 3))]));
-  }
-  let lo = -0.2, hi = 0.2;
-  const likelihood = weighted.map(({ row: r, w }) => {
-    const lambda = clamp(homeBase * attack.get(r.homeId)! * defence.get(r.awayId)!, 0.15, 6);
-    const mu = clamp(awayBase * attack.get(r.awayId)! * defence.get(r.homeId)!, 0.15, 6);
-    const bounds = dcBounds(lambda, mu); lo = Math.max(lo, bounds[0]); hi = Math.min(hi, bounds[1]);
-    return { c: dcCoefficient(r.homeScore, r.awayScore, lambda, mu), w };
-  });
-  let rho = 0;
-  for (let i = 0; i < 12; i++) {
-    let gradient = -PARAMETERS.rhoPenalty * rho, curvature = -Number(PARAMETERS.rhoPenalty);
-    for (const { c, w } of likelihood) {
-      gradient += w * c / (1 + c * rho); curvature -= w * c * c / (1 + c * rho) ** 2;
-    }
-    rho = clamp(rho - gradient / curvature, lo, hi);
-  }
-  return { homeBase, awayBase, attack, defence, rho };
-}
-
 function weightedRecord(input: ModelInput, rows: readonly History[], id: string, halfLife: number, surface?: Surface | null) {
   let weight = 0, wins = 0, margin = 0, total = 0;
   for (const r of rows) {
@@ -124,7 +86,7 @@ export function tennisRatings(rows: readonly History[], asOf: string, surface?: 
   return new Map([...ratings.keys()].map(id => [id, ratingAt(id, timestamp(asOf))]));
 }
 
-export function predict(input: ModelInput, publication: Publication, options: { restAdjustment?: boolean } = {}): PredictionDetail {
+export function predict(input: ModelInput, publication: Publication, options: { restAdjustment?: boolean; football?: FootballConfig; experimentalFootballHealth?: boolean } = {}): PredictionDetail {
   validateInput(input, publication);
   const rows = eligibleHistory(input), f = input.fixture, sport = f.sport;
   const samples = { home: count(rows, f.homeId), away: count(rows, f.awayId) };
@@ -132,39 +94,51 @@ export function predict(input: ModelInput, publication: Publication, options: { 
     summary: { id: publication.id, fixtureId: f.id, sport, winProbability: null, expectedScore: null,
       confidence: null, availability: rows.length ? 'ready' : 'insufficient_data', modelVersion: VERSIONS[sport],
       generatedAt: publication.generatedAt, dataCutoffAt: input.asOf, isStale: publication.isStale },
-    analysis: { method: { football: 'Time-weighted Dixon-Coles goal model', basketball: 'Recent-margin logistic', tennis: 'Recent-form and surface Elo logistic' }[sport],
+    analysis: { method: { football: 'Shipped Poisson comparator', basketball: 'Recent-margin logistic', tennis: 'Recent-form and surface Elo logistic' }[sport],
       sampleSize: rows.length, participantSampleSize: samples, projectedMargin: null, topScoreline: null,
       scoreMatrix: [], markets: [], factors: [], warnings: [], featuresUsed: [],
-      caveat: 'Confidence describes sample coverage and decisiveness, not calibrated accuracy. Optional health adjustments are bounded assumptions.' },
+      caveat: 'Confidence describes sample coverage and decisiveness, not calibrated accuracy. Football health adjustments are experimental, unvalidated and disabled by default.' },
   };
   const a = result.analysis, s = result.summary;
   if (!rows.length) { a.warnings.push('NO_HISTORY'); return result; }
   if (samples.home < 5 || samples.away < 5) a.warnings.push('LOW_SAMPLE');
   const h = context(input, rows, f.homeId), v = context(input, rows, f.awayId);
-  a.featuresUsed.push('scores', 'recentForm', 'timeDecay');
+  a.featuresUsed.push('scores', 'recentForm');
+  if (sport !== 'football') a.featuresUsed.push('timeDecay');
   if (sport === 'football') {
-    if (h.injuriesUsed || v.injuriesUsed) a.featuresUsed.push('injuries'); else a.warnings.push('INJURIES_NOT_USED');
-    if (h.healthUsed || v.healthUsed) a.featuresUsed.push('teamHealth'); else a.warnings.push('TEAM_HEALTH_NOT_USED');
-    if (!(h.healthUsed || h.injuriesUsed) || !(v.healthUsed || v.injuriesUsed)) a.warnings.push('PARTIAL_HEALTH_COVERAGE');
-    const fit = fitFootball(rows, input.asOf), neutral = (fit.homeBase + fit.awayBase) / 2;
-    const ha = fit.attack.get(f.homeId) ?? 1, aa = fit.attack.get(f.awayId) ?? 1;
-    const hd = fit.defence.get(f.homeId) ?? 1, ad = fit.defence.get(f.awayId) ?? 1;
-    const lambda = clamp((f.neutralVenue ? neutral : fit.homeBase) * ha * ad * (1 - h.loss) * (1 + v.loss / 2), 0.15, 6);
-    const mu = clamp((f.neutralVenue ? neutral : fit.awayBase) * aa * hd * (1 - v.loss) * (1 + h.loss / 2), 0.15, 6);
-    const dist = scoreDistribution(lambda, mu, fit.rho);
-    s.winProbability = { home: dist.home, draw: dist.draw, away: dist.away };
+    const config = options.football ?? DEFAULT_FOOTBALL;
+    const useHealth = options.experimentalFootballHealth === true && config.mode === 'strength';
+    if (useHealth) a.warnings.push('EXPERIMENTAL_HEALTH_ADJUSTMENT');
+    if (useHealth && (h.injuriesUsed || v.injuriesUsed)) a.featuresUsed.push('injuries'); else a.warnings.push('INJURIES_NOT_USED');
+    if (useHealth && (h.healthUsed || v.healthUsed)) a.featuresUsed.push('teamHealth'); else a.warnings.push('TEAM_HEALTH_NOT_USED');
+    if (useHealth && (!(h.healthUsed || h.injuriesUsed) || !(v.healthUsed || v.injuriesUsed))) a.warnings.push('PARTIAL_HEALTH_COVERAGE');
+    const forecast = footballForecast(input, rows, config, useHealth ? {home:h.loss,away:v.loss} : undefined);
+    const {lambda,mu,fit,dist,probabilities} = forecast;
+    const ha=fit?.attack.get(f.homeId)??1,aa=fit?.attack.get(f.awayId)??1;
+    const hd=fit?.defence.get(f.homeId)??1,ad=fit?.defence.get(f.awayId)??1;
+    s.winProbability={home:probabilities[0],draw:probabilities[1],away:probabilities[2]};
+    s.modelVersion=config.mode==='legacy' ? 'PA-Poisson 1.2 adapter 2.1' : `PA-Strength 2.1:h${Number(config.homeAdvantage)}:d${config.halfLifeDays??'off'}:p${config.priorMatches}:dc${config.rhoPenalty??'off'}:health${Number(useHealth)}`;
+    a.method=config.mode==='legacy'?'Shipped Poisson comparator':'Opponent-adjusted Poisson strength model';
+    if(config.halfLifeDays!==null)a.featuresUsed.push('timeDecay');
     s.expectedScore = { home: lambda, away: mu, total: lambda + mu, unit: 'goals' };
     a.scoreMatrix = dist.cells.filter(c => c.home <= 4 && c.away <= 4);
     a.topScoreline = { home: dist.top.home, away: dist.top.away };
-    a.featuresUsed.push('attackStrength', 'defenceStrength', 'opponentAdjustment', 'dixonColes', f.neutralVenue ? 'neutralVenue' : 'homeAdvantage');
+    a.featuresUsed.push('attackStrength','defenceStrength');
+    if(config.mode==='strength')a.featuresUsed.push('opponentAdjustment');
+    if(config.rhoPenalty!==null)a.featuresUsed.push('dixonColes');
+    if(config.priorMatches>0)a.featuresUsed.push('shrinkage');
+    if(config.homeAdvantage)a.featuresUsed.push(f.neutralVenue&&config.mode==='strength'?'neutralVenue':'homeAdvantage');
+    if(config.mode==='legacy'&&f.neutralVenue)a.warnings.push('LEGACY_NEUTRAL_VENUE_NOT_SUPPORTED');
+    if(config.mode==='legacy'&&options.experimentalFootballHealth)a.warnings.push('LEGACY_HEALTH_NOT_SUPPORTED');
+    if(options.football)a.warnings.push('EXPLICIT_FOOTBALL_CONFIGURATION');
     const sum = (predicate: (h: number, v: number) => boolean) => dist.cells.reduce((s, c) => s + (predicate(c.home, c.away) ? c.probability : 0), 0);
-    a.markets = [market('1x2','home',dist.home,'Home regulation win.'), market('1x2','draw',dist.draw,'Regulation draw.'), market('1x2','away',dist.away,'Away regulation win.'),
-      market('double-chance','home-draw',dist.home + dist.draw,'Home win or draw.'), market('double-chance','away-draw',dist.away + dist.draw,'Away win or draw.'),
+    a.markets = [market('1x2','home',probabilities[0],'Home regulation win.'), market('1x2','draw',probabilities[1],'Regulation draw.'), market('1x2','away',probabilities[2],'Away regulation win.'),
+      market('double-chance','home-draw',probabilities[0] + probabilities[1],'Home win or draw.'), market('double-chance','away-draw',probabilities[2] + probabilities[1],'Away win or draw.'),
       market('total','over',sum((x,y) => x+y >= 2),'At least two regulation goals.',1.5), market('total','over',sum((x,y) => x+y >= 3),'At least three regulation goals.',2.5),
       market('total','under',sum((x,y) => x+y <= 3),'At most three regulation goals.',3.5), market('btts','yes',sum((x,y) => x>0 && y>0),'Both teams score in regulation.')];
-    a.factors = [factor('Home attack',ha,'Opponent-adjusted scoring strength; neutral prior.'), factor('Away attack',aa,'Opponent-adjusted scoring strength; neutral prior.'),
+    a.factors = forecast.old ? forecast.old.model.factors.map(f=>({...f,strength:f.strength/100})) : [factor('Home attack',ha,'Opponent-adjusted scoring strength; neutral prior.'), factor('Away attack',aa,'Opponent-adjusted scoring strength; neutral prior.'),
       factor('Home defensive concession rate',hd,'Below one means fewer goals conceded.'), factor('Away defensive concession rate',ad,'Below one means fewer goals conceded.'),
-      { label:'Low-score correlation',value:dist.rho.toFixed(5),strength:clamp(Math.abs(dist.rho),0,1),tone:'neutral',detail:'Regularized likelihood estimate from eligible history only.' }];
+      { label:'Low-score correlation',value:dist.rho.toFixed(5),strength:clamp(Math.abs(dist.rho),0,1),tone:'neutral',detail:config.rhoPenalty===null?'Disabled by configuration.':'Regularized likelihood estimate from eligible history only.' }];
   } else {
     a.warnings.push('INJURIES_NOT_USED', 'AVAILABILITY_NOT_USED');
     const hasRest = options.restAdjustment !== false && h.restDays !== null && v.restDays !== null;
