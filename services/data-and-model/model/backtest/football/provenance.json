@@ -85,7 +85,17 @@
       "matches": 380
     }
   ],
-  "datasetSha256": "93e5544401204891374b553b50a5bd9ecb63256010d96a14d855cd9f17fc1acd",
+  "datasetSha256": "80e43cbfdc88753771cb0706597afa2e1670b7856a0d1595a6c79a6fda884416",
   "matches": 5320,
-  "note": "Retrospective date-only results; no historical observation snapshots. Scores only, no odds."
+  "odds": {
+    "bookmaker": "Pinnacle",
+    "columns": [
+      "PSCH",
+      "PSCD",
+      "PSCA"
+    ],
+    "timing": "closing",
+    "note": "Decimal 1X2 odds from football-data.co.uk. Rows without a complete valid triplet are excluded from the odds benchmark."
+  },
+  "note": "Retrospective date-only results; no historical observation snapshots."
 }

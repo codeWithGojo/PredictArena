@@ -95,6 +95,39 @@ Candidate means the fixed earlier-selected configuration, not the restored runti
 | Later | 1520 | 0.978695 | 0.987181 | 0.979645 | 0.582123 | 0.587678 | 0.582429 |
 | Fresh later subset | 1140 | 0.986424 | 0.995456 | 0.987637 | 0.588278 | 0.593980 | 0.588534 |
 
+### Closing-odds benchmark
+
+This is a retrospective accuracy benchmark, not a betting or profitability test. It compares the unchanged default model with Pinnacle closing 1X2 decimal odds (`PSCH`, `PSCD`, `PSCA`) from the same football-data.co.uk CSVs and the same 4,560 scored walk-forward fixtures. For every fixture, implied probabilities are calculated as `1 / odds` and proportionally normalized to sum to one, removing that market's overround. The blend is a fixed 50:50 arithmetic average of the default model and de-vigged bookmaker probabilities. It was not fit or selected on these outcomes. Lower is better.
+
+| Scope | Forecast | N | Log loss | Brier |
+| --- | --- | --- | --- | --- |
+| All scored seasons | Default model | 4560 | 0.999238 | 0.596371 |
+| All scored seasons | De-vigged bookmaker | 4560 | 0.962666 | 0.571069 |
+| All scored seasons | Fixed 50:50 blend | 4560 | 0.973607 | 0.578595 |
+| Later | Default model | 1520 | 0.978695 | 0.582123 |
+| Later | De-vigged bookmaker | 1520 | 0.940787 | 0.556506 |
+| Later | Fixed 50:50 blend | 1520 | 0.953236 | 0.564512 |
+| Fresh later subset | Default model | 1140 | 0.986424 | 0.588278 |
+| Fresh later subset | De-vigged bookmaker | 1140 | 0.954533 | 0.566726 |
+| Fresh later subset | Fixed 50:50 blend | 1140 | 0.964026 | 0.572699 |
+
+The de-vigged bookmaker wins every reported scope on both metrics. The fixed blend improves on the default model but remains behind the bookmaker, so it does not change the default model. All 4,560 walk-forward fixtures had a complete Pinnacle closing-odds triplet; none were excluded.
+
+| League | Season | N | Default LL | Bookmaker LL | Blend LL | Default Brier | Bookmaker Brier | Blend Brier |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| La Liga | 2019/20 | 380 | 1.013294 | 0.976529 | 0.986832 | 0.609565 | 0.584194 | 0.590716 |
+| PL | 2019/20 | 380 | 0.998082 | 0.972153 | 0.975533 | 0.594897 | 0.574427 | 0.578170 |
+| La Liga | 2020/21 | 380 | 1.011419 | 0.979546 | 0.987847 | 0.604753 | 0.580485 | 0.587475 |
+| PL | 2020/21 | 380 | 1.031843 | 0.997052 | 1.007175 | 0.615731 | 0.592143 | 0.598964 |
+| La Liga | 2021/22 | 380 | 1.028229 | 0.988742 | 1.001137 | 0.616624 | 0.589006 | 0.598032 |
+| PL | 2021/22 | 380 | 0.977585 | 0.936732 | 0.949810 | 0.581326 | 0.554334 | 0.562810 |
+| La Liga | 2022/23 | 380 | 1.020269 | 0.975939 | 0.991915 | 0.610119 | 0.581034 | 0.591738 |
+| PL | 2022/23 | 380 | 0.995357 | 0.962152 | 0.970089 | 0.594947 | 0.571183 | 0.577190 |
+| La Liga | 2023/24 | 380 | 0.989253 | 0.950861 | 0.963981 | 0.591339 | 0.565841 | 0.574011 |
+| PL | 2023/24 | 380 | 0.955507 | 0.899550 | 0.920867 | 0.563659 | 0.525848 | 0.539951 |
+| La Liga | 2024/25 | 380 | 0.979122 | 0.946325 | 0.957444 | 0.581437 | 0.559258 | 0.566484 |
+| PL | 2024/25 | 380 | 0.990897 | 0.966412 | 0.970652 | 0.592057 | 0.575079 | 0.577602 |
+
 Paired candidate-minus-old 95% bootstrap intervals (2,000 seeded league/date-block resamples): later log loss [-0.002056, 0.003848], Brier [-0.001785, 0.002272]; fresh-subset log loss [-0.00234, 0.004589]. All span zero. These are descriptive intervals: repeated teams and overlapping windows leave dependence beyond date blocks. No statistical improvement or equivalence claim is justified.
 
 ### Component ablation
@@ -181,6 +214,7 @@ The legacy adapter preserves shipped outcome probabilities and rounded goal esti
 ```sh
 npm run backtest:football:select
 npm run backtest:football
+npm run backtest:football:odds
 python backtest/football/render_results.py
 npm test
 # Reproduce the original football v2 benchmark:

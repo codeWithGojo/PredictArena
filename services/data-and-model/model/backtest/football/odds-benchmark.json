@@ -1,0 +1,308 @@
+{
+  "source": {
+    "provider": "football-data.co.uk",
+    "bookmaker": "Pinnacle",
+    "columns": [
+      "PSCH",
+      "PSCD",
+      "PSCA"
+    ],
+    "timing": "closing"
+  },
+  "protocol": {
+    "seasons": [
+      "2019",
+      "2020",
+      "2021",
+      "2022",
+      "2023",
+      "2024"
+    ],
+    "blend": "Equal 50:50 arithmetic blend of default model and de-vigged bookmaker probabilities. Fixed, not tuned.",
+    "metrics": "Natural-log loss and summed three-class Brier. Lower is better."
+  },
+  "datasetSha256": "80e43cbfdc88753771cb0706597afa2e1670b7856a0d1595a6c79a6fda884416",
+  "totalWalkForwardFixtures": 4560,
+  "excluded": [],
+  "results": {
+    "defaultModel": {
+      "pooled": {
+        "n": 4560,
+        "logLoss": 0.9992382076651791,
+        "brier": 0.5963712719298234
+      },
+      "bySeason": [
+        {
+          "league": "la-liga",
+          "season": "2019",
+          "n": 380,
+          "logLoss": 1.0132935010754862,
+          "brier": 0.6095647368421055
+        },
+        {
+          "league": "la-liga",
+          "season": "2020",
+          "n": 380,
+          "logLoss": 1.011419486887909,
+          "brier": 0.6047526315789472
+        },
+        {
+          "league": "la-liga",
+          "season": "2021",
+          "n": 380,
+          "logLoss": 1.0282293930980804,
+          "brier": 0.6166236842105264
+        },
+        {
+          "league": "la-liga",
+          "season": "2022",
+          "n": 380,
+          "logLoss": 1.0202692868741652,
+          "brier": 0.6101194736842105
+        },
+        {
+          "league": "la-liga",
+          "season": "2023",
+          "n": 380,
+          "logLoss": 0.9892527769398747,
+          "brier": 0.5913394736842104
+        },
+        {
+          "league": "la-liga",
+          "season": "2024",
+          "n": 380,
+          "logLoss": 0.9791223104332862,
+          "brier": 0.5814373684210525
+        },
+        {
+          "league": "premier-league",
+          "season": "2019",
+          "n": 380,
+          "logLoss": 0.9980822557657898,
+          "brier": 0.5948968421052627
+        },
+        {
+          "league": "premier-league",
+          "season": "2020",
+          "n": 380,
+          "logLoss": 1.0318429783499052,
+          "brier": 0.6157310526315788
+        },
+        {
+          "league": "premier-league",
+          "season": "2021",
+          "n": 380,
+          "logLoss": 0.9775845640394702,
+          "brier": 0.5813257894736845
+        },
+        {
+          "league": "premier-league",
+          "season": "2022",
+          "n": 380,
+          "logLoss": 0.9953574592648963,
+          "brier": 0.5949473684210523
+        },
+        {
+          "league": "premier-league",
+          "season": "2023",
+          "n": 380,
+          "logLoss": 0.955507313271097,
+          "brier": 0.5636594736842105
+        },
+        {
+          "league": "premier-league",
+          "season": "2024",
+          "n": 380,
+          "logLoss": 0.9908971659821196,
+          "brier": 0.5920573684210525
+        }
+      ]
+    },
+    "bookmaker": {
+      "pooled": {
+        "n": 4560,
+        "logLoss": 0.9626660121871019,
+        "brier": 0.5710693484688639
+      },
+      "bySeason": [
+        {
+          "league": "la-liga",
+          "season": "2019",
+          "n": 380,
+          "logLoss": 0.9765286814606393,
+          "brier": 0.5841943583192196
+        },
+        {
+          "league": "la-liga",
+          "season": "2020",
+          "n": 380,
+          "logLoss": 0.9795457384148696,
+          "brier": 0.5804850136283676
+        },
+        {
+          "league": "la-liga",
+          "season": "2021",
+          "n": 380,
+          "logLoss": 0.9887421272500929,
+          "brier": 0.589006147842834
+        },
+        {
+          "league": "la-liga",
+          "season": "2022",
+          "n": 380,
+          "logLoss": 0.9759387658446077,
+          "brier": 0.5810336137281149
+        },
+        {
+          "league": "la-liga",
+          "season": "2023",
+          "n": 380,
+          "logLoss": 0.950861330603853,
+          "brier": 0.5658408028602424
+        },
+        {
+          "league": "la-liga",
+          "season": "2024",
+          "n": 380,
+          "logLoss": 0.946324890151856,
+          "brier": 0.5592576855618524
+        },
+        {
+          "league": "premier-league",
+          "season": "2019",
+          "n": 380,
+          "logLoss": 0.9721531577923496,
+          "brier": 0.5744274589347311
+        },
+        {
+          "league": "premier-league",
+          "season": "2020",
+          "n": 380,
+          "logLoss": 0.9970524404582166,
+          "brier": 0.5921429620134052
+        },
+        {
+          "league": "premier-league",
+          "season": "2021",
+          "n": 380,
+          "logLoss": 0.9367318735070138,
+          "brier": 0.5543338683202055
+        },
+        {
+          "league": "premier-league",
+          "season": "2022",
+          "n": 380,
+          "logLoss": 0.9621515116115861,
+          "brier": 0.5711831301752475
+        },
+        {
+          "league": "premier-league",
+          "season": "2023",
+          "n": 380,
+          "logLoss": 0.8995495263878561,
+          "brier": 0.5258478380749723
+        },
+        {
+          "league": "premier-league",
+          "season": "2024",
+          "n": 380,
+          "logLoss": 0.966412102762313,
+          "brier": 0.5750793021671526
+        }
+      ]
+    },
+    "blend50": {
+      "pooled": {
+        "n": 4560,
+        "logLoss": 0.9736068793294724,
+        "brier": 0.5785952502693815
+      },
+      "bySeason": [
+        {
+          "league": "la-liga",
+          "season": "2019",
+          "n": 380,
+          "logLoss": 0.9868318508578963,
+          "brier": 0.5907164477140542
+        },
+        {
+          "league": "la-liga",
+          "season": "2020",
+          "n": 380,
+          "logLoss": 0.987846891957547,
+          "brier": 0.5874752308502706
+        },
+        {
+          "league": "la-liga",
+          "season": "2021",
+          "n": 380,
+          "logLoss": 1.0011374913292006,
+          "brier": 0.5980321456420173
+        },
+        {
+          "league": "la-liga",
+          "season": "2022",
+          "n": 380,
+          "logLoss": 0.9919154576562124,
+          "brier": 0.5917377528727442
+        },
+        {
+          "league": "la-liga",
+          "season": "2023",
+          "n": 380,
+          "logLoss": 0.963981066182598,
+          "brier": 0.5740109879852562
+        },
+        {
+          "league": "la-liga",
+          "season": "2024",
+          "n": 380,
+          "logLoss": 0.9574442613498815,
+          "brier": 0.5664835295528567
+        },
+        {
+          "league": "premier-league",
+          "season": "2019",
+          "n": 380,
+          "logLoss": 0.9755328634593777,
+          "brier": 0.5781696132986922
+        },
+        {
+          "league": "premier-league",
+          "season": "2020",
+          "n": 380,
+          "logLoss": 1.0071749530582699,
+          "brier": 0.5989636938168897
+        },
+        {
+          "league": "premier-league",
+          "season": "2021",
+          "n": 380,
+          "logLoss": 0.9498098677260114,
+          "brier": 0.5628104860400057
+        },
+        {
+          "league": "premier-league",
+          "season": "2022",
+          "n": 380,
+          "logLoss": 0.9700891968006784,
+          "brier": 0.5771897379271146
+        },
+        {
+          "league": "premier-league",
+          "season": "2023",
+          "n": 380,
+          "logLoss": 0.9208668116606231,
+          "brier": 0.5399512642175597
+        },
+        {
+          "league": "premier-league",
+          "season": "2024",
+          "n": 380,
+          "logLoss": 0.9706518399154014,
+          "brier": 0.577602113315114
+        }
+      ]
+    }
+  }
+}

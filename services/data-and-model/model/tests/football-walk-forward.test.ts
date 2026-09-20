@@ -17,11 +17,12 @@ const source:Row[]=json('results-data.json');
 const records=replay(source.filter(r=>r.season<='2019'),['2019']).records;
 const input=records[100].input,pub={id:'test',generatedAt:input.asOf,isStale:false};
 
-test('seven complete seasons per league, pinned result-only data and unique fixture IDs',()=>{
+test('seven complete seasons per league, pinned data and unique fixture IDs',()=>{
   assert.equal(hash(read('results-data.json')),json('provenance.json').datasetSha256);
   assert.equal(source.length,5320);assert.equal(new Set(source.map(r=>r.id)).size,source.length);
   for(const league of ['premier-league','la-liga'])for(let year=2018;year<=2024;year++)assert.equal(source.filter(r=>r.league===league&&r.season===String(year)).length,380);
-  assert.ok(source.every(r=>Object.keys(r).sort().join(',')==='away,awayScore,date,home,homeScore,id,league,season'));
+  assert.ok(source.every(r=>Object.keys(r).sort().join(',')==='away,awayScore,closingOdds,date,home,homeScore,id,league,season'));
+  assert.ok(source.every(r=>r.closingOdds===null||(Array.isArray(r.closingOdds)&&r.closingOdds.length===3&&r.closingOdds.every(odds=>odds>1))));
 });
 test('walk-forward excludes target, same-day, future and other-league results and respects bounds',()=>{
   assert.equal(records.length,760);

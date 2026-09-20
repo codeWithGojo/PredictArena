@@ -10,6 +10,7 @@ from urllib.request import urlopen
 R=Path(__file__).resolve().parent
 cache=Path(sys.argv[1]);cache.mkdir(parents=True,exist_ok=True)
 rows=[];sources=[]
+ODDS_COLUMNS=('PSCH','PSCD','PSCA')
 for year in range(2018,2025):
     for code,league in [('E0','premier-league'),('SP1','la-liga')]:
         name=f'{code}-{year}.csv';path=cache/name
@@ -20,8 +21,16 @@ for year in range(2018,2025):
         for r in csv.DictReader(io.StringIO(raw.decode('utf-8-sig'))):
             if not r.get('Date') or not r.get('FTHG') or not r.get('FTAG'):continue
             date=datetime.strptime(r['Date'],'%d/%m/%Y' if len(r['Date'])==10 else '%d/%m/%y').date().isoformat()
+            odds=[]
+            try:
+                odds=[float(r[column]) for column in ODDS_COLUMNS]
+            except (KeyError, TypeError, ValueError):
+                pass
+            if not all(value > 1 and value < float('inf') for value in odds):
+                odds=[]
             batch.append(dict(id=f'{code}:{date}:{r["HomeTeam"]}:{r["AwayTeam"]}',league=league,season=str(year),date=date,
-                              home=r['HomeTeam'],away=r['AwayTeam'],homeScore=int(r['FTHG']),awayScore=int(r['FTAG'])))
+                              home=r['HomeTeam'],away=r['AwayTeam'],homeScore=int(r['FTHG']),awayScore=int(r['FTAG']),
+                              closingOdds=odds or None))
         assert len(batch)==380,(name,len(batch))
         rows+=batch;sources.append(dict(file=name,url=url,sha256=hashlib.sha256(raw).hexdigest(),matches=len(batch)))
 rows.sort(key=lambda r:(r['date'],r['id']))
@@ -29,5 +38,7 @@ assert len({r['id'] for r in rows})==len(rows)
 data=(json.dumps(rows,separators=(',',':'))+'\n').encode()
 (R/'results-data.json').write_bytes(data)
 (R/'provenance.json').write_text(json.dumps(dict(sources=sources,datasetSha256=hashlib.sha256(data).hexdigest(),matches=len(rows),
-    note='Retrospective date-only results; no historical observation snapshots. Scores only, no odds.'),indent=2)+'\n')
+    odds=dict(bookmaker='Pinnacle',columns=list(ODDS_COLUMNS),timing='closing',
+              note='Decimal 1X2 odds from football-data.co.uk. Rows without a complete valid triplet are excluded from the odds benchmark.'),
+    note='Retrospective date-only results; no historical observation snapshots.'),indent=2)+'\n')
 print(f'Prepared {len(rows)} results.')

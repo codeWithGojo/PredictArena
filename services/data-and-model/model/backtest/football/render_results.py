@@ -2,7 +2,7 @@
 import json
 from pathlib import Path
 R=Path(__file__).resolve().parent
-s=json.loads((R/'selection.json').read_text());t=json.loads((R/'test-results.json').read_text())
+s=json.loads((R/'selection.json').read_text());t=json.loads((R/'test-results.json').read_text());o=json.loads((R/'odds-benchmark.json').read_text())
 def num(x):return f'{x:.6f}'
 def table(headers,rows):return '\n'.join(['| '+' | '.join(headers)+' |','| '+' | '.join(['---']*len(headers))+' |']+['| '+' | '.join(map(str,row))+' |' for row in rows])
 def selected(name):return next(c for c in s['candidates'] if c['name']==name)['results']
@@ -51,6 +51,34 @@ a,c=t['freshOnly']['old']['pooled'],t['freshOnly']['new']['pooled']
 freshv2=[v for v in tested('previous_v2')['bySeason'] if not(v['league']=='premier-league' and v['season']=='2023')]
 rows.append(['Fresh later subset',a['n'],num(a['logLoss']),num(sum(r['logLoss'] for r in freshv2)/3),num(c['logLoss']),num(a['brier']),num(sum(r['brier'] for r in freshv2)/3),num(c['brier'])])
 text+=table(['Pooled split','N','Old LL','Previous v2 LL','Candidate LL','Old Brier','Previous v2 Brier','Candidate Brier'],rows)+'\n\n'
+text+='''### Closing-odds benchmark
+
+This is a retrospective accuracy benchmark, not a betting or profitability test. It compares the unchanged default model with Pinnacle closing 1X2 decimal odds (`PSCH`, `PSCD`, `PSCA`) from the same football-data.co.uk CSVs and the same 4,560 scored walk-forward fixtures. For every fixture, implied probabilities are calculated as `1 / odds` and proportionally normalized to sum to one, removing that market's overround. The blend is a fixed 50:50 arithmetic average of the default model and de-vigged bookmaker probabilities. It was not fit or selected on these outcomes. Lower is better.
+
+'''
+def oddsreport(name, values):
+    return [name,values['n'],num(values['logLoss']),num(values['brier'])]
+allodds={name:value['pooled'] for name,value in o['results'].items()}
+laterodds={}
+freshodds={}
+for name,value in o['results'].items():
+    later=[v for v in value['bySeason'] if int(v['season'])>=2023]
+    fresh=[v for v in later if not(v['league']=='premier-league' and v['season']=='2023')]
+    avg=lambda rs,key:sum(v[key]*v['n'] for v in rs)/sum(v['n'] for v in rs)
+    laterodds[name]={'n':sum(v['n'] for v in later),'logLoss':avg(later,'logLoss'),'brier':avg(later,'brier')}
+    freshodds[name]={'n':sum(v['n'] for v in fresh),'logLoss':avg(fresh,'logLoss'),'brier':avg(fresh,'brier')}
+rows=[]
+for label,results in [('All scored seasons',allodds),('Later',laterodds),('Fresh later subset',freshodds)]:
+    for name,title in [('defaultModel','Default model'),('bookmaker','De-vigged bookmaker'),('blend50','Fixed 50:50 blend')]:
+        r=results[name];rows.append([label,title,r['n'],num(r['logLoss']),num(r['brier'])])
+text+=table(['Scope','Forecast','N','Log loss','Brier'],rows)+'\n\n'
+text+='The de-vigged bookmaker wins every reported scope on both metrics. The fixed blend improves on the default model but remains behind the bookmaker, so it does not change the default model. All 4,560 walk-forward fixtures had a complete Pinnacle closing-odds triplet; none were excluded.\n\n'
+rows=[]
+byseason={name:{(v['league'],v['season']):v for v in result['bySeason']} for name,result in o['results'].items()}
+for key in sorted(byseason['defaultModel'],key=lambda k:(k[1],k[0])):
+    default,book,blend=byseason['defaultModel'][key],byseason['bookmaker'][key],byseason['blend50'][key]
+    rows.append(['PL' if key[0]=='premier-league' else 'La Liga',key[1]+'/'+str(int(key[1])+1)[2:],default['n'],num(default['logLoss']),num(book['logLoss']),num(blend['logLoss']),num(default['brier']),num(book['brier']),num(blend['brier'])])
+text+=table(['League','Season','N','Default LL','Bookmaker LL','Blend LL','Default Brier','Bookmaker Brier','Blend Brier'],rows)+'\n\n'
 text+='Paired candidate-minus-old 95% bootstrap intervals (2,000 seeded league/date-block resamples): later log loss '+str([round(x,6) for x in t['paired95Interval']['logLoss']])+', Brier '+str([round(x,6) for x in t['paired95Interval']['brier']])+'; fresh-subset log loss '+str([round(x,6) for x in t['freshOnly']['paired95Interval']['logLoss']])+'. All span zero. These are descriptive intervals: repeated teams and overlapping windows leave dependence beyond date blocks. No statistical improvement or equivalence claim is justified.\n\n'
 text+='''### Component ablation
 
@@ -113,6 +141,7 @@ The legacy adapter preserves shipped outcome probabilities and rounded goal esti
 ```sh
 npm run backtest:football:select
 npm run backtest:football
+npm run backtest:football:odds
 python backtest/football/render_results.py
 npm test
 # Reproduce the original football v2 benchmark:
