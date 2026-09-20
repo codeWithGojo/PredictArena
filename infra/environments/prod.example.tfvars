@@ -1,0 +1,9 @@
+stage                            = "prod"
+aws_region                       = "eu-west-1"
+aws_account_id                   = "123456789012"
+allowed_origins                  = ["https://example.com"]
+callback_urls                    = ["https://example.com/auth/callback"]
+logout_urls                      = ["https://example.com/"]
+cognito_domain_prefix            = "predictarena-prod-replace-me"
+runtime_permissions_boundary_arn = "arn:aws:iam::123456789012:policy/predictarena-prod-runtime-boundary"
+stub_responses                   = false
