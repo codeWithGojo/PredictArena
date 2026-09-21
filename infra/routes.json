@@ -1,0 +1,14 @@
+[
+  {"id":"competitions-list","method":"GET","path":"/competitions","auth":"public"},
+  {"id":"fixtures-list","method":"GET","path":"/fixtures","auth":"public"},
+  {"id":"fixture-get","method":"GET","path":"/fixtures/{fixtureId}","auth":"public"},
+  {"id":"football-list","method":"GET","path":"/predictions/football","auth":"logged-in"},
+  {"id":"basketball-list","method":"GET","path":"/predictions/basketball","auth":"logged-in"},
+  {"id":"tennis-list","method":"GET","path":"/predictions/tennis","auth":"logged-in"},
+  {"id":"football-detail","method":"GET","path":"/predictions/football/{fixtureId}","auth":"premium"},
+  {"id":"basketball-detail","method":"GET","path":"/predictions/basketball/{fixtureId}","auth":"premium"},
+  {"id":"tennis-detail","method":"GET","path":"/predictions/tennis/{fixtureId}","auth":"premium"},
+  {"id":"standings-list","method":"GET","path":"/standings/{sport}/{competitionId}","auth":"public"},
+  {"id":"profile-get","method":"GET","path":"/me","auth":"logged-in"},
+  {"id":"profile-patch","method":"PATCH","path":"/me","auth":"logged-in"}
+]

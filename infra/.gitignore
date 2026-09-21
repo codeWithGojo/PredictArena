@@ -1,0 +1,15 @@
+.terraform/
+*.tfstate
+*.tfstate.*
+*.tfplan
+*.tfvars
+*.tfbackend
+!*.example.tfvars
+!*.example.tfbackend
+node_modules/
+dist/
+build/
+.env
+crash.log
+override.tf
+*_override.tf
