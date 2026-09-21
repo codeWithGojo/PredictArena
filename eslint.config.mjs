@@ -12,6 +12,9 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Backend packages are validated by their own toolchains.
+    "infra/**",
+    "services/**",
   ]),
 ]);
 

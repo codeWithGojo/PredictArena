@@ -316,7 +316,7 @@ function ModelLab() {
         <article><span>04 · HONEST OUTPUT</span><h3>Confidence is separate</h3><p>A strong probability and a trustworthy sample are different things. Confidence stays capped and the drawer exposes every caveat.</p></article>
       </div>
       <div className="market-strip"><strong>OTHER OPTIONS CALCULATED</strong><span>Double chance</span><span>Over 1.5</span><span>Over 2.5</span><span>Under 3.5</span><span>Both teams score</span><span>Most likely score</span></div>
-      <p className="model-method-note"><Icon name="info" size={15}/> Football uses independent Poisson goals. Basketball uses a scoring-margin logistic model, and tennis uses a smoothed form logistic model, because forcing every sport into Poisson would be misleading.</p>
+      <p className="model-method-note"><Icon name="info" size={15}/> Football is a Poisson-based baseline backtested across 12 league seasons. In our benchmark, bookmaker closing odds were more accurate. Basketball and tennis show small measured gains on one dataset each. Predictions are probabilities, not guarantees. Gamble responsibly.</p>
     </section>
   );
 }
