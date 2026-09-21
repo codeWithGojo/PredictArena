@@ -1,0 +1,11 @@
+# Historical benchmark attribution
+
+These files are offline benchmark material. The prediction runtime does not import them.
+
+- `football.json`: Premier League results, 2022/23 and 2023/24, from Football-Data.co.uk. Source CSV URLs and SHA-256 hashes are in `provenance.json`. Only result dates, teams and final scores are retained; bookmaker prices and other columns are excluded. Source: https://www.football-data.co.uk/englandm.php
+- `basketball.json`: 2013/14 and 2014/15 NBA results from FiveThirtyEight's `nbaallelo.csv`, whose game information is credited to Basketball-Reference.com. Only one home row per game is retained. Published Elo ratings and forecasts are excluded from model inputs. Source: https://github.com/fivethirtyeight/data/tree/master/nba-elo . FiveThirtyEight's data license is CC BY 4.0: https://github.com/fivethirtyeight/data/blob/master/LICENSE .
+- `tennis.json`: Adapted from Jeff Sackmann / Tennis Abstract's ATP results, 2022 and 2023, as preserved in the Kadantte mirror. Original project: https://github.com/JeffSackmann/tennis_atp . Mirror and license notice: https://github.com/Kadantte/tennis_atp/blob/master/README.md . Licensed CC BY-NC-SA 4.0, https://creativecommons.org/licenses/by-nc-sa/4.0/ . This adapted tennis benchmark retains that license. Changes: retain selected tour-level singles, exclude incomplete results, convert scores to sets, order participants by numeric ID, omit player biographies, rankings and point statistics. Research benchmark only; this dataset is not a licensed production commercial feed.
+
+The archive downloads and normalized files are hash-pinned in `provenance.json`. Date precision and retrospective replay assumptions are documented in the model README. The model code's licensing is separate from these third-party data notices.
+
+- `../football/results-data.json`: Premier League and La Liga, 2018/19 through 2024/25, from Football-Data.co.uk. Sources: https://www.football-data.co.uk/englandm.php and https://www.football-data.co.uk/spainm.php . The 14 source CSV URLs and hashes are in `../football/provenance.json`. Only dates, teams, scores, league and season are retained. Offline research benchmark; no open redistribution license or commercial production-feed permission is asserted.

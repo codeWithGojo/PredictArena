@@ -1,0 +1,18 @@
+{
+  "version": 2,
+  "warmupSeasons": ["2018"],
+  "tuningSeasons": ["2019", "2020"],
+  "selectionSeasons": ["2021", "2022"],
+  "testSeasons": ["2023", "2024"],
+  "leagues": ["premier-league", "la-liga"],
+  "halfLifeDays": [null, 90, 180],
+  "priorMatches": [0, 2, 6],
+  "rhoPenalty": [null, 100, 400],
+  "selectionRule": "Rank 27 fixed configurations on 2019/20 and 2020/21 log loss. Select among legacy, previous v2, the complete grid and fixed ablations on pooled 2021/22 and 2022/23 log loss. These four seasons are development/validation data. Freeze the winner before reading later test metrics. Ties within 1e-12 favour the first candidate: legacy, v2, grid in declared order, ablations.",
+  "ablationRule": "Fixed chain: opponent strengths alone, add home advantage, add 90-day decay, add DC penalty 100, add six-match shrinkage. Also remove each component separately from v2.",
+  "historyRule": "Latest 200 eligible same-league results within 365 days. At least 50 competition results for warm-up. Refit before each date using only eligible past outcomes. No same-day results; no test-outcome hyperparameter tuning.",
+  "knownResults": "Premier League 2023/24 was previously inspected; Premier League 2022/23 was previous development data. La Liga 2023/24 and both 2024/25 leagues are the fresh subset.",
+  "protocolRevision": "Version 1 compared only the tuning winner, legacy and v2 on selection seasons. Version 2 included the complete already-declared grid and ablations after inspecting earlier-season validation diagnostics, before reading later-season metrics. A first test file had been computed automatically but not inspected. This is validation-stage protocol development, not preregistration. After final metrics were read the temporary checkout was lost; this restored implementation reruns the same grid and split, without changing candidates or settings.",
+  "releaseRule": "Keep legacy unless the one frozen earlier-selected candidate beats it on pooled later log loss. This release fallback is not another tuning round or a fresh accuracy estimate. Never select another configuration using test ablations.",
+  "metrics": "Natural-log loss primary, summed multiclass Brier secondary. Fixed 0.10 draw calibration bins. No test-set calibration fitting."
+}

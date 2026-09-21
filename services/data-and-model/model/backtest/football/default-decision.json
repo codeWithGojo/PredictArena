@@ -1,0 +1,15 @@
+{
+  "rule": "Keep legacy unless the one frozen earlier-selected candidate beats it on pooled later log loss. This release fallback is not another tuning round or a fresh accuracy estimate. Never select another configuration using test ablations.",
+  "selectionSha256": "7b4a8208b8bd9661a7c35385d97ce3b6b56e5ec398f0f3473492ad022fc07487",
+  "testSha256": "21815364452e5f00ab7a32c8d6500c6bff9d19124e3799fc1c2c95b5f82cb180",
+  "oldLogLoss": 0.9786948916565946,
+  "candidateLogLoss": 0.9796452346001695,
+  "defaultConfig": {
+    "mode": "legacy",
+    "homeAdvantage": true,
+    "halfLifeDays": null,
+    "priorMatches": 4,
+    "rhoPenalty": null
+  },
+  "reason": "Frozen candidate loses; retain legacy without further tuning."
+}
