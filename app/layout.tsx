@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import { AuthProvider } from "@/components/auth/auth-provider";
 
 const fallbackUrl = "https://predictarena.imegufavour30.chatgpt.site";
 const productionHost = process.env.VERCEL_PROJECT_PRODUCTION_URL;
@@ -21,7 +22,7 @@ export const metadata: Metadata = {
         url: "/og.png",
         width: 1200,
         height: 630,
-        alt: "PredictArena — Know the game. Read the probability.",
+        alt: "PredictArena: Know the game. Read the probability.",
       },
     ],
   },
@@ -44,7 +45,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className="antialiased">{children}</body>
+      <body className="antialiased"><AuthProvider>{children}</AuthProvider></body>
     </html>
   );
 }

@@ -7,6 +7,8 @@ import {
   QUESTION_POOL_SIZES,
   type QuizSport,
 } from "../lib/question-engine";
+import { AuthControls } from "@/components/auth/auth-controls";
+import { PremiumGate } from "@/components/auth/premium-gate";
 
 type ViewId = "predictions" | "knowledge";
 type ModelTab = "why" | "matrix" | "markets";
@@ -254,7 +256,7 @@ function Topbar({ view, setView, setSidebarOpen, onSearch }: {
       <div className="topbar-actions">
         <button className="search-button" onClick={onSearch}><Icon name="search" size={17}/><span>Search matches</span><kbd>⌘ K</kbd></button>
         <span className="model-status"><i/> Model online</span>
-        <button className="avatar" aria-label="Profile">FI</button>
+        <AuthControls/>
       </div>
     </header>
   );
@@ -290,7 +292,7 @@ function FootballLeagueTabs({ activeLeague, leagues, onSelect }: { activeLeague:
 function FeedBanner({ feed, loading, onRefresh }: { feed: FeedPayload | null; loading: boolean; onRefresh: () => void }) {
   const updated = feed?.generatedAt
     ? new Intl.DateTimeFormat("en-NG", { hour: "2-digit", minute: "2-digit", timeZone: "Africa/Lagos" }).format(new Date(feed.generatedAt))
-    : "—";
+    : "Unavailable";
   return (
     <div className={`feed-banner ${feed?.status === "fallback" ? "degraded" : ""}`}>
       <div className="feed-status"><span className="feed-icon"><Icon name="database" size={18}/></span><div><strong>{feed?.status === "live" ? "Real fixtures are connected" : loading ? "Connecting to the sports feed" : "Community feed only"}</strong><p>{feed?.status === "live" ? `${feed.liveCount} API-backed fixtures · ${feed.communityCount} labelled community fixtures` : "The provider returned no fixtures; no synthetic big-league matches are being shown."}</p></div></div>
@@ -353,8 +355,8 @@ function PredictionsView({ activeSport, setActiveSport, activeLeague, setActiveL
   return (
     <>
       <section className="page-intro">
-        <div><p className="eyebrow"><span/> LIVE MODEL BOARD</p><h1>Real matches. <em>Explainable probabilities.</em></h1><p>Upcoming fixtures come from a real sports API. PredictArena then runs its own sport-appropriate model—never a copied bookmaker price.</p></div>
-        <button className="intro-summary" disabled={!strongest} onClick={() => strongest && onOpenMatch(strongest)}><span>Strongest current read</span><strong>{strongest ? strongest.home.short : "—"} <b>{strongestPrediction?.value ?? "—"}</b></strong><small>{strongest ? `${strongest.home.name} vs ${strongest.away.name}` : "Waiting for the live feed"}</small></button>
+        <div><p className="eyebrow"><span/> LIVE MODEL BOARD</p><h1>Real matches. <em>Explainable probabilities.</em></h1><p>Upcoming fixtures come from a real sports API. PredictArena then runs its own sport-appropriate model, never a copied bookmaker price.</p></div>
+        <button className="intro-summary" disabled={!strongest} onClick={() => strongest && onOpenMatch(strongest)}><span>Strongest current read</span><strong>{strongest ? strongest.home.short : "Unavailable"} <b>{strongestPrediction?.value ?? "Unavailable"}</b></strong><small>{strongest ? `${strongest.home.name} vs ${strongest.away.name}` : "Waiting for the live feed"}</small></button>
       </section>
       <FeedBanner feed={feed} loading={loading} onRefresh={onRefresh}/>
       <SportTabs activeSport={activeSport} setActiveSport={setActiveSport} matches={matches}/>
@@ -392,11 +394,11 @@ function StorySection() {
     <section className="story-section">
       <div className="story-heading"><p>BEHIND PREDICTARENA</p><h2>What it took to make the numbers credible.</h2></div>
       <div className="story-grid">
-        <article><span>01</span><small>BUILT</small><h3>A model that starts with goals</h3><p>I built the football engine around a Poisson distribution—turning team and league scoring rates into scorelines, then scorelines into visible probabilities.</p></article>
+        <article><span>01</span><small>BUILT</small><h3>A model that starts with goals</h3><p>I built the football engine around a Poisson distribution, turning team and league scoring rates into scorelines, then scorelines into visible probabilities.</p></article>
         <article><span>02</span><small>LEARNED</small><h3>Reliable data is the real work</h3><p>The maths was only half of it. Sourcing consistent African esports results showed why provenance, recency and manual verification matter.</p></article>
-        <article><span>03</span><small>CHALLENGE</small><h3>Credibility without deep history</h3><p>CODM Africa lacks decades of clean results. The honest answer is smaller samples, lower confidence and a clear community-source label—not fake certainty.</p></article>
+        <article><span>03</span><small>CHALLENGE</small><h3>Credibility without deep history</h3><p>CODM Africa lacks decades of clean results. The honest answer is smaller samples, lower confidence and a clear community-source label, not fake certainty.</p></article>
       </div>
-      <blockquote><span>“</span><p>I wanted CODM and EA FC Africa beside football, basketball and tennis—not buried at the bottom like an afterthought. African players compete seriously. The product should treat them that way.</p><footer>— Favour, building the sports product I wanted to use</footer></blockquote>
+      <blockquote><span>“</span><p>I wanted CODM and EA FC Africa beside football, basketball and tennis, not buried at the bottom like an afterthought. African players compete seriously. The product should treat them that way.</p><footer>Favour, building the sports product I wanted to use</footer></blockquote>
     </section>
   );
 }
@@ -578,6 +580,7 @@ function MatchDetailModal({ match, onClose }: { match: Match | null; onClose: ()
         </div>}
         {tab === "matrix" && <div className="model-tab-panel"><ScoreMatrix match={match}/></div>}
         {tab === "markets" && <div className="model-tab-panel"><div className="market-options">{match.predictions.map((prediction) => <article className={prediction.featured ? "market-option featured" : "market-option"} key={prediction.label}><span>{prediction.label}</span><strong>{prediction.value}</strong><p>{prediction.explanation ?? "A probability calculated from the model output."}</p></article>)}</div></div>}
+        <PremiumGate title="Full match analysis"><div className="premium-analysis"><p>PREMIUM MATCH LAYER</p><strong>Full pre-match history, saved options and advanced notes are available for this fixture.</strong></div></PremiumGate>
         <div className="detail-disclaimer"><Icon name="info" size={15}/><p>PredictArena is an analysis and learning product. It does not take stakes, quote payouts or promise outcomes.</p></div>
       </section>
     </div>
@@ -604,7 +607,7 @@ export default function Home() {
       setFeed(await response.json() as FeedPayload);
       lastLoadRef.current = Date.now();
     } catch {
-      setFeed((current) => current ?? { matches: [], generatedAt: new Date().toISOString(), provider: "TheSportsDB", seasonSample: "—", leagueCatalog: defaultLeagueCatalog, liveCount: 0, communityCount: 0, status: "fallback" });
+      setFeed((current) => current ?? { matches: [], generatedAt: new Date().toISOString(), provider: "TheSportsDB", seasonSample: "Unavailable", leagueCatalog: defaultLeagueCatalog, liveCount: 0, communityCount: 0, status: "fallback" });
     } finally {
       setLoading(false);
     }

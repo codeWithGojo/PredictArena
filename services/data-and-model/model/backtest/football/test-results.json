@@ -1,0 +1,6070 @@
+{
+  "protocol": {
+    "version": 2,
+    "warmupSeasons": [
+      "2018"
+    ],
+    "tuningSeasons": [
+      "2019",
+      "2020"
+    ],
+    "selectionSeasons": [
+      "2021",
+      "2022"
+    ],
+    "testSeasons": [
+      "2023",
+      "2024"
+    ],
+    "leagues": [
+      "premier-league",
+      "la-liga"
+    ],
+    "halfLifeDays": [
+      null,
+      90,
+      180
+    ],
+    "priorMatches": [
+      0,
+      2,
+      6
+    ],
+    "rhoPenalty": [
+      null,
+      100,
+      400
+    ],
+    "selectionRule": "Rank 27 fixed configurations on 2019/20 and 2020/21 log loss. Select among legacy, previous v2, the complete grid and fixed ablations on pooled 2021/22 and 2022/23 log loss. These four seasons are development/validation data. Freeze the winner before reading later test metrics. Ties within 1e-12 favour the first candidate: legacy, v2, grid in declared order, ablations.",
+    "ablationRule": "Fixed chain: opponent strengths alone, add home advantage, add 90-day decay, add DC penalty 100, add six-match shrinkage. Also remove each component separately from v2.",
+    "historyRule": "Latest 200 eligible same-league results within 365 days. At least 50 competition results for warm-up. Refit before each date using only eligible past outcomes. No same-day results; no test-outcome hyperparameter tuning.",
+    "knownResults": "Premier League 2023/24 was previously inspected; Premier League 2022/23 was previous development data. La Liga 2023/24 and both 2024/25 leagues are the fresh subset.",
+    "protocolRevision": "Version 1 compared only the tuning winner, legacy and v2 on selection seasons. Version 2 included the complete already-declared grid and ablations after inspecting earlier-season validation diagnostics, before reading later-season metrics. A first test file had been computed automatically but not inspected. This is validation-stage protocol development, not preregistration. After final metrics were read the temporary checkout was lost; this restored implementation reruns the same grid and split, without changing candidates or settings.",
+    "releaseRule": "Keep legacy unless the one frozen earlier-selected candidate beats it on pooled later log loss. This release fallback is not another tuning round or a fresh accuracy estimate. Never select another configuration using test ablations.",
+    "metrics": "Natural-log loss primary, summed multiclass Brier secondary. Fixed 0.10 draw calibration bins. No test-set calibration fitting."
+  },
+  "datasetSha256": "93e5544401204891374b553b50a5bd9ecb63256010d96a14d855cd9f17fc1acd",
+  "selectionSha256": "7b4a8208b8bd9661a7c35385d97ce3b6b56e5ec398f0f3473492ad022fc07487",
+  "codeSha256": "d779396976a22cf23d30352e9b997c73447da7a03b91778aa532267fb0b5dcab",
+  "skipped": 0,
+  "results": [
+    {
+      "name": "old",
+      "config": {
+        "mode": "legacy",
+        "homeAdvantage": true,
+        "halfLifeDays": null,
+        "priorMatches": 4,
+        "rhoPenalty": null
+      },
+      "results": {
+        "pooled": {
+          "n": 1520,
+          "logLoss": 0.9786948916565946,
+          "brier": 0.5821234210526318,
+          "drawCalibration": {
+            "n": 1520,
+            "meanPredicted": 0.23348026315789505,
+            "observed": 0.2493421052631579,
+            "drawBrier": 0.18563282894736707,
+            "ece": 0.02854605263157935,
+            "bins": [
+              {
+                "lower": 0,
+                "upper": 0.1,
+                "n": 11,
+                "predicted": 0.0809090909090909,
+                "observed": 0.09090909090909091
+              },
+              {
+                "lower": 0.1,
+                "upper": 0.2,
+                "n": 273,
+                "predicted": 0.1622344322344322,
+                "observed": 0.1684981684981685
+              },
+              {
+                "lower": 0.2,
+                "upper": 0.3,
+                "n": 1090,
+                "predicted": 0.24134862385321043,
+                "observed": 0.2706422018348624
+              },
+              {
+                "lower": 0.3,
+                "upper": 0.4,
+                "n": 145,
+                "predicted": 0.3187586206896551,
+                "observed": 0.25517241379310346
+              },
+              {
+                "lower": 0.4,
+                "upper": 0.5,
+                "n": 1,
+                "predicted": 0.42,
+                "observed": 0
+              },
+              {
+                "lower": 0.5,
+                "upper": 0.6,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.6,
+                "upper": 0.7,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.7,
+                "upper": 0.8,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.8,
+                "upper": 0.9,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.9,
+                "upper": 1,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              }
+            ]
+          }
+        },
+        "bySeason": [
+          {
+            "league": "la-liga",
+            "season": "2023",
+            "n": 380,
+            "logLoss": 0.9892527769398747,
+            "brier": 0.5913394736842104,
+            "drawCalibration": {
+              "n": 380,
+              "meanPredicted": 0.24973684210526287,
+              "observed": 0.28157894736842104,
+              "drawBrier": 0.2018110526315793,
+              "ece": 0.0333157894736842,
+              "bins": [
+                {
+                  "lower": 0,
+                  "upper": 0.1,
+                  "n": 2,
+                  "predicted": 0.08,
+                  "observed": 0
+                },
+                {
+                  "lower": 0.1,
+                  "upper": 0.2,
+                  "n": 44,
+                  "predicted": 0.16340909090909095,
+                  "observed": 0.2727272727272727
+                },
+                {
+                  "lower": 0.2,
+                  "upper": 0.3,
+                  "n": 264,
+                  "predicted": 0.24784090909090906,
+                  "observed": 0.2765151515151515
+                },
+                {
+                  "lower": 0.3,
+                  "upper": 0.4,
+                  "n": 70,
+                  "predicted": 0.31599999999999995,
+                  "observed": 0.3142857142857143
+                },
+                {
+                  "lower": 0.4,
+                  "upper": 0.5,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.5,
+                  "upper": 0.6,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.6,
+                  "upper": 0.7,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.7,
+                  "upper": 0.8,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.8,
+                  "upper": 0.9,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.9,
+                  "upper": 1,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                }
+              ]
+            }
+          },
+          {
+            "league": "la-liga",
+            "season": "2024",
+            "n": 380,
+            "logLoss": 0.9791223104332862,
+            "brier": 0.5814373684210525,
+            "drawCalibration": {
+              "n": 380,
+              "meanPredicted": 0.24936842105263154,
+              "observed": 0.25526315789473686,
+              "drawBrier": 0.18846947368421066,
+              "ece": 0.06931578947368418,
+              "bins": [
+                {
+                  "lower": 0,
+                  "upper": 0.1,
+                  "n": 3,
+                  "predicted": 0.08666666666666667,
+                  "observed": 0
+                },
+                {
+                  "lower": 0.1,
+                  "upper": 0.2,
+                  "n": 49,
+                  "predicted": 0.15428571428571436,
+                  "observed": 0.10204081632653061
+                },
+                {
+                  "lower": 0.2,
+                  "upper": 0.3,
+                  "n": 256,
+                  "predicted": 0.24886718750000006,
+                  "observed": 0.3046875
+                },
+                {
+                  "lower": 0.3,
+                  "upper": 0.4,
+                  "n": 71,
+                  "predicted": 0.3212676056338028,
+                  "observed": 0.19718309859154928
+                },
+                {
+                  "lower": 0.4,
+                  "upper": 0.5,
+                  "n": 1,
+                  "predicted": 0.42,
+                  "observed": 0
+                },
+                {
+                  "lower": 0.5,
+                  "upper": 0.6,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.6,
+                  "upper": 0.7,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.7,
+                  "upper": 0.8,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.8,
+                  "upper": 0.9,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.9,
+                  "upper": 1,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                }
+              ]
+            }
+          },
+          {
+            "league": "premier-league",
+            "season": "2023",
+            "n": 380,
+            "logLoss": 0.955507313271097,
+            "brier": 0.5636594736842105,
+            "drawCalibration": {
+              "n": 380,
+              "meanPredicted": 0.21449999999999975,
+              "observed": 0.21578947368421053,
+              "drawBrier": 0.16936131578947372,
+              "ece": 0.004868421052631565,
+              "bins": [
+                {
+                  "lower": 0,
+                  "upper": 0.1,
+                  "n": 3,
+                  "predicted": 0.08,
+                  "observed": 0.3333333333333333
+                },
+                {
+                  "lower": 0.1,
+                  "upper": 0.2,
+                  "n": 94,
+                  "predicted": 0.1635106382978723,
+                  "observed": 0.1595744680851064
+                },
+                {
+                  "lower": 0.2,
+                  "upper": 0.3,
+                  "n": 282,
+                  "predicted": 0.2325886524822695,
+                  "observed": 0.23404255319148937
+                },
+                {
+                  "lower": 0.3,
+                  "upper": 0.4,
+                  "n": 1,
+                  "predicted": 0.31,
+                  "observed": 0
+                },
+                {
+                  "lower": 0.4,
+                  "upper": 0.5,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.5,
+                  "upper": 0.6,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.6,
+                  "upper": 0.7,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.7,
+                  "upper": 0.8,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.8,
+                  "upper": 0.9,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.9,
+                  "upper": 1,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                }
+              ]
+            }
+          },
+          {
+            "league": "premier-league",
+            "season": "2024",
+            "n": 380,
+            "logLoss": 0.9908971659821196,
+            "brier": 0.5920573684210525,
+            "drawCalibration": {
+              "n": 380,
+              "meanPredicted": 0.22031578947368424,
+              "observed": 0.24473684210526317,
+              "drawBrier": 0.18288947368421057,
+              "ece": 0.026526315789473762,
+              "bins": [
+                {
+                  "lower": 0,
+                  "upper": 0.1,
+                  "n": 3,
+                  "predicted": 0.07666666666666667,
+                  "observed": 0
+                },
+                {
+                  "lower": 0.1,
+                  "upper": 0.2,
+                  "n": 86,
+                  "predicted": 0.1647674418604651,
+                  "observed": 0.16279069767441862
+                },
+                {
+                  "lower": 0.2,
+                  "upper": 0.3,
+                  "n": 288,
+                  "predicted": 0.23729166666666654,
+                  "observed": 0.2708333333333333
+                },
+                {
+                  "lower": 0.3,
+                  "upper": 0.4,
+                  "n": 3,
+                  "predicted": 0.32666666666666666,
+                  "observed": 0.3333333333333333
+                },
+                {
+                  "lower": 0.4,
+                  "upper": 0.5,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.5,
+                  "upper": 0.6,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.6,
+                  "upper": 0.7,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.7,
+                  "upper": 0.8,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.8,
+                  "upper": 0.9,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.9,
+                  "upper": 1,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "previous_v2",
+      "config": {
+        "mode": "strength",
+        "homeAdvantage": true,
+        "halfLifeDays": 90,
+        "priorMatches": 6,
+        "rhoPenalty": 100
+      },
+      "results": {
+        "pooled": {
+          "n": 1520,
+          "logLoss": 0.9871807852639432,
+          "brier": 0.5876781398024532,
+          "drawCalibration": {
+            "n": 1520,
+            "meanPredicted": 0.2410776627955712,
+            "observed": 0.2493421052631579,
+            "drawBrier": 0.18563905592864383,
+            "ece": 0.02453452432060085,
+            "bins": [
+              {
+                "lower": 0,
+                "upper": 0.1,
+                "n": 2,
+                "predicted": 0.09259812417450591,
+                "observed": 0
+              },
+              {
+                "lower": 0.1,
+                "upper": 0.2,
+                "n": 191,
+                "predicted": 0.17341363480445002,
+                "observed": 0.15706806282722513
+              },
+              {
+                "lower": 0.2,
+                "upper": 0.3,
+                "n": 1229,
+                "predicted": 0.2457874574784195,
+                "observed": 0.2660699755899105
+              },
+              {
+                "lower": 0.3,
+                "upper": 0.4,
+                "n": 98,
+                "predicted": 0.3169189970642028,
+                "observed": 0.22448979591836735
+              },
+              {
+                "lower": 0.4,
+                "upper": 0.5,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.5,
+                "upper": 0.6,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.6,
+                "upper": 0.7,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.7,
+                "upper": 0.8,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.8,
+                "upper": 0.9,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.9,
+                "upper": 1,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              }
+            ]
+          }
+        },
+        "bySeason": [
+          {
+            "league": "la-liga",
+            "season": "2023",
+            "n": 380,
+            "logLoss": 0.9976794437722165,
+            "brier": 0.5962296752149251,
+            "drawCalibration": {
+              "n": 380,
+              "meanPredicted": 0.25965144817675356,
+              "observed": 0.28157894736842104,
+              "drawBrier": 0.20164992818125493,
+              "ece": 0.03551038898861184,
+              "bins": [
+                {
+                  "lower": 0,
+                  "upper": 0.1,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.1,
+                  "upper": 0.2,
+                  "n": 27,
+                  "predicted": 0.17395291970830248,
+                  "observed": 0.14814814814814814
+                },
+                {
+                  "lower": 0.2,
+                  "upper": 0.3,
+                  "n": 303,
+                  "predicted": 0.2577122153324981,
+                  "observed": 0.29372937293729373
+                },
+                {
+                  "lower": 0.3,
+                  "upper": 0.4,
+                  "n": 50,
+                  "predicted": 0.3176804045859052,
+                  "observed": 0.28
+                },
+                {
+                  "lower": 0.4,
+                  "upper": 0.5,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.5,
+                  "upper": 0.6,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.6,
+                  "upper": 0.7,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.7,
+                  "upper": 0.8,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.8,
+                  "upper": 0.9,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.9,
+                  "upper": 1,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                }
+              ]
+            }
+          },
+          {
+            "league": "la-liga",
+            "season": "2024",
+            "n": 380,
+            "logLoss": 0.9918767655582664,
+            "brier": 0.5901141503681109,
+            "drawCalibration": {
+              "n": 380,
+              "meanPredicted": 0.25075851605062116,
+              "observed": 0.25526315789473686,
+              "drawBrier": 0.1885781369598518,
+              "ece": 0.05338347302936017,
+              "bins": [
+                {
+                  "lower": 0,
+                  "upper": 0.1,
+                  "n": 2,
+                  "predicted": 0.09259812417450591,
+                  "observed": 0
+                },
+                {
+                  "lower": 0.1,
+                  "upper": 0.2,
+                  "n": 38,
+                  "predicted": 0.17077651608723937,
+                  "observed": 0.07894736842105263
+                },
+                {
+                  "lower": 0.2,
+                  "upper": 0.3,
+                  "n": 297,
+                  "predicted": 0.25252948880147996,
+                  "observed": 0.2895622895622896
+                },
+                {
+                  "lower": 0.3,
+                  "upper": 0.4,
+                  "n": 43,
+                  "predicted": 0.31656451315191403,
+                  "observed": 0.18604651162790697
+                },
+                {
+                  "lower": 0.4,
+                  "upper": 0.5,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.5,
+                  "upper": 0.6,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.6,
+                  "upper": 0.7,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.7,
+                  "upper": 0.8,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.8,
+                  "upper": 0.9,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.9,
+                  "upper": 1,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                }
+              ]
+            }
+          },
+          {
+            "league": "premier-league",
+            "season": "2023",
+            "n": 380,
+            "logLoss": 0.9623563632119674,
+            "brier": 0.5687717500974688,
+            "drawCalibration": {
+              "n": 380,
+              "meanPredicted": 0.21849591364888646,
+              "observed": 0.21578947368421053,
+              "drawBrier": 0.16882521706644874,
+              "ece": 0.011355321796256132,
+              "bins": [
+                {
+                  "lower": 0,
+                  "upper": 0.1,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.1,
+                  "upper": 0.2,
+                  "n": 83,
+                  "predicted": 0.17297243918071986,
+                  "observed": 0.1927710843373494
+                },
+                {
+                  "lower": 0.2,
+                  "upper": 0.3,
+                  "n": 297,
+                  "predicted": 0.23121796206928308,
+                  "observed": 0.2222222222222222
+                },
+                {
+                  "lower": 0.3,
+                  "upper": 0.4,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.4,
+                  "upper": 0.5,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.5,
+                  "upper": 0.6,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.6,
+                  "upper": 0.7,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.7,
+                  "upper": 0.8,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.8,
+                  "upper": 0.9,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.9,
+                  "upper": 1,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                }
+              ]
+            }
+          },
+          {
+            "league": "premier-league",
+            "season": "2024",
+            "n": 380,
+            "logLoss": 0.9968105685133214,
+            "brier": 0.5955969835293091,
+            "drawCalibration": {
+              "n": 380,
+              "meanPredicted": 0.23540477330602333,
+              "observed": 0.24473684210526317,
+              "drawBrier": 0.18350294150701807,
+              "ece": 0.020599557060688518,
+              "bins": [
+                {
+                  "lower": 0,
+                  "upper": 0.1,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.1,
+                  "upper": 0.2,
+                  "n": 43,
+                  "predicted": 0.1762571012142078,
+                  "observed": 0.16279069767441862
+                },
+                {
+                  "lower": 0.2,
+                  "upper": 0.3,
+                  "n": 332,
+                  "predicted": 0.24190659965847472,
+                  "observed": 0.25903614457831325
+                },
+                {
+                  "lower": 0.3,
+                  "upper": 0.4,
+                  "n": 5,
+                  "predicted": 0.3123534834928618,
+                  "observed": 0
+                },
+                {
+                  "lower": 0.4,
+                  "upper": 0.5,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.5,
+                  "upper": 0.6,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.6,
+                  "upper": 0.7,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.7,
+                  "upper": 0.8,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.8,
+                  "upper": 0.9,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.9,
+                  "upper": 1,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "candidate",
+      "config": {
+        "mode": "strength",
+        "homeAdvantage": true,
+        "halfLifeDays": null,
+        "priorMatches": 6,
+        "rhoPenalty": null
+      },
+      "results": {
+        "pooled": {
+          "n": 1520,
+          "logLoss": 0.9796452346001695,
+          "brier": 0.5824291896089187,
+          "drawCalibration": {
+            "n": 1520,
+            "meanPredicted": 0.23598128832030463,
+            "observed": 0.2493421052631579,
+            "drawBrier": 0.1855219557097748,
+            "ece": 0.025023858490082155,
+            "bins": [
+              {
+                "lower": 0,
+                "upper": 0.1,
+                "n": 9,
+                "predicted": 0.08950817069875958,
+                "observed": 0.1111111111111111
+              },
+              {
+                "lower": 0.1,
+                "upper": 0.2,
+                "n": 277,
+                "predicted": 0.1713070796219553,
+                "observed": 0.16606498194945848
+              },
+              {
+                "lower": 0.2,
+                "upper": 0.3,
+                "n": 1117,
+                "predicted": 0.24442441641421717,
+                "observed": 0.270367054610564
+              },
+              {
+                "lower": 0.3,
+                "upper": 0.4,
+                "n": 116,
+                "predicted": 0.31896393174970966,
+                "observed": 0.25862068965517243
+              },
+              {
+                "lower": 0.4,
+                "upper": 0.5,
+                "n": 1,
+                "predicted": 0.41203443764638026,
+                "observed": 0
+              },
+              {
+                "lower": 0.5,
+                "upper": 0.6,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.6,
+                "upper": 0.7,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.7,
+                "upper": 0.8,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.8,
+                "upper": 0.9,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.9,
+                "upper": 1,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              }
+            ]
+          }
+        },
+        "bySeason": [
+          {
+            "league": "la-liga",
+            "season": "2023",
+            "n": 380,
+            "logLoss": 0.989323640182922,
+            "brier": 0.5907251821640559,
+            "drawCalibration": {
+              "n": 380,
+              "meanPredicted": 0.25121699807985526,
+              "observed": 0.28157894736842104,
+              "drawBrier": 0.20125884796248755,
+              "ece": 0.03087624135138089,
+              "bins": [
+                {
+                  "lower": 0,
+                  "upper": 0.1,
+                  "n": 1,
+                  "predicted": 0.097715491934833,
+                  "observed": 0
+                },
+                {
+                  "lower": 0.1,
+                  "upper": 0.2,
+                  "n": 41,
+                  "predicted": 0.16711621431507265,
+                  "observed": 0.24390243902439024
+                },
+                {
+                  "lower": 0.2,
+                  "upper": 0.3,
+                  "n": 286,
+                  "predicted": 0.25160531638943456,
+                  "observed": 0.27972027972027974
+                },
+                {
+                  "lower": 0.3,
+                  "upper": 0.4,
+                  "n": 52,
+                  "predicted": 0.31834343277141997,
+                  "observed": 0.3269230769230769
+                },
+                {
+                  "lower": 0.4,
+                  "upper": 0.5,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.5,
+                  "upper": 0.6,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.6,
+                  "upper": 0.7,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.7,
+                  "upper": 0.8,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.8,
+                  "upper": 0.9,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.9,
+                  "upper": 1,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                }
+              ]
+            }
+          },
+          {
+            "league": "la-liga",
+            "season": "2024",
+            "n": 380,
+            "logLoss": 0.9814667976555211,
+            "brier": 0.5825109802207097,
+            "drawCalibration": {
+              "n": 380,
+              "meanPredicted": 0.2507055920958389,
+              "observed": 0.25526315789473686,
+              "drawBrier": 0.1884035011286751,
+              "ece": 0.0649143423332696,
+              "bins": [
+                {
+                  "lower": 0,
+                  "upper": 0.1,
+                  "n": 3,
+                  "predicted": 0.08574727026930194,
+                  "observed": 0
+                },
+                {
+                  "lower": 0.1,
+                  "upper": 0.2,
+                  "n": 52,
+                  "predicted": 0.1655811410011066,
+                  "observed": 0.09615384615384616
+                },
+                {
+                  "lower": 0.2,
+                  "upper": 0.3,
+                  "n": 264,
+                  "predicted": 0.25303158126851577,
+                  "observed": 0.30303030303030304
+                },
+                {
+                  "lower": 0.3,
+                  "upper": 0.4,
+                  "n": 60,
+                  "predicted": 0.3198048660169797,
+                  "observed": 0.2
+                },
+                {
+                  "lower": 0.4,
+                  "upper": 0.5,
+                  "n": 1,
+                  "predicted": 0.41203443764638026,
+                  "observed": 0
+                },
+                {
+                  "lower": 0.5,
+                  "upper": 0.6,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.6,
+                  "upper": 0.7,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.7,
+                  "upper": 0.8,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.8,
+                  "upper": 0.9,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.9,
+                  "upper": 1,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                }
+              ]
+            }
+          },
+          {
+            "league": "premier-league",
+            "season": "2023",
+            "n": 380,
+            "logLoss": 0.9556687823703558,
+            "brier": 0.5641138962852064,
+            "drawCalibration": {
+              "n": 380,
+              "meanPredicted": 0.21801195164699502,
+              "observed": 0.21578947368421053,
+              "drawBrier": 0.1693644767571238,
+              "ece": 0.01158424846970975,
+              "bins": [
+                {
+                  "lower": 0,
+                  "upper": 0.1,
+                  "n": 3,
+                  "predicted": 0.0931849736761205,
+                  "observed": 0.3333333333333333
+                },
+                {
+                  "lower": 0.1,
+                  "upper": 0.2,
+                  "n": 98,
+                  "predicted": 0.1728745783944472,
+                  "observed": 0.1836734693877551
+                },
+                {
+                  "lower": 0.2,
+                  "upper": 0.3,
+                  "n": 278,
+                  "predicted": 0.23494868016207734,
+                  "observed": 0.22661870503597123
+                },
+                {
+                  "lower": 0.3,
+                  "upper": 0.4,
+                  "n": 1,
+                  "predicted": 0.3075449371163914,
+                  "observed": 0
+                },
+                {
+                  "lower": 0.4,
+                  "upper": 0.5,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.5,
+                  "upper": 0.6,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.6,
+                  "upper": 0.7,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.7,
+                  "upper": 0.8,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.8,
+                  "upper": 0.9,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.9,
+                  "upper": 1,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                }
+              ]
+            }
+          },
+          {
+            "league": "premier-league",
+            "season": "2024",
+            "n": 380,
+            "logLoss": 0.9921217181918796,
+            "brier": 0.5923666997657022,
+            "drawCalibration": {
+              "n": 380,
+              "meanPredicted": 0.2239906114585298,
+              "observed": 0.24473684210526317,
+              "drawBrier": 0.18306099699081455,
+              "ece": 0.032427438889722666,
+              "bins": [
+                {
+                  "lower": 0,
+                  "upper": 0.1,
+                  "n": 2,
+                  "predicted": 0.08553065625886794,
+                  "observed": 0
+                },
+                {
+                  "lower": 0.1,
+                  "upper": 0.2,
+                  "n": 86,
+                  "predicted": 0.1749810262052356,
+                  "observed": 0.1511627906976744
+                },
+                {
+                  "lower": 0.2,
+                  "upper": 0.3,
+                  "n": 289,
+                  "predicted": 0.2385705263230314,
+                  "observed": 0.27335640138408307
+                },
+                {
+                  "lower": 0.3,
+                  "upper": 0.4,
+                  "n": 3,
+                  "predicted": 0.31670689357243803,
+                  "observed": 0.3333333333333333
+                },
+                {
+                  "lower": 0.4,
+                  "upper": 0.5,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.5,
+                  "upper": 0.6,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.6,
+                  "upper": 0.7,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.7,
+                  "upper": 0.8,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.8,
+                  "upper": 0.9,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.9,
+                  "upper": 1,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "strength_only",
+      "config": {
+        "mode": "strength",
+        "homeAdvantage": false,
+        "halfLifeDays": null,
+        "priorMatches": 0,
+        "rhoPenalty": null
+      },
+      "results": {
+        "pooled": {
+          "n": 1520,
+          "logLoss": 0.9948156203798636,
+          "brier": 0.5932978210180214,
+          "drawCalibration": {
+            "n": 1520,
+            "meanPredicted": 0.23259471966785872,
+            "observed": 0.2493421052631579,
+            "drawBrier": 0.18763288616211737,
+            "ece": 0.03759169496977734,
+            "bins": [
+              {
+                "lower": 0,
+                "upper": 0.1,
+                "n": 36,
+                "predicted": 0.07667918912499323,
+                "observed": 0.16666666666666666
+              },
+              {
+                "lower": 0.1,
+                "upper": 0.2,
+                "n": 373,
+                "predicted": 0.16421756941803312,
+                "observed": 0.19302949061662197
+              },
+              {
+                "lower": 0.2,
+                "upper": 0.3,
+                "n": 910,
+                "predicted": 0.24361395007595124,
+                "observed": 0.27362637362637365
+              },
+              {
+                "lower": 0.3,
+                "upper": 0.4,
+                "n": 194,
+                "predicted": 0.33275884254069105,
+                "observed": 0.26288659793814434
+              },
+              {
+                "lower": 0.4,
+                "upper": 0.5,
+                "n": 5,
+                "predicted": 0.44400454956833546,
+                "observed": 0.2
+              },
+              {
+                "lower": 0.5,
+                "upper": 0.6,
+                "n": 2,
+                "predicted": 0.5332184619337679,
+                "observed": 0
+              },
+              {
+                "lower": 0.6,
+                "upper": 0.7,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.7,
+                "upper": 0.8,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.8,
+                "upper": 0.9,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.9,
+                "upper": 1,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              }
+            ]
+          }
+        },
+        "bySeason": [
+          {
+            "league": "la-liga",
+            "season": "2023",
+            "n": 380,
+            "logLoss": 1.0180236519670591,
+            "brier": 0.6107375452079135,
+            "drawCalibration": {
+              "n": 380,
+              "meanPredicted": 0.25244238347487996,
+              "observed": 0.28157894736842104,
+              "drawBrier": 0.20518263403498974,
+              "ece": 0.04452481383882276,
+              "bins": [
+                {
+                  "lower": 0,
+                  "upper": 0.1,
+                  "n": 5,
+                  "predicted": 0.09084028567555422,
+                  "observed": 0.4
+                },
+                {
+                  "lower": 0.1,
+                  "upper": 0.2,
+                  "n": 68,
+                  "predicted": 0.16769441013340883,
+                  "observed": 0.3088235294117647
+                },
+                {
+                  "lower": 0.2,
+                  "upper": 0.3,
+                  "n": 221,
+                  "predicted": 0.2495335606941233,
+                  "observed": 0.26244343891402716
+                },
+                {
+                  "lower": 0.3,
+                  "upper": 0.4,
+                  "n": 85,
+                  "predicted": 0.33449282933901736,
+                  "observed": 0.3058823529411765
+                },
+                {
+                  "lower": 0.4,
+                  "upper": 0.5,
+                  "n": 1,
+                  "predicted": 0.4918769957869926,
+                  "observed": 0
+                },
+                {
+                  "lower": 0.5,
+                  "upper": 0.6,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.6,
+                  "upper": 0.7,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.7,
+                  "upper": 0.8,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.8,
+                  "upper": 0.9,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.9,
+                  "upper": 1,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                }
+              ]
+            }
+          },
+          {
+            "league": "la-liga",
+            "season": "2024",
+            "n": 380,
+            "logLoss": 1.0059267533353764,
+            "brier": 0.5988000869872615,
+            "drawCalibration": {
+              "n": 380,
+              "meanPredicted": 0.25036247189141747,
+              "observed": 0.25526315789473686,
+              "drawBrier": 0.1922030302957263,
+              "ece": 0.07664119914447327,
+              "bins": [
+                {
+                  "lower": 0,
+                  "upper": 0.1,
+                  "n": 10,
+                  "predicted": 0.08033000395110323,
+                  "observed": 0.1
+                },
+                {
+                  "lower": 0.1,
+                  "upper": 0.2,
+                  "n": 62,
+                  "predicted": 0.16110194319284524,
+                  "observed": 0.14516129032258066
+                },
+                {
+                  "lower": 0.2,
+                  "upper": 0.3,
+                  "n": 221,
+                  "predicted": 0.24752824335931373,
+                  "observed": 0.3167420814479638
+                },
+                {
+                  "lower": 0.3,
+                  "upper": 0.4,
+                  "n": 82,
+                  "predicted": 0.33317182643022575,
+                  "observed": 0.1951219512195122
+                },
+                {
+                  "lower": 0.4,
+                  "upper": 0.5,
+                  "n": 3,
+                  "predicted": 0.41861677590558816,
+                  "observed": 0.3333333333333333
+                },
+                {
+                  "lower": 0.5,
+                  "upper": 0.6,
+                  "n": 2,
+                  "predicted": 0.5332184619337679,
+                  "observed": 0
+                },
+                {
+                  "lower": 0.6,
+                  "upper": 0.7,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.7,
+                  "upper": 0.8,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.8,
+                  "upper": 0.9,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.9,
+                  "upper": 1,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                }
+              ]
+            }
+          },
+          {
+            "league": "premier-league",
+            "season": "2023",
+            "n": 380,
+            "logLoss": 0.9622007434954489,
+            "brier": 0.5683802651986353,
+            "drawCalibration": {
+              "n": 380,
+              "meanPredicted": 0.20993010001775103,
+              "observed": 0.21578947368421053,
+              "drawBrier": 0.16947176802348238,
+              "ece": 0.012835920688859715,
+              "bins": [
+                {
+                  "lower": 0,
+                  "upper": 0.1,
+                  "n": 12,
+                  "predicted": 0.0762903186512386,
+                  "observed": 0.16666666666666666
+                },
+                {
+                  "lower": 0.1,
+                  "upper": 0.2,
+                  "n": 131,
+                  "predicted": 0.1643695438830114,
+                  "observed": 0.183206106870229
+                },
+                {
+                  "lower": 0.2,
+                  "upper": 0.3,
+                  "n": 227,
+                  "predicted": 0.23876057485454424,
+                  "observed": 0.23348017621145375
+                },
+                {
+                  "lower": 0.3,
+                  "upper": 0.4,
+                  "n": 10,
+                  "predicted": 0.31268934422745054,
+                  "observed": 0.3
+                },
+                {
+                  "lower": 0.4,
+                  "upper": 0.5,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.5,
+                  "upper": 0.6,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.6,
+                  "upper": 0.7,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.7,
+                  "upper": 0.8,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.8,
+                  "upper": 0.9,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.9,
+                  "upper": 1,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                }
+              ]
+            }
+          },
+          {
+            "league": "premier-league",
+            "season": "2024",
+            "n": 380,
+            "logLoss": 0.993111332721571,
+            "brier": 0.5952733866782821,
+            "drawCalibration": {
+              "n": 380,
+              "meanPredicted": 0.21764392328738574,
+              "observed": 0.24473684210526317,
+              "drawBrier": 0.1836741122942702,
+              "ece": 0.03131133040504366,
+              "bins": [
+                {
+                  "lower": 0,
+                  "upper": 0.1,
+                  "n": 9,
+                  "predicted": 0.06527394631067665,
+                  "observed": 0.1111111111111111
+                },
+                {
+                  "lower": 0.1,
+                  "upper": 0.2,
+                  "n": 112,
+                  "predicted": 0.16365359622521122,
+                  "observed": 0.16071428571428573
+                },
+                {
+                  "lower": 0.2,
+                  "upper": 0.3,
+                  "n": 241,
+                  "predicted": 0.23916757419636647,
+                  "observed": 0.2821576763485477
+                },
+                {
+                  "lower": 0.3,
+                  "upper": 0.4,
+                  "n": 17,
+                  "predicted": 0.3339024558543868,
+                  "observed": 0.35294117647058826
+                },
+                {
+                  "lower": 0.4,
+                  "upper": 0.5,
+                  "n": 1,
+                  "predicted": 0.47229542433792,
+                  "observed": 0
+                },
+                {
+                  "lower": 0.5,
+                  "upper": 0.6,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.6,
+                  "upper": 0.7,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.7,
+                  "upper": 0.8,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.8,
+                  "upper": 0.9,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.9,
+                  "upper": 1,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "plus_home",
+      "config": {
+        "mode": "strength",
+        "homeAdvantage": true,
+        "halfLifeDays": null,
+        "priorMatches": 0,
+        "rhoPenalty": null
+      },
+      "results": {
+        "pooled": {
+          "n": 1520,
+          "logLoss": 0.9800623267528873,
+          "brier": 0.5830248542362115,
+          "drawCalibration": {
+            "n": 1520,
+            "meanPredicted": 0.23110847188675038,
+            "observed": 0.2493421052631579,
+            "drawBrier": 0.1869390274018942,
+            "ece": 0.038256510644142844,
+            "bins": [
+              {
+                "lower": 0,
+                "upper": 0.1,
+                "n": 45,
+                "predicted": 0.07266550512868972,
+                "observed": 0.08888888888888889
+              },
+              {
+                "lower": 0.1,
+                "upper": 0.2,
+                "n": 377,
+                "predicted": 0.16315077748051462,
+                "observed": 0.18037135278514588
+              },
+              {
+                "lower": 0.2,
+                "upper": 0.3,
+                "n": 903,
+                "predicted": 0.24395315581775937,
+                "observed": 0.28349944629014395
+              },
+              {
+                "lower": 0.3,
+                "upper": 0.4,
+                "n": 181,
+                "predicted": 0.3317316657605427,
+                "observed": 0.26519337016574585
+              },
+              {
+                "lower": 0.4,
+                "upper": 0.5,
+                "n": 12,
+                "predicted": 0.42422406633257514,
+                "observed": 0.25
+              },
+              {
+                "lower": 0.5,
+                "upper": 0.6,
+                "n": 2,
+                "predicted": 0.5416332124148842,
+                "observed": 0
+              },
+              {
+                "lower": 0.6,
+                "upper": 0.7,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.7,
+                "upper": 0.8,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.8,
+                "upper": 0.9,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.9,
+                "upper": 1,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              }
+            ]
+          }
+        },
+        "bySeason": [
+          {
+            "league": "la-liga",
+            "season": "2023",
+            "n": 380,
+            "logLoss": 0.9942312042562711,
+            "brier": 0.595215805172395,
+            "drawCalibration": {
+              "n": 380,
+              "meanPredicted": 0.24993911714803574,
+              "observed": 0.28157894736842104,
+              "drawBrier": 0.20328994628933503,
+              "ece": 0.045551751135893846,
+              "bins": [
+                {
+                  "lower": 0,
+                  "upper": 0.1,
+                  "n": 6,
+                  "predicted": 0.07508481954964781,
+                  "observed": 0
+                },
+                {
+                  "lower": 0.1,
+                  "upper": 0.2,
+                  "n": 71,
+                  "predicted": 0.16391950236051323,
+                  "observed": 0.2112676056338028
+                },
+                {
+                  "lower": 0.2,
+                  "upper": 0.3,
+                  "n": 216,
+                  "predicted": 0.24858942071625234,
+                  "observed": 0.30092592592592593
+                },
+                {
+                  "lower": 0.3,
+                  "upper": 0.4,
+                  "n": 83,
+                  "predicted": 0.3309164783534346,
+                  "observed": 0.3132530120481928
+                },
+                {
+                  "lower": 0.4,
+                  "upper": 0.5,
+                  "n": 3,
+                  "predicted": 0.4066341675296361,
+                  "observed": 0.3333333333333333
+                },
+                {
+                  "lower": 0.5,
+                  "upper": 0.6,
+                  "n": 1,
+                  "predicted": 0.5067858507247445,
+                  "observed": 0
+                },
+                {
+                  "lower": 0.6,
+                  "upper": 0.7,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.7,
+                  "upper": 0.8,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.8,
+                  "upper": 0.9,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.9,
+                  "upper": 1,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                }
+              ]
+            }
+          },
+          {
+            "league": "la-liga",
+            "season": "2024",
+            "n": 380,
+            "logLoss": 0.9867166545177751,
+            "brier": 0.5859440227432612,
+            "drawCalibration": {
+              "n": 380,
+              "meanPredicted": 0.24916760718458397,
+              "observed": 0.25526315789473686,
+              "drawBrier": 0.19114570666910335,
+              "ece": 0.07670124543195357,
+              "bins": [
+                {
+                  "lower": 0,
+                  "upper": 0.1,
+                  "n": 15,
+                  "predicted": 0.07368243570910264,
+                  "observed": 0.06666666666666667
+                },
+                {
+                  "lower": 0.1,
+                  "upper": 0.2,
+                  "n": 62,
+                  "predicted": 0.16047432077335733,
+                  "observed": 0.12903225806451613
+                },
+                {
+                  "lower": 0.2,
+                  "upper": 0.3,
+                  "n": 221,
+                  "predicted": 0.2500842024117638,
+                  "observed": 0.3212669683257919
+                },
+                {
+                  "lower": 0.3,
+                  "upper": 0.4,
+                  "n": 74,
+                  "predicted": 0.3352257096571665,
+                  "observed": 0.21621621621621623
+                },
+                {
+                  "lower": 0.4,
+                  "upper": 0.5,
+                  "n": 7,
+                  "predicted": 0.4253220692603014,
+                  "observed": 0.14285714285714285
+                },
+                {
+                  "lower": 0.5,
+                  "upper": 0.6,
+                  "n": 1,
+                  "predicted": 0.576480574105024,
+                  "observed": 0
+                },
+                {
+                  "lower": 0.6,
+                  "upper": 0.7,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.7,
+                  "upper": 0.8,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.8,
+                  "upper": 0.9,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.9,
+                  "upper": 1,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                }
+              ]
+            }
+          },
+          {
+            "league": "premier-league",
+            "season": "2023",
+            "n": 380,
+            "logLoss": 0.9492119736298585,
+            "brier": 0.5585451453677259,
+            "drawCalibration": {
+              "n": 380,
+              "meanPredicted": 0.20787362243310062,
+              "observed": 0.21578947368421053,
+              "drawBrier": 0.16963540699573715,
+              "ece": 0.026101822140714052,
+              "bins": [
+                {
+                  "lower": 0,
+                  "upper": 0.1,
+                  "n": 15,
+                  "predicted": 0.07418426045177755,
+                  "observed": 0.13333333333333333
+                },
+                {
+                  "lower": 0.1,
+                  "upper": 0.2,
+                  "n": 131,
+                  "predicted": 0.1635410545708152,
+                  "observed": 0.20610687022900764
+                },
+                {
+                  "lower": 0.2,
+                  "upper": 0.3,
+                  "n": 227,
+                  "predicted": 0.2390116261928169,
+                  "observed": 0.2290748898678414
+                },
+                {
+                  "lower": 0.3,
+                  "upper": 0.4,
+                  "n": 7,
+                  "predicted": 0.31424218903647905,
+                  "observed": 0.14285714285714285
+                },
+                {
+                  "lower": 0.4,
+                  "upper": 0.5,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.5,
+                  "upper": 0.6,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.6,
+                  "upper": 0.7,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.7,
+                  "upper": 0.8,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.8,
+                  "upper": 0.9,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.9,
+                  "upper": 1,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                }
+              ]
+            }
+          },
+          {
+            "league": "premier-league",
+            "season": "2024",
+            "n": 380,
+            "logLoss": 0.9900894746076427,
+            "brier": 0.5923944436614637,
+            "drawCalibration": {
+              "n": 380,
+              "meanPredicted": 0.2174535407812821,
+              "observed": 0.24473684210526317,
+              "drawBrier": 0.18368504965340132,
+              "ece": 0.032900345362245245,
+              "bins": [
+                {
+                  "lower": 0,
+                  "upper": 0.1,
+                  "n": 9,
+                  "predicted": 0.06682648567554952,
+                  "observed": 0.1111111111111111
+                },
+                {
+                  "lower": 0.1,
+                  "upper": 0.2,
+                  "n": 113,
+                  "predicted": 0.16368382660028902,
+                  "observed": 0.1592920353982301
+                },
+                {
+                  "lower": 0.2,
+                  "upper": 0.3,
+                  "n": 239,
+                  "predicted": 0.23878718389103407,
+                  "observed": 0.28451882845188287
+                },
+                {
+                  "lower": 0.3,
+                  "upper": 0.4,
+                  "n": 17,
+                  "predicted": 0.32770388008455886,
+                  "observed": 0.29411764705882354
+                },
+                {
+                  "lower": 0.4,
+                  "upper": 0.5,
+                  "n": 2,
+                  "predicted": 0.44676590428994223,
+                  "observed": 0.5
+                },
+                {
+                  "lower": 0.5,
+                  "upper": 0.6,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.6,
+                  "upper": 0.7,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.7,
+                  "upper": 0.8,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.8,
+                  "upper": 0.9,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.9,
+                  "upper": 1,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "plus_decay",
+      "config": {
+        "mode": "strength",
+        "homeAdvantage": true,
+        "halfLifeDays": 90,
+        "priorMatches": 0,
+        "rhoPenalty": null
+      },
+      "results": {
+        "pooled": {
+          "n": 1520,
+          "logLoss": 0.985247422611503,
+          "brier": 0.586727119595401,
+          "drawCalibration": {
+            "n": 1520,
+            "meanPredicted": 0.23116980034190582,
+            "observed": 0.2493421052631579,
+            "drawBrier": 0.1877467933234138,
+            "ece": 0.039505107853099554,
+            "bins": [
+              {
+                "lower": 0,
+                "upper": 0.1,
+                "n": 56,
+                "predicted": 0.07080581523840324,
+                "observed": 0.08928571428571429
+              },
+              {
+                "lower": 0.1,
+                "upper": 0.2,
+                "n": 367,
+                "predicted": 0.1629616353949408,
+                "observed": 0.2125340599455041
+              },
+              {
+                "lower": 0.2,
+                "upper": 0.3,
+                "n": 893,
+                "predicted": 0.24456116511556436,
+                "observed": 0.2721164613661814
+              },
+              {
+                "lower": 0.3,
+                "upper": 0.4,
+                "n": 193,
+                "predicted": 0.3328168651532292,
+                "observed": 0.2694300518134715
+              },
+              {
+                "lower": 0.4,
+                "upper": 0.5,
+                "n": 8,
+                "predicted": 0.4221629752884666,
+                "observed": 0.125
+              },
+              {
+                "lower": 0.5,
+                "upper": 0.6,
+                "n": 3,
+                "predicted": 0.5339904837743942,
+                "observed": 0
+              },
+              {
+                "lower": 0.6,
+                "upper": 0.7,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.7,
+                "upper": 0.8,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.8,
+                "upper": 0.9,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.9,
+                "upper": 1,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              }
+            ]
+          }
+        },
+        "bySeason": [
+          {
+            "league": "la-liga",
+            "season": "2023",
+            "n": 380,
+            "logLoss": 1.000103809307268,
+            "brier": 0.5998270289044241,
+            "drawCalibration": {
+              "n": 380,
+              "meanPredicted": 0.24943850112012492,
+              "observed": 0.28157894736842104,
+              "drawBrier": 0.20484348065914346,
+              "ece": 0.06276294492295317,
+              "bins": [
+                {
+                  "lower": 0,
+                  "upper": 0.1,
+                  "n": 9,
+                  "predicted": 0.07626605008284648,
+                  "observed": 0.1111111111111111
+                },
+                {
+                  "lower": 0.1,
+                  "upper": 0.2,
+                  "n": 69,
+                  "predicted": 0.16754558059223937,
+                  "observed": 0.2753623188405797
+                },
+                {
+                  "lower": 0.2,
+                  "upper": 0.3,
+                  "n": 217,
+                  "predicted": 0.248403195344877,
+                  "observed": 0.29493087557603687
+                },
+                {
+                  "lower": 0.3,
+                  "upper": 0.4,
+                  "n": 82,
+                  "predicted": 0.3329647828946842,
+                  "observed": 0.2682926829268293
+                },
+                {
+                  "lower": 0.4,
+                  "upper": 0.5,
+                  "n": 2,
+                  "predicted": 0.40891138800710375,
+                  "observed": 0.5
+                },
+                {
+                  "lower": 0.5,
+                  "upper": 0.6,
+                  "n": 1,
+                  "predicted": 0.5151625508207576,
+                  "observed": 0
+                },
+                {
+                  "lower": 0.6,
+                  "upper": 0.7,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.7,
+                  "upper": 0.8,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.8,
+                  "upper": 0.9,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.9,
+                  "upper": 1,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                }
+              ]
+            }
+          },
+          {
+            "league": "la-liga",
+            "season": "2024",
+            "n": 380,
+            "logLoss": 0.9951201063080094,
+            "brier": 0.5917109829421858,
+            "drawCalibration": {
+              "n": 380,
+              "meanPredicted": 0.24947177673388077,
+              "observed": 0.25526315789473686,
+              "drawBrier": 0.1915133419794479,
+              "ece": 0.057676422712372964,
+              "bins": [
+                {
+                  "lower": 0,
+                  "upper": 0.1,
+                  "n": 16,
+                  "predicted": 0.06931960521451519,
+                  "observed": 0.0625
+                },
+                {
+                  "lower": 0.1,
+                  "upper": 0.2,
+                  "n": 63,
+                  "predicted": 0.16026149404167245,
+                  "observed": 0.14285714285714285
+                },
+                {
+                  "lower": 0.2,
+                  "upper": 0.3,
+                  "n": 215,
+                  "predicted": 0.250888917507379,
+                  "observed": 0.30697674418604654
+                },
+                {
+                  "lower": 0.3,
+                  "upper": 0.4,
+                  "n": 79,
+                  "predicted": 0.33539199412757803,
+                  "observed": 0.26582278481012656
+                },
+                {
+                  "lower": 0.4,
+                  "upper": 0.5,
+                  "n": 5,
+                  "predicted": 0.41395873002990174,
+                  "observed": 0
+                },
+                {
+                  "lower": 0.5,
+                  "upper": 0.6,
+                  "n": 2,
+                  "predicted": 0.5434044502512125,
+                  "observed": 0
+                },
+                {
+                  "lower": 0.6,
+                  "upper": 0.7,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.7,
+                  "upper": 0.8,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.8,
+                  "upper": 0.9,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.9,
+                  "upper": 1,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                }
+              ]
+            }
+          },
+          {
+            "league": "premier-league",
+            "season": "2023",
+            "n": 380,
+            "logLoss": 0.955276489975909,
+            "brier": 0.5617505112534918,
+            "drawCalibration": {
+              "n": 380,
+              "meanPredicted": 0.2065819165891421,
+              "observed": 0.21578947368421053,
+              "drawBrier": 0.16988068639548115,
+              "ece": 0.03381942863117653,
+              "bins": [
+                {
+                  "lower": 0,
+                  "upper": 0.1,
+                  "n": 18,
+                  "predicted": 0.06789142415618482,
+                  "observed": 0.1111111111111111
+                },
+                {
+                  "lower": 0.1,
+                  "upper": 0.2,
+                  "n": 128,
+                  "predicted": 0.16095958654064202,
+                  "observed": 0.21875
+                },
+                {
+                  "lower": 0.2,
+                  "upper": 0.3,
+                  "n": 227,
+                  "predicted": 0.24004405087855366,
+                  "observed": 0.22466960352422907
+                },
+                {
+                  "lower": 0.3,
+                  "upper": 0.4,
+                  "n": 7,
+                  "predicted": 0.31232229177555804,
+                  "observed": 0.14285714285714285
+                },
+                {
+                  "lower": 0.4,
+                  "upper": 0.5,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.5,
+                  "upper": 0.6,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.6,
+                  "upper": 0.7,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.7,
+                  "upper": 0.8,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.8,
+                  "upper": 0.9,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.9,
+                  "upper": 1,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                }
+              ]
+            }
+          },
+          {
+            "league": "premier-league",
+            "season": "2024",
+            "n": 380,
+            "logLoss": 0.9904892848548246,
+            "brier": 0.5936199552815041,
+            "drawCalibration": {
+              "n": 380,
+              "meanPredicted": 0.21918700692447562,
+              "observed": 0.24473684210526317,
+              "drawBrier": 0.18474966425958256,
+              "ece": 0.029434080311553847,
+              "bins": [
+                {
+                  "lower": 0,
+                  "upper": 0.1,
+                  "n": 13,
+                  "predicted": 0.07289014495087645,
+                  "observed": 0.07692307692307693
+                },
+                {
+                  "lower": 0.1,
+                  "upper": 0.2,
+                  "n": 107,
+                  "predicted": 0.1639904105350579,
+                  "observed": 0.205607476635514
+                },
+                {
+                  "lower": 0.2,
+                  "upper": 0.3,
+                  "n": 234,
+                  "predicted": 0.23956628309761768,
+                  "observed": 0.26495726495726496
+                },
+                {
+                  "lower": 0.3,
+                  "upper": 0.4,
+                  "n": 25,
+                  "predicted": 0.3299327679480629,
+                  "observed": 0.32
+                },
+                {
+                  "lower": 0.4,
+                  "upper": 0.5,
+                  "n": 1,
+                  "predicted": 0.4896873761440162,
+                  "observed": 0
+                },
+                {
+                  "lower": 0.5,
+                  "upper": 0.6,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.6,
+                  "upper": 0.7,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.7,
+                  "upper": 0.8,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.8,
+                  "upper": 0.9,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.9,
+                  "upper": 1,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "plus_dc",
+      "config": {
+        "mode": "strength",
+        "homeAdvantage": true,
+        "halfLifeDays": 90,
+        "priorMatches": 0,
+        "rhoPenalty": 100
+      },
+      "results": {
+        "pooled": {
+          "n": 1520,
+          "logLoss": 0.9846292307750214,
+          "brier": 0.5863920709879619,
+          "drawCalibration": {
+            "n": 1520,
+            "meanPredicted": 0.23366291623142119,
+            "observed": 0.2493421052631579,
+            "drawBrier": 0.1875234275851206,
+            "ece": 0.03501841416876501,
+            "bins": [
+              {
+                "lower": 0,
+                "upper": 0.1,
+                "n": 57,
+                "predicted": 0.07117907361857091,
+                "observed": 0.08771929824561403
+              },
+              {
+                "lower": 0.1,
+                "upper": 0.2,
+                "n": 346,
+                "predicted": 0.1624327439034672,
+                "observed": 0.2023121387283237
+              },
+              {
+                "lower": 0.2,
+                "upper": 0.3,
+                "n": 905,
+                "predicted": 0.24553688948150348,
+                "observed": 0.2718232044198895
+              },
+              {
+                "lower": 0.3,
+                "upper": 0.4,
+                "n": 196,
+                "predicted": 0.3349688741476486,
+                "observed": 0.29081632653061223
+              },
+              {
+                "lower": 0.4,
+                "upper": 0.5,
+                "n": 13,
+                "predicted": 0.4181288798992347,
+                "observed": 0.07692307692307693
+              },
+              {
+                "lower": 0.5,
+                "upper": 0.6,
+                "n": 3,
+                "predicted": 0.5360787775041628,
+                "observed": 0
+              },
+              {
+                "lower": 0.6,
+                "upper": 0.7,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.7,
+                "upper": 0.8,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.8,
+                "upper": 0.9,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.9,
+                "upper": 1,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              }
+            ]
+          }
+        },
+        "bySeason": [
+          {
+            "league": "la-liga",
+            "season": "2023",
+            "n": 380,
+            "logLoss": 0.998540266260951,
+            "brier": 0.5991254969956884,
+            "drawCalibration": {
+              "n": 380,
+              "meanPredicted": 0.2570738147266845,
+              "observed": 0.28157894736842104,
+              "drawBrier": 0.2043757927199864,
+              "ece": 0.04905467518330895,
+              "bins": [
+                {
+                  "lower": 0,
+                  "upper": 0.1,
+                  "n": 9,
+                  "predicted": 0.07876326854630195,
+                  "observed": 0.1111111111111111
+                },
+                {
+                  "lower": 0.1,
+                  "upper": 0.2,
+                  "n": 56,
+                  "predicted": 0.16514649942064066,
+                  "observed": 0.25
+                },
+                {
+                  "lower": 0.2,
+                  "upper": 0.3,
+                  "n": 216,
+                  "predicted": 0.25030816263318856,
+                  "observed": 0.2916666666666667
+                },
+                {
+                  "lower": 0.3,
+                  "upper": 0.4,
+                  "n": 92,
+                  "predicted": 0.33363335480772216,
+                  "observed": 0.30434782608695654
+                },
+                {
+                  "lower": 0.4,
+                  "upper": 0.5,
+                  "n": 6,
+                  "predicted": 0.4081738374073145,
+                  "observed": 0.16666666666666666
+                },
+                {
+                  "lower": 0.5,
+                  "upper": 0.6,
+                  "n": 1,
+                  "predicted": 0.5211014161443944,
+                  "observed": 0
+                },
+                {
+                  "lower": 0.6,
+                  "upper": 0.7,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.7,
+                  "upper": 0.8,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.8,
+                  "upper": 0.9,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.9,
+                  "upper": 1,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                }
+              ]
+            }
+          },
+          {
+            "league": "la-liga",
+            "season": "2024",
+            "n": 380,
+            "logLoss": 0.995817240708235,
+            "brier": 0.5919832013892018,
+            "drawCalibration": {
+              "n": 380,
+              "meanPredicted": 0.2481691860127624,
+              "observed": 0.25526315789473686,
+              "drawBrier": 0.19169482094412524,
+              "ece": 0.05077461860918222,
+              "bins": [
+                {
+                  "lower": 0,
+                  "upper": 0.1,
+                  "n": 16,
+                  "predicted": 0.06874841472672129,
+                  "observed": 0.0625
+                },
+                {
+                  "lower": 0.1,
+                  "upper": 0.2,
+                  "n": 66,
+                  "predicted": 0.16147033165661936,
+                  "observed": 0.15151515151515152
+                },
+                {
+                  "lower": 0.2,
+                  "upper": 0.3,
+                  "n": 216,
+                  "predicted": 0.25002299910500114,
+                  "observed": 0.30092592592592593
+                },
+                {
+                  "lower": 0.3,
+                  "upper": 0.4,
+                  "n": 74,
+                  "predicted": 0.33733309704913134,
+                  "observed": 0.28378378378378377
+                },
+                {
+                  "lower": 0.4,
+                  "upper": 0.5,
+                  "n": 6,
+                  "predicted": 0.415420375866876,
+                  "observed": 0
+                },
+                {
+                  "lower": 0.5,
+                  "upper": 0.6,
+                  "n": 2,
+                  "predicted": 0.543567458184047,
+                  "observed": 0
+                },
+                {
+                  "lower": 0.6,
+                  "upper": 0.7,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.7,
+                  "upper": 0.8,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.8,
+                  "upper": 0.9,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.9,
+                  "upper": 1,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                }
+              ]
+            }
+          },
+          {
+            "league": "premier-league",
+            "season": "2023",
+            "n": 380,
+            "logLoss": 0.9541103079186568,
+            "brier": 0.5611448416096266,
+            "drawCalibration": {
+              "n": 380,
+              "meanPredicted": 0.20477604008311615,
+              "observed": 0.21578947368421053,
+              "drawBrier": 0.16947690663290443,
+              "ece": 0.02991799861714642,
+              "bins": [
+                {
+                  "lower": 0,
+                  "upper": 0.1,
+                  "n": 19,
+                  "predicted": 0.06786730089598743,
+                  "observed": 0.10526315789473684
+                },
+                {
+                  "lower": 0.1,
+                  "upper": 0.2,
+                  "n": 130,
+                  "predicted": 0.16102730124238837,
+                  "observed": 0.2153846153846154
+                },
+                {
+                  "lower": 0.2,
+                  "upper": 0.3,
+                  "n": 227,
+                  "predicted": 0.23946672021470466,
+                  "observed": 0.2290748898678414
+                },
+                {
+                  "lower": 0.3,
+                  "upper": 0.4,
+                  "n": 4,
+                  "predicted": 0.3082304660779823,
+                  "observed": 0
+                },
+                {
+                  "lower": 0.4,
+                  "upper": 0.5,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.5,
+                  "upper": 0.6,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.6,
+                  "upper": 0.7,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.7,
+                  "upper": 0.8,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.8,
+                  "upper": 0.9,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.9,
+                  "upper": 1,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                }
+              ]
+            }
+          },
+          {
+            "league": "premier-league",
+            "season": "2024",
+            "n": 380,
+            "logLoss": 0.9900491082122342,
+            "brier": 0.5933147439573294,
+            "drawCalibration": {
+              "n": 380,
+              "meanPredicted": 0.22463262410312282,
+              "observed": 0.24473684210526317,
+              "drawBrier": 0.18454619004346617,
+              "ece": 0.026726164337539937,
+              "bins": [
+                {
+                  "lower": 0,
+                  "upper": 0.1,
+                  "n": 13,
+                  "predicted": 0.0737603405146556,
+                  "observed": 0.07692307692307693
+                },
+                {
+                  "lower": 0.1,
+                  "upper": 0.2,
+                  "n": 94,
+                  "predicted": 0.1634354720446431,
+                  "observed": 0.19148936170212766
+                },
+                {
+                  "lower": 0.2,
+                  "upper": 0.3,
+                  "n": 246,
+                  "predicted": 0.24300979088038135,
+                  "observed": 0.2682926829268293
+                },
+                {
+                  "lower": 0.3,
+                  "upper": 0.4,
+                  "n": 26,
+                  "predicted": 0.33707921710311733,
+                  "observed": 0.3076923076923077
+                },
+                {
+                  "lower": 0.4,
+                  "upper": 0.5,
+                  "n": 1,
+                  "predicted": 0.4941101590449077,
+                  "observed": 0
+                },
+                {
+                  "lower": 0.5,
+                  "upper": 0.6,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.6,
+                  "upper": 0.7,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.7,
+                  "upper": 0.8,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.8,
+                  "upper": 0.9,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.9,
+                  "upper": 1,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "plus_shrinkage",
+      "config": {
+        "mode": "strength",
+        "homeAdvantage": true,
+        "halfLifeDays": 90,
+        "priorMatches": 6,
+        "rhoPenalty": 100
+      },
+      "results": {
+        "pooled": {
+          "n": 1520,
+          "logLoss": 0.9871807852639432,
+          "brier": 0.5876781398024532,
+          "drawCalibration": {
+            "n": 1520,
+            "meanPredicted": 0.2410776627955712,
+            "observed": 0.2493421052631579,
+            "drawBrier": 0.18563905592864383,
+            "ece": 0.02453452432060085,
+            "bins": [
+              {
+                "lower": 0,
+                "upper": 0.1,
+                "n": 2,
+                "predicted": 0.09259812417450591,
+                "observed": 0
+              },
+              {
+                "lower": 0.1,
+                "upper": 0.2,
+                "n": 191,
+                "predicted": 0.17341363480445002,
+                "observed": 0.15706806282722513
+              },
+              {
+                "lower": 0.2,
+                "upper": 0.3,
+                "n": 1229,
+                "predicted": 0.2457874574784195,
+                "observed": 0.2660699755899105
+              },
+              {
+                "lower": 0.3,
+                "upper": 0.4,
+                "n": 98,
+                "predicted": 0.3169189970642028,
+                "observed": 0.22448979591836735
+              },
+              {
+                "lower": 0.4,
+                "upper": 0.5,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.5,
+                "upper": 0.6,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.6,
+                "upper": 0.7,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.7,
+                "upper": 0.8,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.8,
+                "upper": 0.9,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.9,
+                "upper": 1,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              }
+            ]
+          }
+        },
+        "bySeason": [
+          {
+            "league": "la-liga",
+            "season": "2023",
+            "n": 380,
+            "logLoss": 0.9976794437722165,
+            "brier": 0.5962296752149251,
+            "drawCalibration": {
+              "n": 380,
+              "meanPredicted": 0.25965144817675356,
+              "observed": 0.28157894736842104,
+              "drawBrier": 0.20164992818125493,
+              "ece": 0.03551038898861184,
+              "bins": [
+                {
+                  "lower": 0,
+                  "upper": 0.1,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.1,
+                  "upper": 0.2,
+                  "n": 27,
+                  "predicted": 0.17395291970830248,
+                  "observed": 0.14814814814814814
+                },
+                {
+                  "lower": 0.2,
+                  "upper": 0.3,
+                  "n": 303,
+                  "predicted": 0.2577122153324981,
+                  "observed": 0.29372937293729373
+                },
+                {
+                  "lower": 0.3,
+                  "upper": 0.4,
+                  "n": 50,
+                  "predicted": 0.3176804045859052,
+                  "observed": 0.28
+                },
+                {
+                  "lower": 0.4,
+                  "upper": 0.5,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.5,
+                  "upper": 0.6,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.6,
+                  "upper": 0.7,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.7,
+                  "upper": 0.8,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.8,
+                  "upper": 0.9,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.9,
+                  "upper": 1,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                }
+              ]
+            }
+          },
+          {
+            "league": "la-liga",
+            "season": "2024",
+            "n": 380,
+            "logLoss": 0.9918767655582664,
+            "brier": 0.5901141503681109,
+            "drawCalibration": {
+              "n": 380,
+              "meanPredicted": 0.25075851605062116,
+              "observed": 0.25526315789473686,
+              "drawBrier": 0.1885781369598518,
+              "ece": 0.05338347302936017,
+              "bins": [
+                {
+                  "lower": 0,
+                  "upper": 0.1,
+                  "n": 2,
+                  "predicted": 0.09259812417450591,
+                  "observed": 0
+                },
+                {
+                  "lower": 0.1,
+                  "upper": 0.2,
+                  "n": 38,
+                  "predicted": 0.17077651608723937,
+                  "observed": 0.07894736842105263
+                },
+                {
+                  "lower": 0.2,
+                  "upper": 0.3,
+                  "n": 297,
+                  "predicted": 0.25252948880147996,
+                  "observed": 0.2895622895622896
+                },
+                {
+                  "lower": 0.3,
+                  "upper": 0.4,
+                  "n": 43,
+                  "predicted": 0.31656451315191403,
+                  "observed": 0.18604651162790697
+                },
+                {
+                  "lower": 0.4,
+                  "upper": 0.5,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.5,
+                  "upper": 0.6,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.6,
+                  "upper": 0.7,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.7,
+                  "upper": 0.8,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.8,
+                  "upper": 0.9,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.9,
+                  "upper": 1,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                }
+              ]
+            }
+          },
+          {
+            "league": "premier-league",
+            "season": "2023",
+            "n": 380,
+            "logLoss": 0.9623563632119674,
+            "brier": 0.5687717500974688,
+            "drawCalibration": {
+              "n": 380,
+              "meanPredicted": 0.21849591364888646,
+              "observed": 0.21578947368421053,
+              "drawBrier": 0.16882521706644874,
+              "ece": 0.011355321796256132,
+              "bins": [
+                {
+                  "lower": 0,
+                  "upper": 0.1,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.1,
+                  "upper": 0.2,
+                  "n": 83,
+                  "predicted": 0.17297243918071986,
+                  "observed": 0.1927710843373494
+                },
+                {
+                  "lower": 0.2,
+                  "upper": 0.3,
+                  "n": 297,
+                  "predicted": 0.23121796206928308,
+                  "observed": 0.2222222222222222
+                },
+                {
+                  "lower": 0.3,
+                  "upper": 0.4,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.4,
+                  "upper": 0.5,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.5,
+                  "upper": 0.6,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.6,
+                  "upper": 0.7,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.7,
+                  "upper": 0.8,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.8,
+                  "upper": 0.9,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.9,
+                  "upper": 1,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                }
+              ]
+            }
+          },
+          {
+            "league": "premier-league",
+            "season": "2024",
+            "n": 380,
+            "logLoss": 0.9968105685133214,
+            "brier": 0.5955969835293091,
+            "drawCalibration": {
+              "n": 380,
+              "meanPredicted": 0.23540477330602333,
+              "observed": 0.24473684210526317,
+              "drawBrier": 0.18350294150701807,
+              "ece": 0.020599557060688518,
+              "bins": [
+                {
+                  "lower": 0,
+                  "upper": 0.1,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.1,
+                  "upper": 0.2,
+                  "n": 43,
+                  "predicted": 0.1762571012142078,
+                  "observed": 0.16279069767441862
+                },
+                {
+                  "lower": 0.2,
+                  "upper": 0.3,
+                  "n": 332,
+                  "predicted": 0.24190659965847472,
+                  "observed": 0.25903614457831325
+                },
+                {
+                  "lower": 0.3,
+                  "upper": 0.4,
+                  "n": 5,
+                  "predicted": 0.3123534834928618,
+                  "observed": 0
+                },
+                {
+                  "lower": 0.4,
+                  "upper": 0.5,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.5,
+                  "upper": 0.6,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.6,
+                  "upper": 0.7,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.7,
+                  "upper": 0.8,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.8,
+                  "upper": 0.9,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.9,
+                  "upper": 1,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "v2_without_home",
+      "config": {
+        "mode": "strength",
+        "homeAdvantage": false,
+        "halfLifeDays": 90,
+        "priorMatches": 6,
+        "rhoPenalty": 100
+      },
+      "results": {
+        "pooled": {
+          "n": 1520,
+          "logLoss": 0.9991081210214144,
+          "brier": 0.596006773899738,
+          "drawCalibration": {
+            "n": 1520,
+            "meanPredicted": 0.2427301334246814,
+            "observed": 0.2493421052631579,
+            "drawBrier": 0.18614098272861646,
+            "ece": 0.021342271319708082,
+            "bins": [
+              {
+                "lower": 0,
+                "upper": 0.1,
+                "n": 1,
+                "predicted": 0.07464820848877234,
+                "observed": 0
+              },
+              {
+                "lower": 0.1,
+                "upper": 0.2,
+                "n": 165,
+                "predicted": 0.1781874587951105,
+                "observed": 0.17575757575757575
+              },
+              {
+                "lower": 0.2,
+                "upper": 0.3,
+                "n": 1254,
+                "predicted": 0.24541848102055822,
+                "observed": 0.2623604465709729
+              },
+              {
+                "lower": 0.3,
+                "upper": 0.4,
+                "n": 100,
+                "predicted": 0.31719448696054253,
+                "observed": 0.21
+              },
+              {
+                "lower": 0.4,
+                "upper": 0.5,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.5,
+                "upper": 0.6,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.6,
+                "upper": 0.7,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.7,
+                "upper": 0.8,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.8,
+                "upper": 0.9,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.9,
+                "upper": 1,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              }
+            ]
+          }
+        },
+        "bySeason": [
+          {
+            "league": "la-liga",
+            "season": "2023",
+            "n": 380,
+            "logLoss": 1.017520121785456,
+            "brier": 0.6100943490750771,
+            "drawCalibration": {
+              "n": 380,
+              "meanPredicted": 0.26221470720692536,
+              "observed": 0.28157894736842104,
+              "drawBrier": 0.2033530056219559,
+              "ece": 0.04403859552587737,
+              "bins": [
+                {
+                  "lower": 0,
+                  "upper": 0.1,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.1,
+                  "upper": 0.2,
+                  "n": 18,
+                  "predicted": 0.18204312534029482,
+                  "observed": 0.2777777777777778
+                },
+                {
+                  "lower": 0.2,
+                  "upper": 0.3,
+                  "n": 306,
+                  "predicted": 0.2571133495531824,
+                  "observed": 0.2908496732026144
+                },
+                {
+                  "lower": 0.3,
+                  "upper": 0.4,
+                  "n": 56,
+                  "predicted": 0.3158594199862948,
+                  "observed": 0.23214285714285715
+                },
+                {
+                  "lower": 0.4,
+                  "upper": 0.5,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.5,
+                  "upper": 0.6,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.6,
+                  "upper": 0.7,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.7,
+                  "upper": 0.8,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.8,
+                  "upper": 0.9,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.9,
+                  "upper": 1,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                }
+              ]
+            }
+          },
+          {
+            "league": "la-liga",
+            "season": "2024",
+            "n": 380,
+            "logLoss": 1.0083067117019688,
+            "brier": 0.601194300504188,
+            "drawCalibration": {
+              "n": 380,
+              "meanPredicted": 0.2527055624327406,
+              "observed": 0.25526315789473686,
+              "drawBrier": 0.18951198513083728,
+              "ece": 0.02929231696117486,
+              "bins": [
+                {
+                  "lower": 0,
+                  "upper": 0.1,
+                  "n": 1,
+                  "predicted": 0.07464820848877234,
+                  "observed": 0
+                },
+                {
+                  "lower": 0.1,
+                  "upper": 0.2,
+                  "n": 28,
+                  "predicted": 0.1728188142860522,
+                  "observed": 0.14285714285714285
+                },
+                {
+                  "lower": 0.2,
+                  "upper": 0.3,
+                  "n": 313,
+                  "predicted": 0.2522316825546244,
+                  "observed": 0.2715654952076677
+                },
+                {
+                  "lower": 0.3,
+                  "upper": 0.4,
+                  "n": 38,
+                  "predicted": 0.32015847569330685,
+                  "observed": 0.21052631578947367
+                },
+                {
+                  "lower": 0.4,
+                  "upper": 0.5,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.5,
+                  "upper": 0.6,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.6,
+                  "upper": 0.7,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.7,
+                  "upper": 0.8,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.8,
+                  "upper": 0.9,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.9,
+                  "upper": 1,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                }
+              ]
+            }
+          },
+          {
+            "league": "premier-league",
+            "season": "2023",
+            "n": 380,
+            "logLoss": 0.9734154782312501,
+            "brier": 0.5768167145831843,
+            "drawCalibration": {
+              "n": 380,
+              "meanPredicted": 0.2201705642421305,
+              "observed": 0.21578947368421053,
+              "drawBrier": 0.16849234257970344,
+              "ece": 0.009362632078983642,
+              "bins": [
+                {
+                  "lower": 0,
+                  "upper": 0.1,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.1,
+                  "upper": 0.2,
+                  "n": 73,
+                  "predicted": 0.178815165904081,
+                  "observed": 0.1917808219178082
+                },
+                {
+                  "lower": 0.2,
+                  "upper": 0.3,
+                  "n": 307,
+                  "predicted": 0.23000425830948434,
+                  "observed": 0.22149837133550487
+                },
+                {
+                  "lower": 0.3,
+                  "upper": 0.4,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.4,
+                  "upper": 0.5,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.5,
+                  "upper": 0.6,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.6,
+                  "upper": 0.7,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.7,
+                  "upper": 0.8,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.8,
+                  "upper": 0.9,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.9,
+                  "upper": 1,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                }
+              ]
+            }
+          },
+          {
+            "league": "premier-league",
+            "season": "2024",
+            "n": 380,
+            "logLoss": 0.9971901723669899,
+            "brier": 0.5959217314364996,
+            "drawCalibration": {
+              "n": 380,
+              "meanPredicted": 0.23582969981693008,
+              "observed": 0.24473684210526317,
+              "drawBrier": 0.18320659758196906,
+              "ece": 0.03047040352273636,
+              "bins": [
+                {
+                  "lower": 0,
+                  "upper": 0.1,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.1,
+                  "upper": 0.2,
+                  "n": 46,
+                  "predicted": 0.17895044639262067,
+                  "observed": 0.13043478260869565
+                },
+                {
+                  "lower": 0.2,
+                  "upper": 0.3,
+                  "n": 328,
+                  "predicted": 0.24243373870700247,
+                  "observed": 0.2652439024390244
+                },
+                {
+                  "lower": 0.3,
+                  "upper": 0.4,
+                  "n": 6,
+                  "predicted": 0.31088318341267834,
+                  "observed": 0
+                },
+                {
+                  "lower": 0.4,
+                  "upper": 0.5,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.5,
+                  "upper": 0.6,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.6,
+                  "upper": 0.7,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.7,
+                  "upper": 0.8,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.8,
+                  "upper": 0.9,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.9,
+                  "upper": 1,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "v2_without_decay",
+      "config": {
+        "mode": "strength",
+        "homeAdvantage": true,
+        "halfLifeDays": null,
+        "priorMatches": 6,
+        "rhoPenalty": 100
+      },
+      "results": {
+        "pooled": {
+          "n": 1520,
+          "logLoss": 0.9788657774740228,
+          "brier": 0.5820326019655168,
+          "drawCalibration": {
+            "n": 1520,
+            "meanPredicted": 0.23816830185749244,
+            "observed": 0.2493421052631579,
+            "drawBrier": 0.18525756394750742,
+            "ece": 0.021303273394279662,
+            "bins": [
+              {
+                "lower": 0,
+                "upper": 0.1,
+                "n": 7,
+                "predicted": 0.08602136437661378,
+                "observed": 0.14285714285714285
+              },
+              {
+                "lower": 0.1,
+                "upper": 0.2,
+                "n": 269,
+                "predicted": 0.16972927871748,
+                "observed": 0.17472118959107807
+              },
+              {
+                "lower": 0.2,
+                "upper": 0.3,
+                "n": 1096,
+                "predicted": 0.244578554841609,
+                "observed": 0.2655109489051095
+              },
+              {
+                "lower": 0.3,
+                "upper": 0.4,
+                "n": 147,
+                "predicted": 0.3216725899899708,
+                "observed": 0.272108843537415
+              },
+              {
+                "lower": 0.4,
+                "upper": 0.5,
+                "n": 1,
+                "predicted": 0.4125264628212508,
+                "observed": 0
+              },
+              {
+                "lower": 0.5,
+                "upper": 0.6,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.6,
+                "upper": 0.7,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.7,
+                "upper": 0.8,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.8,
+                "upper": 0.9,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.9,
+                "upper": 1,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              }
+            ]
+          }
+        },
+        "bySeason": [
+          {
+            "league": "la-liga",
+            "season": "2023",
+            "n": 380,
+            "logLoss": 0.9879293385189581,
+            "brier": 0.5903239712255605,
+            "drawCalibration": {
+              "n": 380,
+              "meanPredicted": 0.26115445033692536,
+              "observed": 0.28157894736842104,
+              "drawBrier": 0.20099137400349104,
+              "ece": 0.020424497031495847,
+              "bins": [
+                {
+                  "lower": 0,
+                  "upper": 0.1,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.1,
+                  "upper": 0.2,
+                  "n": 40,
+                  "predicted": 0.16937741148681712,
+                  "observed": 0.275
+                },
+                {
+                  "lower": 0.2,
+                  "upper": 0.3,
+                  "n": 255,
+                  "predicted": 0.2551560701326356,
+                  "observed": 0.26666666666666666
+                },
+                {
+                  "lower": 0.3,
+                  "upper": 0.4,
+                  "n": 85,
+                  "predicted": 0.3223387857027861,
+                  "observed": 0.32941176470588235
+                },
+                {
+                  "lower": 0.4,
+                  "upper": 0.5,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.5,
+                  "upper": 0.6,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.6,
+                  "upper": 0.7,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.7,
+                  "upper": 0.8,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.8,
+                  "upper": 0.9,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.9,
+                  "upper": 1,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                }
+              ]
+            }
+          },
+          {
+            "league": "la-liga",
+            "season": "2024",
+            "n": 380,
+            "logLoss": 0.9820298339133801,
+            "brier": 0.5826848802368064,
+            "drawCalibration": {
+              "n": 380,
+              "meanPredicted": 0.24733335064994613,
+              "observed": 0.25526315789473686,
+              "drawBrier": 0.18851943447273975,
+              "ece": 0.06702608104076037,
+              "bins": [
+                {
+                  "lower": 0,
+                  "upper": 0.1,
+                  "n": 3,
+                  "predicted": 0.08514929691286653,
+                  "observed": 0
+                },
+                {
+                  "lower": 0.1,
+                  "upper": 0.2,
+                  "n": 54,
+                  "predicted": 0.16491542815875115,
+                  "observed": 0.09259259259259259
+                },
+                {
+                  "lower": 0.2,
+                  "upper": 0.3,
+                  "n": 267,
+                  "predicted": 0.25003139035859673,
+                  "observed": 0.30337078651685395
+                },
+                {
+                  "lower": 0.3,
+                  "upper": 0.4,
+                  "n": 55,
+                  "predicted": 0.32099790085639723,
+                  "observed": 0.2
+                },
+                {
+                  "lower": 0.4,
+                  "upper": 0.5,
+                  "n": 1,
+                  "predicted": 0.4125264628212508,
+                  "observed": 0
+                },
+                {
+                  "lower": 0.5,
+                  "upper": 0.6,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.6,
+                  "upper": 0.7,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.7,
+                  "upper": 0.8,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.8,
+                  "upper": 0.9,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.9,
+                  "upper": 1,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                }
+              ]
+            }
+          },
+          {
+            "league": "premier-league",
+            "season": "2023",
+            "n": 380,
+            "logLoss": 0.9544204434169687,
+            "brier": 0.5633424705446708,
+            "drawCalibration": {
+              "n": 380,
+              "meanPredicted": 0.2116870668559876,
+              "observed": 0.21578947368421053,
+              "drawBrier": 0.16885019293010053,
+              "ece": 0.010341262871813967,
+              "bins": [
+                {
+                  "lower": 0,
+                  "upper": 0.1,
+                  "n": 2,
+                  "predicted": 0.08526681734387309,
+                  "observed": 0.5
+                },
+                {
+                  "lower": 0.1,
+                  "upper": 0.2,
+                  "n": 112,
+                  "predicted": 0.1704032957348682,
+                  "observed": 0.1875
+                },
+                {
+                  "lower": 0.2,
+                  "upper": 0.3,
+                  "n": 266,
+                  "predicted": 0.23002023551985823,
+                  "observed": 0.22556390977443608
+                },
+                {
+                  "lower": 0.3,
+                  "upper": 0.4,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.4,
+                  "upper": 0.5,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.5,
+                  "upper": 0.6,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.6,
+                  "upper": 0.7,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.7,
+                  "upper": 0.8,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.8,
+                  "upper": 0.9,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.9,
+                  "upper": 1,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                }
+              ]
+            }
+          },
+          {
+            "league": "premier-league",
+            "season": "2024",
+            "n": 380,
+            "logLoss": 0.9910834940467849,
+            "brier": 0.5917790858550276,
+            "drawCalibration": {
+              "n": 380,
+              "meanPredicted": 0.23249833958711102,
+              "observed": 0.24473684210526317,
+              "drawBrier": 0.18266925438369794,
+              "ece": 0.02434289564735523,
+              "bins": [
+                {
+                  "lower": 0,
+                  "upper": 0.1,
+                  "n": 2,
+                  "predicted": 0.08808401260497538,
+                  "observed": 0
+                },
+                {
+                  "lower": 0.1,
+                  "upper": 0.2,
+                  "n": 63,
+                  "predicted": 0.172880591629391,
+                  "observed": 0.15873015873015872
+                },
+                {
+                  "lower": 0.2,
+                  "upper": 0.3,
+                  "n": 308,
+                  "predicted": 0.2436673193134857,
+                  "observed": 0.2662337662337662
+                },
+                {
+                  "lower": 0.3,
+                  "upper": 0.4,
+                  "n": 7,
+                  "predicted": 0.31888419952671515,
+                  "observed": 0.14285714285714285
+                },
+                {
+                  "lower": 0.4,
+                  "upper": 0.5,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.5,
+                  "upper": 0.6,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.6,
+                  "upper": 0.7,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.7,
+                  "upper": 0.8,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.8,
+                  "upper": 0.9,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.9,
+                  "upper": 1,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "v2_without_dc",
+      "config": {
+        "mode": "strength",
+        "homeAdvantage": true,
+        "halfLifeDays": 90,
+        "priorMatches": 6,
+        "rhoPenalty": null
+      },
+      "results": {
+        "pooled": {
+          "n": 1520,
+          "logLoss": 0.9877559206001889,
+          "brier": 0.5879544571325952,
+          "drawCalibration": {
+            "n": 1520,
+            "meanPredicted": 0.239237366384344,
+            "observed": 0.2493421052631579,
+            "drawBrier": 0.18582326748207137,
+            "ece": 0.024101141730823002,
+            "bins": [
+              {
+                "lower": 0,
+                "upper": 0.1,
+                "n": 1,
+                "predicted": 0.0829269398334625,
+                "observed": 0
+              },
+              {
+                "lower": 0.1,
+                "upper": 0.2,
+                "n": 198,
+                "predicted": 0.17356284355865936,
+                "observed": 0.16666666666666666
+              },
+              {
+                "lower": 0.2,
+                "upper": 0.3,
+                "n": 1244,
+                "predicted": 0.2451796870873602,
+                "observed": 0.26607717041800644
+              },
+              {
+                "lower": 0.3,
+                "upper": 0.4,
+                "n": 77,
+                "predicted": 0.3141415091308966,
+                "observed": 0.19480519480519481
+              },
+              {
+                "lower": 0.4,
+                "upper": 0.5,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.5,
+                "upper": 0.6,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.6,
+                "upper": 0.7,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.7,
+                "upper": 0.8,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.8,
+                "upper": 0.9,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.9,
+                "upper": 1,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              }
+            ]
+          }
+        },
+        "bySeason": [
+          {
+            "league": "la-liga",
+            "season": "2023",
+            "n": 380,
+            "logLoss": 0.9991600178999276,
+            "brier": 0.5968242171572871,
+            "drawCalibration": {
+              "n": 380,
+              "meanPredicted": 0.25262138885824753,
+              "observed": 0.28157894736842104,
+              "drawBrier": 0.20204628947616318,
+              "ece": 0.03927466410205961,
+              "bins": [
+                {
+                  "lower": 0,
+                  "upper": 0.1,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.1,
+                  "upper": 0.2,
+                  "n": 32,
+                  "predicted": 0.17403096382974137,
+                  "observed": 0.1875
+                },
+                {
+                  "lower": 0.2,
+                  "upper": 0.3,
+                  "n": 313,
+                  "predicted": 0.2538878174476805,
+                  "observed": 0.2939297124600639
+                },
+                {
+                  "lower": 0.3,
+                  "upper": 0.4,
+                  "n": 35,
+                  "predicted": 0.31315000178452523,
+                  "observed": 0.2571428571428571
+                },
+                {
+                  "lower": 0.4,
+                  "upper": 0.5,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.5,
+                  "upper": 0.6,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.6,
+                  "upper": 0.7,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.7,
+                  "upper": 0.8,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.8,
+                  "upper": 0.9,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.9,
+                  "upper": 1,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                }
+              ]
+            }
+          },
+          {
+            "league": "la-liga",
+            "season": "2024",
+            "n": 380,
+            "logLoss": 0.9911279965212181,
+            "brier": 0.5897793496455038,
+            "drawCalibration": {
+              "n": 380,
+              "meanPredicted": 0.252688070281658,
+              "observed": 0.25526315789473686,
+              "drawBrier": 0.18835493647811316,
+              "ece": 0.05603069307860293,
+              "bins": [
+                {
+                  "lower": 0,
+                  "upper": 0.1,
+                  "n": 1,
+                  "predicted": 0.0829269398334625,
+                  "observed": 0
+                },
+                {
+                  "lower": 0.1,
+                  "upper": 0.2,
+                  "n": 38,
+                  "predicted": 0.17001447054301336,
+                  "observed": 0.07894736842105263
+                },
+                {
+                  "lower": 0.2,
+                  "upper": 0.3,
+                  "n": 301,
+                  "predicted": 0.2553651218225265,
+                  "observed": 0.292358803986711
+                },
+                {
+                  "lower": 0.3,
+                  "upper": 0.4,
+                  "n": 40,
+                  "predicted": 0.3153272054495404,
+                  "observed": 0.15
+                },
+                {
+                  "lower": 0.4,
+                  "upper": 0.5,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.5,
+                  "upper": 0.6,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.6,
+                  "upper": 0.7,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.7,
+                  "upper": 0.8,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.8,
+                  "upper": 0.9,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.9,
+                  "upper": 1,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                }
+              ]
+            }
+          },
+          {
+            "league": "premier-league",
+            "season": "2023",
+            "n": 380,
+            "logLoss": 0.9635213906545754,
+            "brier": 0.5694813434771866,
+            "drawCalibration": {
+              "n": 380,
+              "meanPredicted": 0.221155597089594,
+              "observed": 0.21578947368421053,
+              "drawBrier": 0.16929827931959476,
+              "ece": 0.005884866608523239,
+              "bins": [
+                {
+                  "lower": 0,
+                  "upper": 0.1,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.1,
+                  "upper": 0.2,
+                  "n": 80,
+                  "predicted": 0.17376798489254328,
+                  "observed": 0.175
+                },
+                {
+                  "lower": 0.2,
+                  "upper": 0.3,
+                  "n": 300,
+                  "predicted": 0.2337922936754743,
+                  "observed": 0.22666666666666666
+                },
+                {
+                  "lower": 0.3,
+                  "upper": 0.4,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.4,
+                  "upper": 0.5,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.5,
+                  "upper": 0.6,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.6,
+                  "upper": 0.7,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.7,
+                  "upper": 0.8,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.8,
+                  "upper": 0.9,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.9,
+                  "upper": 1,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                }
+              ]
+            }
+          },
+          {
+            "league": "premier-league",
+            "season": "2024",
+            "n": 380,
+            "logLoss": 0.997214277325034,
+            "brier": 0.5957329182504034,
+            "drawCalibration": {
+              "n": 380,
+              "meanPredicted": 0.23048440930787784,
+              "observed": 0.24473684210526317,
+              "drawBrier": 0.18359356465441437,
+              "ece": 0.017492211337590855,
+              "bins": [
+                {
+                  "lower": 0,
+                  "upper": 0.1,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.1,
+                  "upper": 0.2,
+                  "n": 48,
+                  "predicted": 0.17571798979218436,
+                  "observed": 0.20833333333333334
+                },
+                {
+                  "lower": 0.2,
+                  "upper": 0.3,
+                  "n": 330,
+                  "predicted": 0.23798198213433233,
+                  "observed": 0.2515151515151515
+                },
+                {
+                  "lower": 0.3,
+                  "upper": 0.4,
+                  "n": 2,
+                  "predicted": 0.3077789613195204,
+                  "observed": 0
+                },
+                {
+                  "lower": 0.4,
+                  "upper": 0.5,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.5,
+                  "upper": 0.6,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.6,
+                  "upper": 0.7,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.7,
+                  "upper": 0.8,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.8,
+                  "upper": 0.9,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.9,
+                  "upper": 1,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "v2_without_shrinkage",
+      "config": {
+        "mode": "strength",
+        "homeAdvantage": true,
+        "halfLifeDays": 90,
+        "priorMatches": 0,
+        "rhoPenalty": 100
+      },
+      "results": {
+        "pooled": {
+          "n": 1520,
+          "logLoss": 0.9846292307750214,
+          "brier": 0.5863920709879619,
+          "drawCalibration": {
+            "n": 1520,
+            "meanPredicted": 0.23366291623142119,
+            "observed": 0.2493421052631579,
+            "drawBrier": 0.1875234275851206,
+            "ece": 0.03501841416876501,
+            "bins": [
+              {
+                "lower": 0,
+                "upper": 0.1,
+                "n": 57,
+                "predicted": 0.07117907361857091,
+                "observed": 0.08771929824561403
+              },
+              {
+                "lower": 0.1,
+                "upper": 0.2,
+                "n": 346,
+                "predicted": 0.1624327439034672,
+                "observed": 0.2023121387283237
+              },
+              {
+                "lower": 0.2,
+                "upper": 0.3,
+                "n": 905,
+                "predicted": 0.24553688948150348,
+                "observed": 0.2718232044198895
+              },
+              {
+                "lower": 0.3,
+                "upper": 0.4,
+                "n": 196,
+                "predicted": 0.3349688741476486,
+                "observed": 0.29081632653061223
+              },
+              {
+                "lower": 0.4,
+                "upper": 0.5,
+                "n": 13,
+                "predicted": 0.4181288798992347,
+                "observed": 0.07692307692307693
+              },
+              {
+                "lower": 0.5,
+                "upper": 0.6,
+                "n": 3,
+                "predicted": 0.5360787775041628,
+                "observed": 0
+              },
+              {
+                "lower": 0.6,
+                "upper": 0.7,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.7,
+                "upper": 0.8,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.8,
+                "upper": 0.9,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.9,
+                "upper": 1,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              }
+            ]
+          }
+        },
+        "bySeason": [
+          {
+            "league": "la-liga",
+            "season": "2023",
+            "n": 380,
+            "logLoss": 0.998540266260951,
+            "brier": 0.5991254969956884,
+            "drawCalibration": {
+              "n": 380,
+              "meanPredicted": 0.2570738147266845,
+              "observed": 0.28157894736842104,
+              "drawBrier": 0.2043757927199864,
+              "ece": 0.04905467518330895,
+              "bins": [
+                {
+                  "lower": 0,
+                  "upper": 0.1,
+                  "n": 9,
+                  "predicted": 0.07876326854630195,
+                  "observed": 0.1111111111111111
+                },
+                {
+                  "lower": 0.1,
+                  "upper": 0.2,
+                  "n": 56,
+                  "predicted": 0.16514649942064066,
+                  "observed": 0.25
+                },
+                {
+                  "lower": 0.2,
+                  "upper": 0.3,
+                  "n": 216,
+                  "predicted": 0.25030816263318856,
+                  "observed": 0.2916666666666667
+                },
+                {
+                  "lower": 0.3,
+                  "upper": 0.4,
+                  "n": 92,
+                  "predicted": 0.33363335480772216,
+                  "observed": 0.30434782608695654
+                },
+                {
+                  "lower": 0.4,
+                  "upper": 0.5,
+                  "n": 6,
+                  "predicted": 0.4081738374073145,
+                  "observed": 0.16666666666666666
+                },
+                {
+                  "lower": 0.5,
+                  "upper": 0.6,
+                  "n": 1,
+                  "predicted": 0.5211014161443944,
+                  "observed": 0
+                },
+                {
+                  "lower": 0.6,
+                  "upper": 0.7,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.7,
+                  "upper": 0.8,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.8,
+                  "upper": 0.9,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.9,
+                  "upper": 1,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                }
+              ]
+            }
+          },
+          {
+            "league": "la-liga",
+            "season": "2024",
+            "n": 380,
+            "logLoss": 0.995817240708235,
+            "brier": 0.5919832013892018,
+            "drawCalibration": {
+              "n": 380,
+              "meanPredicted": 0.2481691860127624,
+              "observed": 0.25526315789473686,
+              "drawBrier": 0.19169482094412524,
+              "ece": 0.05077461860918222,
+              "bins": [
+                {
+                  "lower": 0,
+                  "upper": 0.1,
+                  "n": 16,
+                  "predicted": 0.06874841472672129,
+                  "observed": 0.0625
+                },
+                {
+                  "lower": 0.1,
+                  "upper": 0.2,
+                  "n": 66,
+                  "predicted": 0.16147033165661936,
+                  "observed": 0.15151515151515152
+                },
+                {
+                  "lower": 0.2,
+                  "upper": 0.3,
+                  "n": 216,
+                  "predicted": 0.25002299910500114,
+                  "observed": 0.30092592592592593
+                },
+                {
+                  "lower": 0.3,
+                  "upper": 0.4,
+                  "n": 74,
+                  "predicted": 0.33733309704913134,
+                  "observed": 0.28378378378378377
+                },
+                {
+                  "lower": 0.4,
+                  "upper": 0.5,
+                  "n": 6,
+                  "predicted": 0.415420375866876,
+                  "observed": 0
+                },
+                {
+                  "lower": 0.5,
+                  "upper": 0.6,
+                  "n": 2,
+                  "predicted": 0.543567458184047,
+                  "observed": 0
+                },
+                {
+                  "lower": 0.6,
+                  "upper": 0.7,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.7,
+                  "upper": 0.8,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.8,
+                  "upper": 0.9,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.9,
+                  "upper": 1,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                }
+              ]
+            }
+          },
+          {
+            "league": "premier-league",
+            "season": "2023",
+            "n": 380,
+            "logLoss": 0.9541103079186568,
+            "brier": 0.5611448416096266,
+            "drawCalibration": {
+              "n": 380,
+              "meanPredicted": 0.20477604008311615,
+              "observed": 0.21578947368421053,
+              "drawBrier": 0.16947690663290443,
+              "ece": 0.02991799861714642,
+              "bins": [
+                {
+                  "lower": 0,
+                  "upper": 0.1,
+                  "n": 19,
+                  "predicted": 0.06786730089598743,
+                  "observed": 0.10526315789473684
+                },
+                {
+                  "lower": 0.1,
+                  "upper": 0.2,
+                  "n": 130,
+                  "predicted": 0.16102730124238837,
+                  "observed": 0.2153846153846154
+                },
+                {
+                  "lower": 0.2,
+                  "upper": 0.3,
+                  "n": 227,
+                  "predicted": 0.23946672021470466,
+                  "observed": 0.2290748898678414
+                },
+                {
+                  "lower": 0.3,
+                  "upper": 0.4,
+                  "n": 4,
+                  "predicted": 0.3082304660779823,
+                  "observed": 0
+                },
+                {
+                  "lower": 0.4,
+                  "upper": 0.5,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.5,
+                  "upper": 0.6,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.6,
+                  "upper": 0.7,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.7,
+                  "upper": 0.8,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.8,
+                  "upper": 0.9,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.9,
+                  "upper": 1,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                }
+              ]
+            }
+          },
+          {
+            "league": "premier-league",
+            "season": "2024",
+            "n": 380,
+            "logLoss": 0.9900491082122342,
+            "brier": 0.5933147439573294,
+            "drawCalibration": {
+              "n": 380,
+              "meanPredicted": 0.22463262410312282,
+              "observed": 0.24473684210526317,
+              "drawBrier": 0.18454619004346617,
+              "ece": 0.026726164337539937,
+              "bins": [
+                {
+                  "lower": 0,
+                  "upper": 0.1,
+                  "n": 13,
+                  "predicted": 0.0737603405146556,
+                  "observed": 0.07692307692307693
+                },
+                {
+                  "lower": 0.1,
+                  "upper": 0.2,
+                  "n": 94,
+                  "predicted": 0.1634354720446431,
+                  "observed": 0.19148936170212766
+                },
+                {
+                  "lower": 0.2,
+                  "upper": 0.3,
+                  "n": 246,
+                  "predicted": 0.24300979088038135,
+                  "observed": 0.2682926829268293
+                },
+                {
+                  "lower": 0.3,
+                  "upper": 0.4,
+                  "n": 26,
+                  "predicted": 0.33707921710311733,
+                  "observed": 0.3076923076923077
+                },
+                {
+                  "lower": 0.4,
+                  "upper": 0.5,
+                  "n": 1,
+                  "predicted": 0.4941101590449077,
+                  "observed": 0
+                },
+                {
+                  "lower": 0.5,
+                  "upper": 0.6,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.6,
+                  "upper": 0.7,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.7,
+                  "upper": 0.8,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.8,
+                  "upper": 0.9,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                },
+                {
+                  "lower": 0.9,
+                  "upper": 1,
+                  "n": 0,
+                  "predicted": null,
+                  "observed": null
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "paired95Interval": {
+    "logLoss": [
+      -0.002055749535184714,
+      0.0038482721828916244
+    ],
+    "brier": [
+      -0.0017846920605432228,
+      0.002271507118975495
+    ]
+  },
+  "freshOnly": {
+    "old": {
+      "pooled": {
+        "n": 1140,
+        "logLoss": 0.9864240844517591,
+        "brier": 0.5882780701754381,
+        "drawCalibration": {
+          "n": 1140,
+          "meanPredicted": 0.23980701754385925,
+          "observed": 0.26052631578947366,
+          "drawBrier": 0.1910566666666656,
+          "ece": 0.03822807017543891,
+          "bins": [
+            {
+              "lower": 0,
+              "upper": 0.1,
+              "n": 8,
+              "predicted": 0.08125,
+              "observed": 0
+            },
+            {
+              "lower": 0.1,
+              "upper": 0.2,
+              "n": 179,
+              "predicted": 0.161564245810056,
+              "observed": 0.17318435754189945
+            },
+            {
+              "lower": 0.2,
+              "upper": 0.3,
+              "n": 808,
+              "predicted": 0.24440594059405893,
+              "observed": 0.2834158415841584
+            },
+            {
+              "lower": 0.3,
+              "upper": 0.4,
+              "n": 144,
+              "predicted": 0.31881944444444443,
+              "observed": 0.2569444444444444
+            },
+            {
+              "lower": 0.4,
+              "upper": 0.5,
+              "n": 1,
+              "predicted": 0.42,
+              "observed": 0
+            },
+            {
+              "lower": 0.5,
+              "upper": 0.6,
+              "n": 0,
+              "predicted": null,
+              "observed": null
+            },
+            {
+              "lower": 0.6,
+              "upper": 0.7,
+              "n": 0,
+              "predicted": null,
+              "observed": null
+            },
+            {
+              "lower": 0.7,
+              "upper": 0.8,
+              "n": 0,
+              "predicted": null,
+              "observed": null
+            },
+            {
+              "lower": 0.8,
+              "upper": 0.9,
+              "n": 0,
+              "predicted": null,
+              "observed": null
+            },
+            {
+              "lower": 0.9,
+              "upper": 1,
+              "n": 0,
+              "predicted": null,
+              "observed": null
+            }
+          ]
+        }
+      },
+      "bySeason": [
+        {
+          "league": "la-liga",
+          "season": "2023",
+          "n": 380,
+          "logLoss": 0.9892527769398747,
+          "brier": 0.5913394736842104,
+          "drawCalibration": {
+            "n": 380,
+            "meanPredicted": 0.24973684210526287,
+            "observed": 0.28157894736842104,
+            "drawBrier": 0.2018110526315793,
+            "ece": 0.0333157894736842,
+            "bins": [
+              {
+                "lower": 0,
+                "upper": 0.1,
+                "n": 2,
+                "predicted": 0.08,
+                "observed": 0
+              },
+              {
+                "lower": 0.1,
+                "upper": 0.2,
+                "n": 44,
+                "predicted": 0.16340909090909095,
+                "observed": 0.2727272727272727
+              },
+              {
+                "lower": 0.2,
+                "upper": 0.3,
+                "n": 264,
+                "predicted": 0.24784090909090906,
+                "observed": 0.2765151515151515
+              },
+              {
+                "lower": 0.3,
+                "upper": 0.4,
+                "n": 70,
+                "predicted": 0.31599999999999995,
+                "observed": 0.3142857142857143
+              },
+              {
+                "lower": 0.4,
+                "upper": 0.5,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.5,
+                "upper": 0.6,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.6,
+                "upper": 0.7,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.7,
+                "upper": 0.8,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.8,
+                "upper": 0.9,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.9,
+                "upper": 1,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              }
+            ]
+          }
+        },
+        {
+          "league": "la-liga",
+          "season": "2024",
+          "n": 380,
+          "logLoss": 0.9791223104332862,
+          "brier": 0.5814373684210525,
+          "drawCalibration": {
+            "n": 380,
+            "meanPredicted": 0.24936842105263154,
+            "observed": 0.25526315789473686,
+            "drawBrier": 0.18846947368421066,
+            "ece": 0.06931578947368418,
+            "bins": [
+              {
+                "lower": 0,
+                "upper": 0.1,
+                "n": 3,
+                "predicted": 0.08666666666666667,
+                "observed": 0
+              },
+              {
+                "lower": 0.1,
+                "upper": 0.2,
+                "n": 49,
+                "predicted": 0.15428571428571436,
+                "observed": 0.10204081632653061
+              },
+              {
+                "lower": 0.2,
+                "upper": 0.3,
+                "n": 256,
+                "predicted": 0.24886718750000006,
+                "observed": 0.3046875
+              },
+              {
+                "lower": 0.3,
+                "upper": 0.4,
+                "n": 71,
+                "predicted": 0.3212676056338028,
+                "observed": 0.19718309859154928
+              },
+              {
+                "lower": 0.4,
+                "upper": 0.5,
+                "n": 1,
+                "predicted": 0.42,
+                "observed": 0
+              },
+              {
+                "lower": 0.5,
+                "upper": 0.6,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.6,
+                "upper": 0.7,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.7,
+                "upper": 0.8,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.8,
+                "upper": 0.9,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.9,
+                "upper": 1,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              }
+            ]
+          }
+        },
+        {
+          "league": "premier-league",
+          "season": "2024",
+          "n": 380,
+          "logLoss": 0.9908971659821196,
+          "brier": 0.5920573684210525,
+          "drawCalibration": {
+            "n": 380,
+            "meanPredicted": 0.22031578947368424,
+            "observed": 0.24473684210526317,
+            "drawBrier": 0.18288947368421057,
+            "ece": 0.026526315789473762,
+            "bins": [
+              {
+                "lower": 0,
+                "upper": 0.1,
+                "n": 3,
+                "predicted": 0.07666666666666667,
+                "observed": 0
+              },
+              {
+                "lower": 0.1,
+                "upper": 0.2,
+                "n": 86,
+                "predicted": 0.1647674418604651,
+                "observed": 0.16279069767441862
+              },
+              {
+                "lower": 0.2,
+                "upper": 0.3,
+                "n": 288,
+                "predicted": 0.23729166666666654,
+                "observed": 0.2708333333333333
+              },
+              {
+                "lower": 0.3,
+                "upper": 0.4,
+                "n": 3,
+                "predicted": 0.32666666666666666,
+                "observed": 0.3333333333333333
+              },
+              {
+                "lower": 0.4,
+                "upper": 0.5,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.5,
+                "upper": 0.6,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.6,
+                "upper": 0.7,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.7,
+                "upper": 0.8,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.8,
+                "upper": 0.9,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.9,
+                "upper": 1,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "new": {
+      "pooled": {
+        "n": 1140,
+        "logLoss": 0.9876373853434411,
+        "brier": 0.5885342873834889,
+        "drawCalibration": {
+          "n": 1140,
+          "meanPredicted": 0.24197106721140826,
+          "observed": 0.26052631578947366,
+          "drawBrier": 0.1909077820273253,
+          "ece": 0.03634590922961398,
+          "bins": [
+            {
+              "lower": 0,
+              "upper": 0.1,
+              "n": 6,
+              "predicted": 0.08766976921007912,
+              "observed": 0
+            },
+            {
+              "lower": 0.1,
+              "upper": 0.2,
+              "n": 179,
+              "predicted": 0.17044889593645693,
+              "observed": 0.1564245810055866
+            },
+            {
+              "lower": 0.2,
+              "upper": 0.3,
+              "n": 839,
+              "predicted": 0.24756417169204128,
+              "observed": 0.28486293206197855
+            },
+            {
+              "lower": 0.3,
+              "upper": 0.4,
+              "n": 115,
+              "predicted": 0.31906322735521675,
+              "observed": 0.2608695652173913
+            },
+            {
+              "lower": 0.4,
+              "upper": 0.5,
+              "n": 1,
+              "predicted": 0.41203443764638026,
+              "observed": 0
+            },
+            {
+              "lower": 0.5,
+              "upper": 0.6,
+              "n": 0,
+              "predicted": null,
+              "observed": null
+            },
+            {
+              "lower": 0.6,
+              "upper": 0.7,
+              "n": 0,
+              "predicted": null,
+              "observed": null
+            },
+            {
+              "lower": 0.7,
+              "upper": 0.8,
+              "n": 0,
+              "predicted": null,
+              "observed": null
+            },
+            {
+              "lower": 0.8,
+              "upper": 0.9,
+              "n": 0,
+              "predicted": null,
+              "observed": null
+            },
+            {
+              "lower": 0.9,
+              "upper": 1,
+              "n": 0,
+              "predicted": null,
+              "observed": null
+            }
+          ]
+        }
+      },
+      "bySeason": [
+        {
+          "league": "la-liga",
+          "season": "2023",
+          "n": 380,
+          "logLoss": 0.989323640182922,
+          "brier": 0.5907251821640559,
+          "drawCalibration": {
+            "n": 380,
+            "meanPredicted": 0.25121699807985526,
+            "observed": 0.28157894736842104,
+            "drawBrier": 0.20125884796248755,
+            "ece": 0.03087624135138089,
+            "bins": [
+              {
+                "lower": 0,
+                "upper": 0.1,
+                "n": 1,
+                "predicted": 0.097715491934833,
+                "observed": 0
+              },
+              {
+                "lower": 0.1,
+                "upper": 0.2,
+                "n": 41,
+                "predicted": 0.16711621431507265,
+                "observed": 0.24390243902439024
+              },
+              {
+                "lower": 0.2,
+                "upper": 0.3,
+                "n": 286,
+                "predicted": 0.25160531638943456,
+                "observed": 0.27972027972027974
+              },
+              {
+                "lower": 0.3,
+                "upper": 0.4,
+                "n": 52,
+                "predicted": 0.31834343277141997,
+                "observed": 0.3269230769230769
+              },
+              {
+                "lower": 0.4,
+                "upper": 0.5,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.5,
+                "upper": 0.6,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.6,
+                "upper": 0.7,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.7,
+                "upper": 0.8,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.8,
+                "upper": 0.9,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.9,
+                "upper": 1,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              }
+            ]
+          }
+        },
+        {
+          "league": "la-liga",
+          "season": "2024",
+          "n": 380,
+          "logLoss": 0.9814667976555211,
+          "brier": 0.5825109802207097,
+          "drawCalibration": {
+            "n": 380,
+            "meanPredicted": 0.2507055920958389,
+            "observed": 0.25526315789473686,
+            "drawBrier": 0.1884035011286751,
+            "ece": 0.0649143423332696,
+            "bins": [
+              {
+                "lower": 0,
+                "upper": 0.1,
+                "n": 3,
+                "predicted": 0.08574727026930194,
+                "observed": 0
+              },
+              {
+                "lower": 0.1,
+                "upper": 0.2,
+                "n": 52,
+                "predicted": 0.1655811410011066,
+                "observed": 0.09615384615384616
+              },
+              {
+                "lower": 0.2,
+                "upper": 0.3,
+                "n": 264,
+                "predicted": 0.25303158126851577,
+                "observed": 0.30303030303030304
+              },
+              {
+                "lower": 0.3,
+                "upper": 0.4,
+                "n": 60,
+                "predicted": 0.3198048660169797,
+                "observed": 0.2
+              },
+              {
+                "lower": 0.4,
+                "upper": 0.5,
+                "n": 1,
+                "predicted": 0.41203443764638026,
+                "observed": 0
+              },
+              {
+                "lower": 0.5,
+                "upper": 0.6,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.6,
+                "upper": 0.7,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.7,
+                "upper": 0.8,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.8,
+                "upper": 0.9,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.9,
+                "upper": 1,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              }
+            ]
+          }
+        },
+        {
+          "league": "premier-league",
+          "season": "2024",
+          "n": 380,
+          "logLoss": 0.9921217181918796,
+          "brier": 0.5923666997657022,
+          "drawCalibration": {
+            "n": 380,
+            "meanPredicted": 0.2239906114585298,
+            "observed": 0.24473684210526317,
+            "drawBrier": 0.18306099699081455,
+            "ece": 0.032427438889722666,
+            "bins": [
+              {
+                "lower": 0,
+                "upper": 0.1,
+                "n": 2,
+                "predicted": 0.08553065625886794,
+                "observed": 0
+              },
+              {
+                "lower": 0.1,
+                "upper": 0.2,
+                "n": 86,
+                "predicted": 0.1749810262052356,
+                "observed": 0.1511627906976744
+              },
+              {
+                "lower": 0.2,
+                "upper": 0.3,
+                "n": 289,
+                "predicted": 0.2385705263230314,
+                "observed": 0.27335640138408307
+              },
+              {
+                "lower": 0.3,
+                "upper": 0.4,
+                "n": 3,
+                "predicted": 0.31670689357243803,
+                "observed": 0.3333333333333333
+              },
+              {
+                "lower": 0.4,
+                "upper": 0.5,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.5,
+                "upper": 0.6,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.6,
+                "upper": 0.7,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.7,
+                "upper": 0.8,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.8,
+                "upper": 0.9,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.9,
+                "upper": 1,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "paired95Interval": {
+      "logLoss": [
+        -0.0023403579764109824,
+        0.004589299645422103
+      ],
+      "brier": [
+        -0.002114869236506508,
+        0.002574838336331277
+      ]
+    }
+  }
+}
