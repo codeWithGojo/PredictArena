@@ -9,12 +9,12 @@ const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ||
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
-  title: "PredictArena",
+  title: "PredictArena | Sports Intelligence",
   description:
-    "Model-led match probabilities and knowledge tests across football, NBA, tennis, CODM Africa and EA FC Africa.",
+    "Transparent match probabilities, model confidence and performance tracking across football, basketball and tennis.",
   openGraph: {
-    title: "PredictArena",
-    description: "Know the game. Read the probability.",
+    title: "PredictArena | Sports Intelligence",
+    description: "Read the probability. See the evidence.",
     type: "website",
     url: siteUrl,
     images: [
@@ -22,14 +22,14 @@ export const metadata: Metadata = {
         url: "/og.png",
         width: 1200,
         height: 630,
-        alt: "PredictArena: Know the game. Read the probability.",
+        alt: "PredictArena sports intelligence dashboard",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "PredictArena",
-    description: "Know the game. Read the probability.",
+    title: "PredictArena | Sports Intelligence",
+    description: "Read the probability. See the evidence.",
     images: ["/og.png"],
   },
   icons: {
