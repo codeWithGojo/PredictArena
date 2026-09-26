@@ -72,10 +72,11 @@ export function modelForFixture(fixture: PredictionFixture, completed: Completed
     label: `${market.market.replace(/-/g, " ")} ${market.selection}`,
     value: `${Math.round(market.probability * 100)}%`, explanation: market.explanation,
   }));
+  const rounded = (value: number | undefined) => value === undefined ? undefined : Math.round(value * 100) / 100;
   return { probabilities, predictions: [...outcomes, ...extra], confidence: Math.round((summary.confidence ?? 0) * 100),
     model: { method: analysis.method, version: summary.modelVersion,
-      expectedHome: summary.expectedScore?.home, expectedAway: summary.expectedScore?.away,
-      expectedTotal: summary.expectedScore?.total, sampleSize: analysis.sampleSize,
+      expectedHome: rounded(summary.expectedScore?.home), expectedAway: rounded(summary.expectedScore?.away),
+      expectedTotal: rounded(summary.expectedScore?.total), sampleSize: analysis.sampleSize,
       topScoreline: analysis.topScoreline ? `${analysis.topScoreline.home}–${analysis.topScoreline.away}` : undefined,
       factors: analysis.factors.map((factor) => ({ ...factor, strength: Math.round(factor.strength * 100) })),
       scoreMatrix: analysis.scoreMatrix.map((cell) => ({ ...cell, probability: Math.round(cell.probability * 1000) / 10 })),
