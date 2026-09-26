@@ -258,8 +258,7 @@ export async function buildFootballPayload() {
       const history = toHistory(fixtures, now);
       const upcoming = fixtures
         .filter((item) => isUpcoming(item, now))
-        .sort((a, b) => new Date(a.fixture?.date || 0).getTime() - new Date(b.fixture?.date || 0).getTime())
-        .slice(0, 6);
+        .sort((a, b) => new Date(a.fixture?.date || 0).getTime() - new Date(b.fixture?.date || 0).getTime());
       const providerSeason = fixtures.find((item) => item.league?.season)?.league?.season;
       return { config, history, upcoming, available: true, provider, providerSeason, error: null as string | null };
     } catch (error) {
