@@ -9,7 +9,7 @@ const cognito = new CognitoIdentityProviderClient({ maxAttempts: 2 });
 export type Profile = {
   id: string; email: string; displayName: string; timezone: string; favoriteSports: string[];
   plan: 'free' | 'premium'; premiumUntil: string | null; subscriptionStatus: string;
-  entitlementRevoked: boolean; createdAt: string; updatedAt: string; version: number;
+  entitlementRevoked: boolean; ownerAccess?: boolean; createdAt: string; updatedAt: string; version: number;
 };
 
 export function identity(event: APIGatewayProxyEventV2WithJWTAuthorizer) {
@@ -32,8 +32,9 @@ export async function readProfile(sub: string): Promise<Profile | undefined> {
   }
 }
 export function effectivePremium(p: Profile, now = Date.now()) {
-  return p.plan === 'premium' && p.entitlementRevoked === false && typeof p.premiumUntil === 'string' &&
-    Number.isFinite(Date.parse(p.premiumUntil)) && Date.parse(p.premiumUntil) > now;
+  return p.entitlementRevoked === false && (p.ownerAccess === true ||
+    (p.plan === 'premium' && typeof p.premiumUntil === 'string' &&
+      Number.isFinite(Date.parse(p.premiumUntil)) && Date.parse(p.premiumUntil) > now));
 }
 // Fresh, strongly consistent base-table read on every premium request. No cached or JWT plan.
 export async function requirePremium(sub: string, read = readProfile, now = Date.now()) {
@@ -41,7 +42,7 @@ export async function requirePremium(sub: string, read = readProfile, now = Date
   try { p = await read(sub); }
   catch { throw new ApiError(503, 'SERVICE_UNAVAILABLE', 'Account storage is temporarily unavailable.'); }
   if (!p) throw new ApiError(409, 'PROFILE_NOT_READY', 'Open your profile before continuing.');
-  if (!effectivePremium(p, now)) throw new ApiError(403, 'PREMIUM_REQUIRED', 'An active premium subscription is required.');
+  if (!effectivePremium(p, now)) throw new ApiError(403, 'PREMIUM_REQUIRED', 'Premium access is required.');
   return p;
 }
 export function publicProfile(p: Profile) {
@@ -49,7 +50,8 @@ export function publicProfile(p: Profile) {
   return {
     id: p.id, email: p.email, displayName: p.displayName, timezone: p.timezone, favoriteSports: p.favoriteSports,
     plan: effectivePremium(p, now) ? 'premium' : 'free', premiumUntil: p.premiumUntil,
-    subscriptionStatus: p.premiumUntil && Date.parse(p.premiumUntil) <= now ? 'expired' : p.subscriptionStatus,
+    subscriptionStatus: p.ownerAccess === true && !p.entitlementRevoked ? 'owner' :
+      p.premiumUntil && Date.parse(p.premiumUntil) <= now ? 'expired' : p.subscriptionStatus,
     createdAt: p.createdAt, updatedAt: p.updatedAt, version: p.version,
   };
 }
@@ -61,7 +63,7 @@ export async function createProfile(sub: string, attributes: Record<string, stri
   const item = {
     pk: `USER#${sub}`, sk: 'PROFILE', id: sub, email: attributes.email,
     displayName: (attributes.name?.trim() || attributes.email.split('@')[0]).slice(0, 80),
-    timezone: 'Africa/Lagos', favoriteSports: [], plan: 'free', premiumUntil: null,
+    timezone: 'Africa/Lagos', favoriteSports: [], plan: 'free', premiumUntil: null, ownerAccess: false,
     subscriptionStatus: 'none', cancelAtPeriodEnd: false, entitlementRevoked: false,
     paystackCustomerCode: null, paystackSubscriptionCode: null, billingVersion: 1,
     version: 1, createdAt: now, updatedAt: now,

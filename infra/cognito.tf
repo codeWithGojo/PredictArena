@@ -25,6 +25,7 @@ resource "aws_cognito_user_pool" "this" {
   lambda_config { post_confirmation = aws_lambda_function.bootstrap.arn }
 }
 resource "aws_cognito_identity_provider" "google" {
+  count         = var.enable_google ? 1 : 0
   user_pool_id  = aws_cognito_user_pool.this.id
   provider_name = "Google"
   provider_type = "Google"
@@ -51,7 +52,7 @@ resource "aws_cognito_user_pool_client" "browser" {
   allowed_oauth_flows_user_pool_client = true
   allowed_oauth_flows                  = ["code"]
   allowed_oauth_scopes                 = ["openid", "email", "profile", "predictarena/api"]
-  supported_identity_providers         = ["COGNITO", aws_cognito_identity_provider.google.provider_name]
+  supported_identity_providers         = concat(["COGNITO"], [for provider in aws_cognito_identity_provider.google : provider.provider_name])
   callback_urls                        = sort(tolist(var.callback_urls))
   logout_urls                          = sort(tolist(var.logout_urls))
   explicit_auth_flows                  = ["ALLOW_REFRESH_TOKEN_AUTH"]

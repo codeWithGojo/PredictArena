@@ -2,7 +2,9 @@
 
 Source of truth: `docs/API_CONTRACT.md` on main at `5849c6ca09d62fbc5eeb7eafe1c309c3a1adbc19`. Changes are confined to `infra/`. This foundation has not been applied to AWS. [RESOURCES.md](RESOURCES.md) lists every resource; [SECURITY.md](SECURITY.md) explains security boundaries and remaining verification. [VALIDATION.md](VALIDATION.md) records checks and full failure output. Local validate is blocked by this sandbox denying provider Unix sockets, so it must pass elsewhere before deployment.
 
-Phase 1 includes remote state, CI OIDC roles, staged workflow, Cognito email/password and Google sign-in, HTTP API, five tables, twelve route Lambdas and a profile-bootstrap trigger. It creates no slips/bets/billing/operations tables, payment routes, streams or EventBridge resources. The existing users schema retains its nullable entitlement/provider fields without implementing billing.
+Phase 1 includes remote state, CI OIDC roles, staged workflow, Cognito email/password and optional Google sign-in, HTTP API, five tables, twelve route Lambdas and a profile-bootstrap trigger. It creates no slips/bets/billing/operations tables, payment routes, streams or EventBridge resources. The existing users schema retains its nullable entitlement/provider fields without implementing billing.
+
+An operator can grant a verified owner account Premium without billing after the pool, API and users table are deployed. Have the owner sign up, verify the email and sign in once to create the profile. With short-lived AWS operator credentials and the correct stage selected, run `COGNITO_USER_POOL_ID=<pool-id> USERS_TABLE=<users-table> node infra/scripts/grant-owner.mjs owner@example.com`. The script matches one enabled, email-verified Cognito user to its existing profile and conditionally sets `ownerAccess=true`; it does not create a subscription. API authorization still reads DynamoDB for every Premium request and honors `entitlementRevoked`. Keep this command out of public routes and CI. For revocation, an operator must set `ownerAccess=false` on that profile; disabling the Cognito user also prevents new sign-ins, but existing tokens may remain valid until expiry.
 
 `GET /me` reads the actual authenticated user's profile and can repair a missing profile from verified Cognito identity. Premium details always check actual stored entitlement. `PATCH /me` is a reserved stub: it checks authentication/profile/version and returns a retryable contract error without writing anything. Sports routes return `503 DATA_UNAVAILABLE` until connected. For transport previews, `stub_responses=true` enables static success specimens in dev only, marked `X-PredictArena-Stub: true` and never cached. Predictions honestly use `insufficient_data`, null estimates and `NO_HISTORY`; no model runs. Only `*:stub:123` fixture specimens exist, and lists can be empty outside the specimen date range. These examples are not live fixtures, rankings or predictive results.
 
@@ -35,11 +37,11 @@ terraform -chdir=infra/bootstrap init -migrate-state \
 
 Remove local state backups and saved plans securely after confirming migration. Bootstrap state and IAM are operator-managed, outside CI permissions. Do not apply bootstrap automatically on PRs. Later bootstrap changes require a separate operator plan/apply.
 
-## 3. Configure Google and deploy dev
+## 3. Deploy dev and optionally configure Google
 
-1. In Google Cloud, configure an OAuth consent screen and web OAuth client. Add `https://<domain-prefix>.auth.<region>.amazoncognito.com/oauth2/idpresponse` as its authorized redirect URI. If the consent screen is in testing, add your test users. Choose separate dev/prod clients and domain prefixes.
+1. Email/password sign-in works without Google credentials. To add Google, configure an OAuth consent screen and web OAuth client. Add `https://<domain-prefix>.auth.<region>.amazoncognito.com/oauth2/idpresponse` as its authorized redirect URI. If the consent screen is in testing, add your test users. Choose separate dev/prod clients and domain prefixes.
 2. Copy `environments/dev.example.tfvars` and `dev.example.tfbackend` to ignored `dev.tfvars` and `dev.tfbackend` in the same folder. Replace all placeholders, using bootstrap's boundary ARN and bucket output. Set exact HTTPS frontend origins, callbacks ending in `/auth/callback` and logout URLs ending in `/`.
-3. Supply Google values via a local secret environment: `TF_VAR_google_client_id` and `TF_VAR_google_client_secret`. Never put secrets in command arguments, committed tfvars or screenshots. Terraform state will contain the Google secret, as explained in SECURITY.md.
+3. If using Google, set `enable_google=true` in the stage tfvars and supply both values via a local secret environment: `TF_VAR_google_client_id` and `TF_VAR_google_client_secret`. Never put secrets in command arguments, committed tfvars or screenshots. Terraform state will contain the Google secret, as explained in SECURITY.md.
 4. From the repository root:
 
 ```sh
@@ -60,7 +62,7 @@ Repeat with prod files after verifying dev. Use a separate checkout or run `init
 
 Give the frontend owner the outputs for API base URL, Cognito domain, app client ID and pool ID. Frontend uses OAuth code flow with PKCE S256, state and nonce, requests `openid email profile predictarena/api`, and sends the access token to the API. Terraform configures the public code-flow client; the frontend must generate and verify PKCE/state/nonce correctly. Tokens remain out of localStorage as the contract specifies. Before a future merge, the frontend owner must exclude `infra/` from the root TypeScript build. This branch does not change frontend files.
 
-Verify password signup, email confirmation, Google sign-in, recovery, logout, refresh, GET /me, rejection of ID tokens, expired/revoked/free entitlements and database failures in dev. Use dedicated test users. No API can grant premium in Phase 1. Premium integration tests need an operator-provisioned test entitlement in dev; do not alter production entitlements for tests.
+Verify password signup, email confirmation, recovery, logout, refresh, GET /me, rejection of ID tokens, expired/revoked/free entitlements and database failures in dev. Verify Google sign-in when enabled. Use dedicated test users. No API can grant premium in Phase 1. Premium integration tests need an operator-provisioned test entitlement in dev; do not alter production entitlements for tests.
 
 The pool currently uses Cognito's default email sender. In the AWS console, verify its delivery limits. Before production volume, configure a verified SES sender/domain and request SES production access if necessary, then change the sender through Terraform in a later reviewed change. Do not hand-edit Terraform-managed pool/API/table/IAM settings in the console.
 

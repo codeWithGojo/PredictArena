@@ -1,6 +1,6 @@
 # Phase 1 resource inventory
 
-These are Terraform declarations, not resources already deployed to AWS. Nothing has been applied. Names use `predictarena-<stage>` with `stage=dev|prod`. The inventory is 104 managed resource instances per stage, plus 23 shared bootstrap instances when creating the OIDC provider (22 when reusing one). Deploying both stages with one bootstrap gives 231 instances, or 230 with an existing OIDC provider. Nested indexes/settings are included in their parent resources.
+These are Terraform declarations, not resources already deployed to AWS. Nothing has been applied. Names use `predictarena-<stage>` with `stage=dev|prod`. The inventory is 103 managed resource instances per stage without Google, or 104 with it, plus 23 shared bootstrap instances when creating the OIDC provider (22 when reusing one). Nested indexes/settings are included in their parent resources.
 
 ## Shared operator-managed bootstrap
 
@@ -40,7 +40,7 @@ Each is an instance of `aws_dynamodb_table.this`. Physical names are `predictare
 | Terraform resource | Instances | Purpose |
 | --- | ---: | --- |
 | `aws_cognito_user_pool.this` | 1 | Email/password signup, verified email, recovery, post-confirmation trigger, Essentials tier |
-| `aws_cognito_identity_provider.google` | 1 | Google sign-in, variable-supplied client ID/secret |
+| `aws_cognito_identity_provider.google` | 0 or 1 | Optional Google sign-in, variable-supplied client ID/secret |
 | `aws_cognito_resource_server.api` | 1 | `predictarena/api` OAuth scope |
 | `aws_cognito_user_pool_client.browser` | 1 | Public code-flow browser client, no secret, configurable callbacks/logout |
 | `aws_cognito_user_pool_domain.this` | 1 | Configurable Cognito managed-login domain prefix |

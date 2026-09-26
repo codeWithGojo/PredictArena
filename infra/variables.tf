@@ -41,22 +41,30 @@ variable "cognito_domain_prefix" {
     error_message = "Use a unique Cognito domain prefix, 4-63 lowercase letters, digits or hyphens."
   }
 }
+variable "enable_google" {
+  type    = bool
+  default = false
+  validation {
+    condition     = !var.enable_google || (var.google_client_id != null && var.google_client_secret != null)
+    error_message = "Enable Google only when both OAuth credentials are supplied."
+  }
+}
 variable "google_client_id" {
   type      = string
   sensitive = true
-  nullable  = false
+  default   = null
   validation {
-    condition     = length(trimspace(var.google_client_id)) > 0
-    error_message = "Supply the Google client ID through TF_VAR_google_client_id."
+    condition     = var.google_client_id == null || length(trimspace(var.google_client_id)) > 0
+    error_message = "Supply a nonempty Google client ID or leave it unset."
   }
 }
 variable "google_client_secret" {
   type      = string
   sensitive = true
-  nullable  = false
+  default   = null
   validation {
-    condition     = length(trimspace(var.google_client_secret)) > 0
-    error_message = "Supply the Google secret through TF_VAR_google_client_secret."
+    condition     = var.google_client_secret == null || length(trimspace(var.google_client_secret)) > 0
+    error_message = "Supply a nonempty Google client secret or leave it unset."
   }
 }
 variable "runtime_permissions_boundary_arn" {
