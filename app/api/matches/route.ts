@@ -10,12 +10,13 @@ export async function GET() {
   ]);
 
   const base = await legacyResponse.json() as {
-    matches?: Array<{ sport?: string; kickoffISO?: string }>;
+    matches?: Array<{ sport?: string; kickoffISO?: string; source?: string }>;
     generatedAt?: string;
     provider?: string;
     footballProvider?: string;
     leagueCatalog?: Array<{ sport?: string }>;
     liveCount?: number;
+    manualCount?: number;
     communityCount?: number;
     status?: string;
   };
@@ -33,8 +34,8 @@ export async function GET() {
   );
 
   const communityCount = Number(base.communityCount || 0);
-  const legacyLiveCount = Math.max(Number(base.liveCount || 0), 0);
-  const footballLiveCount = football.matches.length;
+  const legacyLiveCount = nonFootballMatches.filter((match) => match.source === "live-api").length;
+  const footballLiveCount = football.matches.length - football.manualCount;
 
   return Response.json({
     ...base,
@@ -45,6 +46,7 @@ export async function GET() {
     seasonSample: football.seasonSample,
     leagueCatalog: [...football.leagueCatalog, ...nonFootballCatalog],
     liveCount: footballLiveCount + legacyLiveCount,
+    manualCount: football.manualCount,
     communityCount,
     status: footballLiveCount + legacyLiveCount > 0 ? "live" : "fallback",
   }, {

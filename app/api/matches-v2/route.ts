@@ -1,12 +1,9 @@
 import {
   colorsFromName,
-  runBasketballMarginModel,
-  runFootballPoisson,
-  runTennisFormModel,
   shortName,
-  type HistoricalEvent,
   type Match,
 } from "../../../lib/sports";
+import { modelForFixture, type CompletedFixture } from "../../../lib/model-adapter";
 
 export const dynamic = "force-dynamic";
 
@@ -41,6 +38,7 @@ type LegacyEvent = {
 
 type FootballLeague = {
   id: string;
+  modelId: string;
   sport: "football";
   short: string;
   name: string;
@@ -48,6 +46,7 @@ type FootballLeague = {
 
 type LegacyLeague = {
   id: string;
+  modelId: string;
   sport: "basketball" | "tennis";
   short: string;
   name: string;
@@ -55,17 +54,17 @@ type LegacyLeague = {
 };
 
 const footballLeagues: FootballLeague[] = [
-  { id: "39", sport: "football", short: "PL", name: "Premier League" },
-  { id: "140", sport: "football", short: "LL", name: "La Liga" },
-  { id: "135", sport: "football", short: "SA", name: "Serie A" },
-  { id: "78", sport: "football", short: "BL", name: "Bundesliga" },
-  { id: "61", sport: "football", short: "L1", name: "Ligue 1" },
-  { id: "2", sport: "football", short: "UCL", name: "Champions League" },
+  { id: "39", modelId: "football:premier-league", sport: "football", short: "PL", name: "Premier League" },
+  { id: "140", modelId: "football:la-liga", sport: "football", short: "LL", name: "La Liga" },
+  { id: "135", modelId: "football:serie-a", sport: "football", short: "SA", name: "Serie A" },
+  { id: "78", modelId: "football:bundesliga", sport: "football", short: "BL", name: "Bundesliga" },
+  { id: "61", modelId: "football:ligue-1", sport: "football", short: "L1", name: "Ligue 1" },
+  { id: "2", modelId: "football:champions-league", sport: "football", short: "UCL", name: "Champions League" },
 ];
 
 const legacyLeagues: LegacyLeague[] = [
-  { id: "4387", sport: "basketball", short: "NBA", name: "NBA" },
-  { id: "4464", sport: "tennis", short: "ATP", name: "ATP World Tour", calendarSeason: true },
+  { id: "4387", modelId: "basketball:nba", sport: "basketball", short: "NBA", name: "NBA" },
+  { id: "4464", modelId: "tennis:atp", sport: "tennis", short: "ATP", name: "ATP World Tour", calendarSeason: true },
 ];
 
 const FOOTBALL_API_ROOT = "https://v3.football.api-sports.io";
@@ -140,30 +139,33 @@ async function footballRequest(params: Record<string, string>): Promise<Football
   return Array.isArray(payload.response) ? payload.response : [];
 }
 
-function footballToHistory(fixtures: FootballFixture[]): HistoricalEvent[] {
+function footballToHistory(fixtures: FootballFixture[]): CompletedFixture[] {
   return fixtures.flatMap((item) => {
     const home = item.teams?.home?.name;
     const away = item.teams?.away?.name;
     const homeScore = item.goals?.home;
     const awayScore = item.goals?.away;
-    if (!home || !away || homeScore == null || awayScore == null) return [];
-    return [{ homeTeam: home, awayTeam: away, homeScore, awayScore }];
+    if (!home || !away || !item.fixture?.date || item.fixture.status?.short !== "FT" || homeScore == null || awayScore == null) return [];
+    return [{ id: `api-football-${item.fixture.id}`, startsAt: item.fixture.date, home, away,
+      homeScore, awayScore, status: "finished" as const }];
   });
 }
 
-function normalizeFootballMatch(item: FootballFixture, config: FootballLeague, history: HistoricalEvent[]): Match | null {
+function normalizeFootballMatch(item: FootballFixture, config: FootballLeague, history: CompletedFixture[], now: Date): Match | null {
   const home = item.teams?.home?.name;
   const away = item.teams?.away?.name;
   const rawDate = item.fixture?.date;
   if (!home || !away || !rawDate) return null;
 
   const kickoff = new Date(rawDate);
-  if (!Number.isFinite(kickoff.getTime())) return null;
+  if (!Number.isFinite(kickoff.getTime()) || kickoff.getTime() <= now.getTime()) return null;
   const formatted = displayKickoff(kickoff);
-  const model = runFootballPoisson(home, away, history);
+  const id = `api-football-${item.fixture?.id || `${config.id}-${formatted.iso}`}`;
+  const model = modelForFixture({ id, sport: "football", competitionId: config.modelId,
+    season: String(item.league?.season || seasonStart(now)), startsAt: formatted.iso, home, away }, history, now);
 
   return {
-    id: `api-football-${item.fixture?.id || `${config.id}-${formatted.iso}`}`,
+    id,
     sport: "football",
     leagueId: config.id,
     league: item.league?.name || config.name,
@@ -206,7 +208,7 @@ async function buildFootballBundles() {
       return {
         config,
         upcoming: [] as FootballFixture[],
-        history: [] as HistoricalEvent[],
+        history: [] as CompletedFixture[],
         available: false,
         season: undefined as number | undefined,
         error: error instanceof Error ? error.message : "Unknown API-Football error",
@@ -243,27 +245,32 @@ function legacyKickoff(event: LegacyEvent) {
   return new Date(raw.endsWith("Z") ? raw : `${raw}Z`);
 }
 
-function legacyToHistory(events: LegacyEvent[]): HistoricalEvent[] {
+function legacyToHistory(events: LegacyEvent[]): CompletedFixture[] {
   return events.flatMap((event) => {
     if (event.intHomeScore == null || event.intAwayScore == null || event.intHomeScore === "" || event.intAwayScore === "") return [];
     const homeScore = Number(event.intHomeScore);
     const awayScore = Number(event.intAwayScore);
-    if (!event.strHomeTeam || !event.strAwayTeam || !Number.isFinite(homeScore) || !Number.isFinite(awayScore)) return [];
-    return [{ homeTeam: event.strHomeTeam, awayTeam: event.strAwayTeam, homeScore, awayScore }];
+    const kickoff = legacyKickoff(event);
+    if (!event.strHomeTeam || !event.strAwayTeam || !Number.isFinite(kickoff.getTime()) ||
+      !Number.isFinite(homeScore) || !Number.isFinite(awayScore)) return [];
+    return [{ id: `legacy-${event.idEvent || `${kickoff.toISOString()}-${event.strHomeTeam}-${event.strAwayTeam}`}`,
+      startsAt: kickoff.toISOString(), home: event.strHomeTeam, away: event.strAwayTeam,
+      homeScore, awayScore, status: "finished" as const }];
   });
 }
 
-function normalizeLegacyMatch(event: LegacyEvent, config: LegacyLeague, history: HistoricalEvent[]): Match | null {
+function normalizeLegacyMatch(event: LegacyEvent, config: LegacyLeague, history: CompletedFixture[], now: Date): Match | null {
   if (!event.strHomeTeam || !event.strAwayTeam) return null;
   const kickoff = legacyKickoff(event);
-  if (!Number.isFinite(kickoff.getTime())) return null;
+  if (!Number.isFinite(kickoff.getTime()) || kickoff.getTime() <= now.getTime()) return null;
   const formatted = displayKickoff(kickoff);
-  const model = config.sport === "basketball"
-    ? runBasketballMarginModel(event.strHomeTeam, event.strAwayTeam, history)
-    : runTennisFormModel(event.strHomeTeam, event.strAwayTeam, history);
+  const id = `legacy-${event.idEvent || `${config.id}-${formatted.iso}`}`;
+  const model = modelForFixture({ id, sport: config.sport, competitionId: config.modelId,
+    season: legacyCurrentSeason(config, now), startsAt: formatted.iso,
+    home: event.strHomeTeam, away: event.strAwayTeam }, history, now);
 
   return {
-    id: `legacy-${event.idEvent || `${config.id}-${formatted.iso}`}`,
+    id,
     sport: config.sport,
     leagueId: config.id,
     league: config.name,
@@ -408,14 +415,14 @@ async function buildPayload() {
 
   const footballMatches = footballBundles.flatMap((bundle) =>
     bundle.upcoming
-      .map((item) => normalizeFootballMatch(item, bundle.config, bundle.history))
+      .map((item) => normalizeFootballMatch(item, bundle.config, bundle.history, now))
       .filter((match): match is Match => Boolean(match)),
   );
 
   const legacyMatches = legacyBundles.flatMap((bundle) =>
     bundle.upcoming
       .slice(0, 6)
-      .map((event) => normalizeLegacyMatch(event, bundle.config, bundle.history))
+      .map((event) => normalizeLegacyMatch(event, bundle.config, bundle.history, now))
       .filter((match): match is Match => Boolean(match)),
   );
 

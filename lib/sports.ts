@@ -57,7 +57,7 @@ export type Match = {
   predictions: Prediction[];
   confidence: number;
   model: ModelDetails;
-  source: "live-api" | "community" | "fallback";
+  source: "live-api" | "manual" | "community" | "fallback";
   sourceLabel: string;
   featured?: boolean;
 };
