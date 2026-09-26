@@ -1,3 +1,4 @@
+import { openEventToFixture, type OpenEvent } from "./open-football";
 import {
   colorsFromName,
   shortName,
@@ -8,7 +9,7 @@ import manualFixtures from "../data/manual-football-fixtures.json";
 
 type FootballFixture = {
   fixture?: {
-    id?: number;
+    id?: number | string;
     date?: string;
     venue?: { name?: string | null };
     status?: { short?: string | null };
@@ -27,11 +28,12 @@ type FootballLeague = {
   sport: "football";
   short: string;
   name: string;
+  openSlug?: string;
 };
 
 export const footballLeagues: FootballLeague[] = [
-  { id: "39", modelId: "football:premier-league", sport: "football", short: "PL", name: "Premier League" },
-  { id: "140", modelId: "football:la-liga", sport: "football", short: "LL", name: "La Liga" },
+  { id: "39", modelId: "football:premier-league", sport: "football", short: "PL", name: "Premier League", openSlug: "eng.1" },
+  { id: "140", modelId: "football:la-liga", sport: "football", short: "LL", name: "La Liga", openSlug: "esp.1" },
   { id: "135", modelId: "football:serie-a", sport: "football", short: "SA", name: "Serie A" },
   { id: "78", modelId: "football:bundesliga", sport: "football", short: "BL", name: "Bundesliga" },
   { id: "61", modelId: "football:ligue-1", sport: "football", short: "L1", name: "Ligue 1" },
@@ -39,7 +41,32 @@ export const footballLeagues: FootballLeague[] = [
 ];
 
 const API_ROOT = "https://v3.football.api-sports.io";
+const OPEN_API_ROOT = "https://worldcup26.ir";
 export const FOOTBALL_CACHE_SECONDS = 6 * 60 * 60;
+
+async function requestOpenFixtures(config: FootballLeague, now: Date): Promise<FootballFixture[]> {
+  if (!config.openSlug) throw new Error("No open football league mapping");
+  const from = new Date(now);
+  from.setUTCDate(from.getUTCDate() - 60);
+  const to = new Date(now);
+  to.setUTCDate(to.getUTCDate() + 30);
+  const url = new URL(`/get/soccer/${config.openSlug}/fixtures`, OPEN_API_ROOT);
+  url.searchParams.set("status", "all");
+  url.searchParams.set("from", isoDate(from).replaceAll("-", ""));
+  url.searchParams.set("to", isoDate(to).replaceAll("-", ""));
+  url.searchParams.set("limit", "200");
+  const response = await fetch(url, { headers: { Accept: "application/json" },
+    next: { revalidate: FOOTBALL_CACHE_SECONDS } });
+  if (!response.ok) throw new Error(`Open football API HTTP ${response.status}`);
+  const payload = await response.json() as { events?: OpenEvent[]; count?: number; pageCount?: number };
+  if (!Array.isArray(payload.events)) throw new Error("Open football API returned no events array");
+  // Never silently model an incomplete history window if the provider paginates it.
+  if ((payload.pageCount || 1) > 1) throw new Error("Open football API history exceeds one page");
+  return payload.events.flatMap((event) => {
+    const fixture = openEventToFixture(event, config);
+    return fixture ? [fixture] : [];
+  });
+}
 
 function env() {
   const runtime = globalThis as typeof globalThis & {
@@ -143,7 +170,7 @@ function isUpcoming(item: FootballFixture, now: Date) {
   return ["NS", "TBD"].includes(status) || item.goals?.home == null;
 }
 
-function normalize(item: FootballFixture, config: FootballLeague, history: CompletedFixture[], now: Date): Match | null {
+function normalize(item: FootballFixture, config: FootballLeague, history: CompletedFixture[], now: Date, provider: string): Match | null {
   const home = item.teams?.home?.name;
   const away = item.teams?.away?.name;
   const raw = item.fixture?.date;
@@ -152,7 +179,7 @@ function normalize(item: FootballFixture, config: FootballLeague, history: Compl
   const kickoff = new Date(raw);
   if (!Number.isFinite(kickoff.getTime()) || kickoff.getTime() <= now.getTime()) return null;
   const formatted = displayKickoff(kickoff);
-  const id = `api-football-${item.fixture?.id || `${config.id}-${formatted.iso}`}`;
+  const id = `${provider === "worldcup26.ir" ? "open-football" : "api-football"}-${item.fixture?.id || `${config.id}-${formatted.iso}`}`;
   const model = modelForFixture({ id, sport: "football", competitionId: config.modelId,
     season: String(item.league?.season || seasonStart(now)), startsAt: formatted.iso, home, away }, history, now);
 
@@ -173,7 +200,7 @@ function normalize(item: FootballFixture, config: FootballLeague, history: Compl
     confidence: model.confidence,
     model: model.model,
     source: "live-api",
-    sourceLabel: "API-Football fixture · PredictArena model",
+    sourceLabel: `${provider} fixture · PredictArena model`,
     featured: model.confidence >= 62,
   };
 }
@@ -199,20 +226,22 @@ export async function buildFootballPayload() {
   const now = new Date();
   const bundles = await Promise.all(footballLeagues.map(async (config) => {
     try {
-      const fixtures = await requestFixtures(config, now);
+      const provider = config.openSlug ? "worldcup26.ir" : "API-Football";
+      const fixtures = config.openSlug ? await requestOpenFixtures(config, now) : await requestFixtures(config, now);
       const history = toHistory(fixtures, now);
       const upcoming = fixtures
         .filter((item) => isUpcoming(item, now))
         .sort((a, b) => new Date(a.fixture?.date || 0).getTime() - new Date(b.fixture?.date || 0).getTime())
         .slice(0, 6);
       const providerSeason = fixtures.find((item) => item.league?.season)?.league?.season;
-      return { config, history, upcoming, available: true, providerSeason, error: null as string | null };
+      return { config, history, upcoming, available: true, provider, providerSeason, error: null as string | null };
     } catch (error) {
       return {
         config,
         history: [] as CompletedFixture[],
         upcoming: [] as FootballFixture[],
         available: false,
+        provider: config.openSlug ? "worldcup26.ir" : "API-Football",
         providerSeason: undefined as number | undefined,
         error: error instanceof Error ? error.message : "Unknown API-Football error",
       };
@@ -221,7 +250,7 @@ export async function buildFootballPayload() {
 
   const apiMatches = bundles.flatMap((bundle) =>
     bundle.upcoming
-      .map((item) => normalize(item, bundle.config, bundle.history, now))
+      .map((item) => normalize(item, bundle.config, bundle.history, now, bundle.provider))
       .filter((match): match is Match => Boolean(match)),
   );
   const manualMatches = (Array.isArray(manualFixtures) ? manualFixtures as ManualFixture[] : []).flatMap((item) => {
@@ -245,7 +274,7 @@ export async function buildFootballPayload() {
       sport: bundle.config.sport,
       matchCount: matches.filter((match) => match.leagueId === bundle.config.id).length,
       available: bundle.available,
-      provider: "API-Football",
+      provider: bundle.provider,
       providerSeason: bundle.providerSeason,
       error: bundle.error,
     })),
