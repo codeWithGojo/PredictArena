@@ -88,6 +88,7 @@ function outcomeLabels(match: Match) {
 }
 
 function topRead(match: Match) {
+  if (!match.probabilities.length) return { value: 0, label: "Awaiting history" };
   const best = Math.max(...match.probabilities);
   const index = match.probabilities.indexOf(best);
   return { value: best, label: outcomeLabels(match)[index] ?? "Top outcome" };
@@ -100,6 +101,7 @@ function confidenceTone(confidence: number) {
 }
 
 function ProbabilityBar({ match }: { match: Match }) {
+  if (!match.probabilities.length) return <div className="small-empty">No model probabilities yet. Historical completed results are required.</div>;
   const labels = outcomeLabels(match);
   return <div className="probability-row" aria-label="Model outcome probabilities">{match.probabilities.map((probability, index) => <div className="probability-item" key={`${match.id}-${labels[index]}`}><div><span>{labels[index]}</span><strong>{probability}%</strong></div><div className="probability-track"><i style={{ width: `${probability}%` }}/></div></div>)}</div>;
 }
@@ -110,8 +112,8 @@ function MatchRow({ match, onOpen }: { match: Match; onOpen: (match: Match) => v
   return <article className="match-row">
     <div className="match-competition"><span>{match.leagueShort}</span><div><strong>{match.league}</strong><small>{match.date} · {match.time} WAT</small></div></div>
     <div className="match-teams"><div><Crest team={match.home} compact/><strong>{match.home.name}</strong></div><span>vs</span><div><Crest team={match.away} compact/><strong>{match.away.name}</strong></div></div>
-    <div className="match-probabilities">{match.probabilities.map((value, index) => <span className={value === read.value ? "top" : ""} key={`${match.id}-p-${index}`}><small>{outcomeLabels(match)[index]}</small><strong>{value}%</strong></span>)}</div>
-    <div className="match-confidence"><span className={`confidence-dot ${confidence.tone}`}/><div><strong>{match.confidence}%</strong><small>{confidence.label}</small></div></div>
+    <div className="match-probabilities">{match.probabilities.length ? match.probabilities.map((value, index) => <span className={value === read.value ? "top" : ""} key={`${match.id}-p-${index}`}><small>{outcomeLabels(match)[index]}</small><strong>{value}%</strong></span>) : <span><small>Model status</small><strong>Awaiting history</strong></span>}</div>
+    <div className="match-confidence"><span className={`confidence-dot ${confidence.tone}`}/><div><strong>{match.probabilities.length ? `${match.confidence}%` : "—"}</strong><small>{match.probabilities.length ? confidence.label : "Not rated"}</small></div></div>
     <button className="row-action" onClick={() => onOpen(match)} aria-label={`Open ${match.home.name} versus ${match.away.name} analysis`}><Icon name="chevron" size={18}/></button>
   </article>;
 }
@@ -159,17 +161,17 @@ function PredictionDrawer({ match, onClose }: { match: Match | null; onClose: ()
   return <div className="drawer-layer" role="dialog" aria-modal="true" aria-label={`${match.home.name} versus ${match.away.name} analysis`}><button className="drawer-backdrop" onClick={onClose} aria-label="Close analysis"/><aside className="prediction-drawer">
     <div className="drawer-head"><div><span className="eyebrow"><i/> Match intelligence</span><small>{match.model.version}</small></div><button onClick={onClose} aria-label="Close analysis"><Icon name="close"/></button></div>
     <div className="drawer-match"><div><Crest team={match.home}/><strong>{match.home.name}</strong><small>{match.home.short}</small></div><span><b>{match.time}</b><small>{match.date}</small></span><div><Crest team={match.away}/><strong>{match.away.name}</strong><small>{match.away.short}</small></div></div>
-    <div className="drawer-lead"><span>Model&apos;s strongest read</span><div><strong>{read.label}</strong><b>{read.value}%</b></div><p>{match.model.method} · {match.model.sampleSize} historical matches in the available sample</p></div>
+    <div className="drawer-lead"><span>Model&apos;s strongest read</span><div><strong>{read.label}</strong>{match.probabilities.length > 0 && <b>{read.value}%</b>}</div><p>{match.model.method} · {match.model.sampleSize} historical matches in the available sample</p></div>
     <ProbabilityBar match={match}/>
-    <div className="drawer-metrics"><div><span>Confidence</span><strong>{match.confidence}%</strong><small>{confidenceTone(match.confidence).label}</small></div>{match.model.expectedHome !== undefined && <div><span>Home xG</span><strong>{match.model.expectedHome}</strong><small>Expected goals</small></div>}{match.model.expectedAway !== undefined && <div><span>Away xG</span><strong>{match.model.expectedAway}</strong><small>Expected goals</small></div>}{match.model.expectedTotal !== undefined && <div><span>Total</span><strong>{match.model.expectedTotal}</strong><small>Model projection</small></div>}</div>
-    <div className="drawer-section"><div className="section-heading compact"><div><span className="eyebrow">Outcome map</span><h2>Additional probabilities</h2></div></div><div className="market-grid">{match.predictions.slice(0, 6).map((prediction) => <div className={prediction.featured ? "market-card featured" : "market-card"} key={prediction.label}><span>{prediction.label}</span><strong>{prediction.value}</strong><p>{prediction.explanation}</p></div>)}</div></div>
-    <PremiumGate title="Advanced model read"><div className="premium-read"><div className="premium-read-head"><span><Icon name="spark"/></span><div><small>PREMIUM ANALYSIS</small><strong>Why the model leans {read.label}</strong></div></div><div className="factor-grid">{match.model.factors.map((factor) => <div key={factor.label}><span>{factor.label}</span><strong>{factor.value}</strong><i><b className={factor.tone} style={{ width: `${factor.strength}%` }}/></i><p>{factor.detail}</p></div>)}</div><div className="model-limit"><Icon name="shield" size={17}/><p><strong>Known limitation:</strong> {match.model.caveat}</p></div></div></PremiumGate>
+    {match.probabilities.length > 0 && <div className="drawer-metrics"><div><span>Confidence</span><strong>{match.confidence}%</strong><small>{confidenceTone(match.confidence).label}</small></div>{match.model.expectedHome !== undefined && <div><span>{match.sport === "football" ? "Home xG" : "Home points"}</span><strong>{match.model.expectedHome}</strong><small>{match.sport === "football" ? "Expected goals" : "Projected points"}</small></div>}{match.model.expectedAway !== undefined && <div><span>{match.sport === "football" ? "Away xG" : "Away points"}</span><strong>{match.model.expectedAway}</strong><small>{match.sport === "football" ? "Expected goals" : "Projected points"}</small></div>}{match.model.expectedTotal !== undefined && <div><span>Total</span><strong>{match.model.expectedTotal}</strong><small>Model projection</small></div>}</div>}
+    {match.predictions.length > 0 && <div className="drawer-section"><div className="section-heading compact"><div><span className="eyebrow">Outcome map</span><h2>Additional probabilities</h2></div></div><div className="market-grid">{match.predictions.slice(0, 6).map((prediction) => <div className={prediction.featured ? "market-card featured" : "market-card"} key={prediction.label}><span>{prediction.label}</span><strong>{prediction.value}</strong><p>{prediction.explanation}</p></div>)}</div></div>}
+    {match.probabilities.length > 0 && <PremiumGate title="Advanced model read"><div className="premium-read"><div className="premium-read-head"><span><Icon name="spark"/></span><div><small>PREMIUM ANALYSIS</small><strong>Why the model leans {read.label}</strong></div></div><div className="factor-grid">{match.model.factors.map((factor) => <div key={factor.label}><span>{factor.label}</span><strong>{factor.value}</strong><i><b className={factor.tone} style={{ width: `${factor.strength}%` }}/></i><p>{factor.detail}</p></div>)}</div><div className="model-limit"><Icon name="shield" size={17}/><p><strong>Known limitation:</strong> {match.model.caveat}</p></div></div></PremiumGate>}
     <p className="drawer-disclaimer">Probabilities are analysis, not guarantees or betting advice.</p>
   </aside></div>;
 }
 
-function EmptyBoard({ loading, onRefresh }: { loading: boolean; onRefresh: () => void }) {
-  return <div className="board-empty"><span><Icon name={loading ? "refresh" : "clock"} size={24}/></span><h3>{loading ? "Loading the model board" : "No fixtures in this view"}</h3><p>{loading ? "Fetching the latest available fixtures and model outputs." : "Try another sport, competition, or refresh the feed."}</p>{!loading && <button onClick={onRefresh}>Refresh feed <Icon name="refresh" size={15}/></button>}</div>;
+function EmptyBoard({ loading, onRefresh, unrated = false }: { loading: boolean; onRefresh: () => void; unrated?: boolean }) {
+  return <div className="board-empty"><span><Icon name={loading ? "refresh" : "clock"} size={24}/></span><h3>{loading ? "Loading the model board" : unrated ? "Fixtures awaiting history" : "No fixtures in this view"}</h3><p>{loading ? "Fetching the latest available fixtures and model outputs." : unrated ? "The listed fixtures need completed historical results before the model can publish probabilities." : "Try another sport, competition, or refresh the feed."}</p>{!loading && <button onClick={onRefresh}>Refresh feed <Icon name="refresh" size={15}/></button>}</div>;
 }
 
 export default function Home() {
@@ -208,7 +210,7 @@ export default function Home() {
     const search = query.trim().toLowerCase();
     return !search || [match.home.name, match.away.name, match.league].some((value) => value.toLowerCase().includes(search));
   }), [activeLeague, activeSport, query, supportedMatches]);
-  const rankedMatches = useMemo(() => [...visibleMatches].sort((a, b) => b.confidence - a.confidence), [visibleMatches]);
+  const rankedMatches = useMemo(() => visibleMatches.filter((match) => match.probabilities.length > 0).sort((a, b) => b.confidence - a.confidence), [visibleMatches]);
   const featured = rankedMatches[0] ?? null;
   const queue = featured ? rankedMatches.slice(1) : rankedMatches;
   const leagues = feed?.leagueCatalog ?? defaultLeagueCatalog;
@@ -225,7 +227,7 @@ export default function Home() {
 
       <section className="metric-strip"><div><span><Icon name="target"/></span><div><small>Fixtures scanned</small><strong>{supportedMatches.length}</strong></div><em>Current board</em></div><div><span><Icon name="spark"/></span><div><small>Strong signals</small><strong>{strongSignals}</strong></div><em>70%+ confidence</em></div><div><span><Icon name="model"/></span><div><small>Models running</small><strong>3</strong></div><em>Football · NBA · ATP</em></div><div><span><Icon name="shield"/></span><div><small>Research policy</small><strong>Open</strong></div><em>Losses published</em></div></section>
 
-      <section className="primary-grid">{featured ? <FeaturedSignal match={featured} onOpen={setSelectedMatch}/> : <EmptyBoard loading={loading} onRefresh={() => void loadMatches(true)}/>}<SignalStack matches={queue} onOpen={setSelectedMatch}/></section>
+      <section className="primary-grid">{featured ? <FeaturedSignal match={featured} onOpen={setSelectedMatch}/> : <EmptyBoard loading={loading} unrated={visibleMatches.length > 0} onRefresh={() => void loadMatches(true)}/>}<SignalStack matches={queue} onOpen={setSelectedMatch}/></section>
 
       <section className="all-predictions"><div className="section-heading"><div><span className="eyebrow">Full board</span><h2>Every available fixture</h2><p>Sort by sport or competition. Open any fixture for the full probability map.</p></div><span>{visibleMatches.length} matches</span></div><div className="filter-row">{sports.map((sport) => <button className={activeSport === sport.id ? "active" : ""} key={sport.id} onClick={() => selectSport(sport.id)}><Icon name={sport.icon} size={16}/>{sport.label}</button>)}</div><div className="match-table-head"><span>Competition</span><span>Fixture</span><span>Outcome probability</span><span>Confidence</span><span/></div><div className="match-list">{visibleMatches.length ? visibleMatches.map((match) => <MatchRow match={match} onOpen={setSelectedMatch} key={match.id}/>) : <EmptyBoard loading={loading} onRefresh={() => void loadMatches(true)}/>}</div></section>
 
