@@ -322,6 +322,22 @@ a { color: inherit; text-decoration: none; }
 .premium-gate > span { display: block; color: #8290a4; font-size: .68rem; line-height: 1.5; }
 .premium-gate > button { margin-top: 14px; padding: 10px 13px; border: 0; border-radius: 8px; color: #0a0f16; background: var(--blue); font-size: .67rem; font-weight: 850; cursor: pointer; }
 .premium-gate > button:disabled { opacity: .55; }
+.auth-dialog-backdrop { position: fixed; inset: 0; z-index: 100; display: grid; place-items: center; padding: 20px; background: rgba(3,8,16,.78); backdrop-filter: blur(8px); }
+.auth-dialog { position: relative; width: min(100%, 410px); padding: 28px; border: 1px solid #354252; border-radius: 16px; background: #111b29; box-shadow: 0 25px 90px rgba(0,0,0,.5); }
+.auth-dialog h2 { margin: 9px 0; color: #f4f7fb; font-size: 1.6rem; }
+.auth-dialog p { color: #a3b0c2; font-size: .85rem; line-height: 1.5; }
+.auth-dialog-close { position: absolute; top: 13px; right: 15px; border: 0; background: transparent; color: #bdcad9; font-size: 1.5rem; cursor: pointer; }
+.auth-dialog form, .auth-dialog label { display: grid; gap: 8px; }
+.auth-dialog form { gap: 16px; margin-top: 24px; }
+.auth-dialog label { color: #d8e1ec; font-size: .75rem; font-weight: 700; }
+.auth-dialog input { width: 100%; padding: 12px; border: 1px solid #384658; border-radius: 8px; outline: none; background: #09111c; color: #f4f7fb; font: inherit; }
+.auth-dialog input:focus { border-color: var(--lime); }
+.auth-dialog form > button { padding: 12px; border: 0; border-radius: 8px; background: var(--lime); color: #101820; font-weight: 800; cursor: pointer; }
+.auth-dialog form > button:disabled { opacity: .55; }
+.auth-dialog-error, .auth-dialog-notice { font-size: .75rem; line-height: 1.5; }
+.auth-dialog-error { color: #ff9c9c; }
+.auth-dialog-notice { color: var(--lime); }
+.auth-dialog-switch { display: block; margin: 18px auto 0; border: 0; background: transparent; color: #a8c5ff; cursor: pointer; }
 .premium-read-head { display: flex; align-items: center; gap: 12px; }
 .premium-read-head > span { width: 38px; height: 38px; display: grid; place-items: center; border-radius: 9px; color: var(--blue); background: rgba(122,167,255,.12); }
 .premium-read-head div { display: grid; gap: 4px; }
