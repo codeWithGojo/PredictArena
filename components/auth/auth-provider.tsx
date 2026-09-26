@@ -74,7 +74,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       const { error: authError } = await browserAuth().auth.exchangeCodeForSession(code);
       if (authError) throw authError;
       await hydrateUser();
-    } catch (reason) { const message = reason instanceof Error ? reason.message : "Could not finish sign in."; setError(message); throw reason; }
+    } catch (reason) { const message = reason instanceof Error ? reason.message : "Could not finish sign in."; setError(message.includes("PKCE code verifier not found") ? "Email confirmed. Sign in with your password to continue." : message); throw reason; }
     finally { setLoading(false); }
   }, [hydrateUser]);
 
