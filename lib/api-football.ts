@@ -1,4 +1,5 @@
 import { openEventToFixture, type OpenEvent } from "./open-football";
+import { footballDataToFixture, type FootballDataMatch } from "./football-data";
 import {
   colorsFromName,
   shortName,
@@ -29,19 +30,21 @@ type FootballLeague = {
   short: string;
   name: string;
   openSlug?: string;
+  footballDataCode?: string;
 };
 
 export const footballLeagues: FootballLeague[] = [
   { id: "39", modelId: "football:premier-league", sport: "football", short: "PL", name: "Premier League", openSlug: "eng.1" },
   { id: "140", modelId: "football:la-liga", sport: "football", short: "LL", name: "La Liga", openSlug: "esp.1" },
-  { id: "135", modelId: "football:serie-a", sport: "football", short: "SA", name: "Serie A" },
-  { id: "78", modelId: "football:bundesliga", sport: "football", short: "BL", name: "Bundesliga" },
-  { id: "61", modelId: "football:ligue-1", sport: "football", short: "L1", name: "Ligue 1" },
-  { id: "2", modelId: "football:champions-league", sport: "football", short: "UCL", name: "Champions League" },
+  { id: "135", modelId: "football:serie-a", sport: "football", short: "SA", name: "Serie A", footballDataCode: "SA" },
+  { id: "78", modelId: "football:bundesliga", sport: "football", short: "BL", name: "Bundesliga", footballDataCode: "BL1" },
+  { id: "61", modelId: "football:ligue-1", sport: "football", short: "L1", name: "Ligue 1", footballDataCode: "FL1" },
+  { id: "2", modelId: "football:champions-league", sport: "football", short: "UCL", name: "Champions League", footballDataCode: "CL" },
 ];
 
 const API_ROOT = "https://v3.football.api-sports.io";
 const OPEN_API_ROOT = "https://worldcup26.ir";
+const FOOTBALL_DATA_ROOT = "https://api.football-data.org/v4";
 export const FOOTBALL_CACHE_SECONDS = 6 * 60 * 60;
 
 async function requestOpenFixtures(config: FootballLeague, now: Date): Promise<FootballFixture[]> {
@@ -64,6 +67,26 @@ async function requestOpenFixtures(config: FootballLeague, now: Date): Promise<F
   if ((payload.pageCount || 1) > 1) throw new Error("Open football API history exceeds one page");
   return payload.events.flatMap((event) => {
     const fixture = openEventToFixture(event, config);
+    return fixture ? [fixture] : [];
+  });
+}
+
+async function requestFootballDataFixtures(config: FootballLeague, now: Date, token: string): Promise<FootballFixture[]> {
+  if (!config.footballDataCode) throw new Error("No football-data.org league mapping");
+  const from = new Date(now);
+  from.setUTCDate(from.getUTCDate() - 60);
+  const to = new Date(now);
+  to.setUTCDate(to.getUTCDate() + 31); // dateTo is exclusive.
+  const url = new URL(`${FOOTBALL_DATA_ROOT}/competitions/${config.footballDataCode}/matches`);
+  url.searchParams.set("dateFrom", isoDate(from));
+  url.searchParams.set("dateTo", isoDate(to));
+  const response = await fetch(url, { headers: { Accept: "application/json", "X-Auth-Token": token },
+    next: { revalidate: FOOTBALL_CACHE_SECONDS } });
+  if (!response.ok) throw new Error(`football-data.org HTTP ${response.status}`);
+  const payload = await response.json() as { matches?: FootballDataMatch[] };
+  if (!Array.isArray(payload.matches)) throw new Error("football-data.org returned no matches array");
+  return payload.matches.flatMap((match) => {
+    const fixture = footballDataToFixture(match, config);
     return fixture ? [fixture] : [];
   });
 }
@@ -179,7 +202,8 @@ function normalize(item: FootballFixture, config: FootballLeague, history: Compl
   const kickoff = new Date(raw);
   if (!Number.isFinite(kickoff.getTime()) || kickoff.getTime() <= now.getTime()) return null;
   const formatted = displayKickoff(kickoff);
-  const id = `${provider === "worldcup26.ir" ? "open-football" : "api-football"}-${item.fixture?.id || `${config.id}-${formatted.iso}`}`;
+  const prefix = provider === "worldcup26.ir" ? "open-football" : provider === "football-data.org" ? "football-data" : "api-football";
+  const id = `${prefix}-${item.fixture?.id || `${config.id}-${formatted.iso}`}`;
   const model = modelForFixture({ id, sport: "football", competitionId: config.modelId,
     season: String(item.league?.season || seasonStart(now)), startsAt: formatted.iso, home, away }, history, now);
 
@@ -224,10 +248,13 @@ function normalizeManual(item: ManualFixture, config: FootballLeague, history: C
 
 export async function buildFootballPayload() {
   const now = new Date();
+  const footballDataToken = env().FOOTBALL_DATA_TOKEN;
   const bundles = await Promise.all(footballLeagues.map(async (config) => {
+    const provider = config.openSlug ? "worldcup26.ir" : config.footballDataCode && footballDataToken ? "football-data.org" : "API-Football";
     try {
-      const provider = config.openSlug ? "worldcup26.ir" : "API-Football";
-      const fixtures = config.openSlug ? await requestOpenFixtures(config, now) : await requestFixtures(config, now);
+      const fixtures = config.openSlug ? await requestOpenFixtures(config, now) :
+        config.footballDataCode && footballDataToken ? await requestFootballDataFixtures(config, now, footballDataToken) :
+          await requestFixtures(config, now);
       const history = toHistory(fixtures, now);
       const upcoming = fixtures
         .filter((item) => isUpcoming(item, now))
@@ -241,7 +268,7 @@ export async function buildFootballPayload() {
         history: [] as CompletedFixture[],
         upcoming: [] as FootballFixture[],
         available: false,
-        provider: config.openSlug ? "worldcup26.ir" : "API-Football",
+        provider,
         providerSeason: undefined as number | undefined,
         error: error instanceof Error ? error.message : "Unknown API-Football error",
       };
