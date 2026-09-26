@@ -26,8 +26,8 @@ function parseError(status: number, payload: unknown, requestId?: string): ApiEr
 }
 
 export async function apiFetch<T>(path: string, init: RequestInit = {}, retry = true): Promise<T> {
-  if (isMockApi && path === "/me") {
-    const previewPlan = process.env.NODE_ENV !== "production" && process.env.NEXT_PUBLIC_DEV_AUTH_MODE === "premium" ? "premium" : "free";
+  if (isMockApi && process.env.NODE_ENV !== "production" && path === "/me") {
+    const previewPlan = process.env.NEXT_PUBLIC_DEV_AUTH_MODE === "premium" ? "premium" : "free";
     return { data: { id: "mock-user", displayName: "Favour", email: "favour@example.test", plan: previewPlan }, requestId: "mock-request" } as T;
   }
   const accessToken = authBridge?.getAccessToken();

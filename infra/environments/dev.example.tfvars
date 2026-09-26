@@ -7,4 +7,4 @@ logout_urls                      = ["https://dev.example.com/"]
 cognito_domain_prefix            = "predictarena-dev-replace-me"
 runtime_permissions_boundary_arn = "arn:aws:iam::123456789012:policy/predictarena-dev-runtime-boundary"
 stub_responses                   = false
-# Supply Google credentials through TF_VAR_google_client_id and TF_VAR_google_client_secret.
+# Optional Google sign-in: set enable_google=true and supply TF_VAR_google_client_id and TF_VAR_google_client_secret.

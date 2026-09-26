@@ -7,6 +7,7 @@ import { AuthControls } from "@/components/auth/auth-controls";
 import { PremiumGate } from "@/components/auth/premium-gate";
 import { useAuth } from "@/hooks/use-auth";
 import type { Match, SportId, Team } from "@/lib/sports";
+import { matchweekLabel, matchweekStart } from "@/lib/matchweeks";
 
 type FeedPayload = {
   matches: Match[];
@@ -180,6 +181,7 @@ export default function Home() {
   const [loading, setLoading] = useState(true);
   const [activeSport, setActiveSport] = useState<"all" | "football" | "basketball" | "tennis">("all");
   const [activeLeague, setActiveLeague] = useState("all");
+  const [selectedWeek, setSelectedWeek] = useState("first");
   const [query, setQuery] = useState("");
   const [selectedMatch, setSelectedMatch] = useState<Match | null>(null);
   const [railOpen, setRailOpen] = useState(false);
@@ -204,12 +206,23 @@ export default function Home() {
   }, [loadMatches]);
 
   const supportedMatches = useMemo(() => (feed?.matches ?? []).filter((match) => match.sport === "football" || match.sport === "basketball" || match.sport === "tennis"), [feed]);
-  const visibleMatches = useMemo(() => supportedMatches.filter((match) => {
+  const filteredMatches = useMemo(() => supportedMatches.filter((match) => {
     if (activeSport !== "all" && match.sport !== activeSport) return false;
     if (activeSport === "football" && activeLeague !== "all" && match.leagueId !== activeLeague) return false;
     const search = query.trim().toLowerCase();
     return !search || [match.home.name, match.away.name, match.league].some((value) => value.toLowerCase().includes(search));
   }), [activeLeague, activeSport, query, supportedMatches]);
+  const weeks = useMemo(() => [...new Set(filteredMatches.map((match) => matchweekStart(match.kickoffISO)).filter(Boolean))].sort(), [filteredMatches]);
+  const activeWeek = selectedWeek === "all" ? "all" : weeks.includes(selectedWeek) ? selectedWeek : weeks[0];
+  const visibleMatches = useMemo(() => filteredMatches.filter((match) => activeWeek === "all" || matchweekStart(match.kickoffISO) === activeWeek), [activeWeek, filteredMatches]);
+  const weeklyGroups = useMemo(() => {
+    const groups = new Map<string, Match[]>();
+    for (const match of visibleMatches) {
+      const key = matchweekStart(match.kickoffISO);
+      groups.set(key, [...(groups.get(key) ?? []), match]);
+    }
+    return [...groups.entries()].sort(([a], [b]) => a.localeCompare(b));
+  }, [visibleMatches]);
   const rankedMatches = useMemo(() => visibleMatches.filter((match) => match.probabilities.length > 0).sort((a, b) => b.confidence - a.confidence), [visibleMatches]);
   const featured = rankedMatches[0] ?? null;
   const queue = featured ? rankedMatches.slice(1) : rankedMatches;
@@ -229,7 +242,7 @@ export default function Home() {
 
       <section className="primary-grid">{featured ? <FeaturedSignal match={featured} onOpen={setSelectedMatch}/> : <EmptyBoard loading={loading} unrated={visibleMatches.length > 0} onRefresh={() => void loadMatches(true)}/>}<SignalStack matches={queue} onOpen={setSelectedMatch}/></section>
 
-      <section className="all-predictions"><div className="section-heading"><div><span className="eyebrow">Full board</span><h2>Every available fixture</h2><p>Sort by sport or competition. Open any fixture for the full probability map.</p></div><span>{visibleMatches.length} matches</span></div><div className="filter-row">{sports.map((sport) => <button className={activeSport === sport.id ? "active" : ""} key={sport.id} onClick={() => selectSport(sport.id)}><Icon name={sport.icon} size={16}/>{sport.label}</button>)}</div><div className="match-table-head"><span>Competition</span><span>Fixture</span><span>Outcome probability</span><span>Confidence</span><span/></div><div className="match-list">{visibleMatches.length ? visibleMatches.map((match) => <MatchRow match={match} onOpen={setSelectedMatch} key={match.id}/>) : <EmptyBoard loading={loading} onRefresh={() => void loadMatches(true)}/>}</div></section>
+      <section className="all-predictions"><div className="section-heading"><div><span className="eyebrow">Full board</span><h2>Fixtures by matchweek</h2><p>Choose a Lagos-time Monday to Sunday week, then filter by sport or competition.</p></div><span>{visibleMatches.length} matches</span></div><div className="filter-row">{sports.map((sport) => <button className={activeSport === sport.id ? "active" : ""} key={sport.id} onClick={() => selectSport(sport.id)}><Icon name={sport.icon} size={16}/>{sport.label}</button>)}</div><div className="matchweek-tabs" aria-label="Select matchweek"><button type="button" className={activeWeek === "all" ? "active" : ""} onClick={() => setSelectedWeek("all")}>All weeks</button>{weeks.map((week) => <button type="button" className={activeWeek === week ? "active" : ""} key={week} onClick={() => setSelectedWeek(week)}><small>Matchweek</small>{matchweekLabel(week)}</button>)}</div><div className="match-table-head"><span>Competition</span><span>Fixture</span><span>Outcome probability</span><span>Confidence</span><span/></div><div className="match-list">{weeklyGroups.length ? weeklyGroups.map(([week, matches]) => <div className="matchweek-group" key={week}><div className="matchweek-heading"><strong>{matchweekLabel(week)}</strong><span>{matches.length} {matches.length === 1 ? "match" : "matches"} · WAT</span></div>{matches.map((match) => <MatchRow match={match} onOpen={setSelectedMatch} key={match.id}/>)}</div>) : <EmptyBoard loading={loading} onRefresh={() => void loadMatches(true)}/>}</div></section>
 
       <section className="performance-section" id="performance"><div className="performance-copy"><span className="eyebrow"><i/> Measured, not marketed</span><h2>We publish when the model loses.</h2><p>On our multi-season football benchmark, the market&apos;s de-vigged closing probabilities still outperform the current PredictArena football default. The stronger experimental model was not promoted because it failed the untouched later-season test.</p><div className="performance-notes"><span><Icon name="check" size={16}/> 4,560 walk-forward predictions</span><span><Icon name="check" size={16}/> Premier League and La Liga</span><span><Icon name="check" size={16}/> Test seasons kept untouched</span></div><Link href="#plans">How premium works <Icon name="arrow" size={16}/></Link></div><div className="benchmark-card"><div className="benchmark-head"><div><small>FOOTBALL BENCHMARK</small><strong>Log loss · lower is better</strong></div><span>Research set</span></div><div className="benchmark-bars"><div><span>Bookmaker close</span><i><b style={{ width: "96.3%" }}/></i><strong>0.963</strong></div><div><span>50:50 blend</span><i><b style={{ width: "97.4%" }}/></i><strong>0.974</strong></div><div><span>PA default</span><i><b style={{ width: "99.9%" }}/></i><strong>0.999</strong></div></div><div className="benchmark-foot"><Icon name="shield" size={17}/><p>The premium product will launch around richer, fresher inputs and strict holdout testing, not inflated accuracy claims.</p></div></div></section>
 
