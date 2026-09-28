@@ -134,8 +134,11 @@ export function predict(input: ModelInput, publication: Publication, options: { 
     const sum = (predicate: (h: number, v: number) => boolean) => dist.cells.reduce((s, c) => s + (predicate(c.home, c.away) ? c.probability : 0), 0);
     a.markets = [market('1x2','home',probabilities[0],'Home regulation win.'), market('1x2','draw',probabilities[1],'Regulation draw.'), market('1x2','away',probabilities[2],'Away regulation win.'),
       market('double-chance','home-draw',probabilities[0] + probabilities[1],'Home win or draw.'), market('double-chance','away-draw',probabilities[2] + probabilities[1],'Away win or draw.'),
-      market('total','over',sum((x,y) => x+y >= 2),'At least two regulation goals.',1.5), market('total','over',sum((x,y) => x+y >= 3),'At least three regulation goals.',2.5),
-      market('total','under',sum((x,y) => x+y <= 3),'At most three regulation goals.',3.5), market('btts','yes',sum((x,y) => x>0 && y>0),'Both teams score in regulation.')];
+      market('double-chance','home-away',probabilities[0] + probabilities[2],'Either team wins in regulation.'),
+      ...[1.5,2.5,3.5].flatMap(line => [market('total','over',sum((x,y) => x+y > line),`More than ${line} regulation goals.`,line),
+        market('total','under',sum((x,y) => x+y < line),`Fewer than ${line} regulation goals.`,line)]),
+      market('btts','yes',sum((x,y) => x>0 && y>0),'Both teams score in regulation.'),
+      market('btts','no',sum((x,y) => x===0 || y===0),'At least one team fails to score.')];
     a.factors = forecast.old ? forecast.old.model.factors.map(f=>({...f,strength:f.strength/100})) : [factor('Home attack',ha,'Opponent-adjusted scoring strength; neutral prior.'), factor('Away attack',aa,'Opponent-adjusted scoring strength; neutral prior.'),
       factor('Home defensive concession rate',hd,'Below one means fewer goals conceded.'), factor('Away defensive concession rate',ad,'Below one means fewer goals conceded.'),
       { label:'Low-score correlation',value:dist.rho.toFixed(5),strength:clamp(Math.abs(dist.rho),0,1),tone:'neutral',detail:config.rhoPenalty===null?'Disabled by configuration.':'Regularized likelihood estimate from eligible history only.' }];
