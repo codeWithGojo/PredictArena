@@ -10,6 +10,10 @@ export type Team = {
 export type Prediction = {
   label: string;
   value: string;
+  market?: string;
+  selection?: string;
+  line?: number | null;
+  probability?: number;
   featured?: boolean;
   explanation?: string;
 };

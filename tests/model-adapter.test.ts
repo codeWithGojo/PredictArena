@@ -17,6 +17,10 @@ test("publishes a normalized, versioned football prediction from completed histo
   assert.equal(result.probabilities.reduce((a, b) => a + b, 0), 100);
   assert.equal(result.model.version, "PA-Poisson 1.2 adapter 2.1");
   assert.equal(result.model.sampleSize, 12);
+  const market = (label: string) => result.predictions.find((pick) => pick.label === label)?.probability;
+  assert.ok(Math.abs((market("Over 2.5 goals") ?? 0) + (market("Under 2.5 goals") ?? 0) - 1) < 1e-8);
+  assert.ok(Math.abs((market("Both teams score: yes") ?? 0) + (market("Both teams score: no") ?? 0) - 1) < 1e-8);
+  assert.ok(result.predictions.some((pick) => pick.market === "double-chance" && pick.selection === "home-away"));
 });
 
 test("never invents probabilities without eligible results", () => {

@@ -67,10 +67,15 @@ export function modelForFixture(fixture: PredictionFixture, completed: Completed
   const labels = fixture.sport === "football" ? [`${fixture.home} win`, "Draw", `${fixture.away} win`] : [`${fixture.home} win`, `${fixture.away} win`];
   const strongest = probabilities.indexOf(Math.max(...probabilities));
   const outcomes = probabilities.map((value, index) => ({ label: labels[index], value: `${value}%`, featured: index === strongest,
+    market: fixture.sport === "football" ? "1x2" : "winner", selection: fixture.sport === "football" ? ["home", "draw", "away"][index] : ["home", "away"][index],
+    probability: summary.winProbability ? [summary.winProbability.home, ...(summary.winProbability.draw === null ? [] : [summary.winProbability.draw]), summary.winProbability.away][index] : undefined,
     explanation: "Pre-match model outcome probability." }));
   const extra = analysis.markets.filter((market) => !["1x2", "winner"].includes(market.market)).map((market) => ({
-    label: `${market.market.replace(/-/g, " ")} ${market.selection}`,
-    value: `${Math.round(market.probability * 100)}%`, explanation: market.explanation,
+    label: market.market === "double-chance" ? ({ "home-draw": "Home or draw", "away-draw": "Away or draw", "home-away": "Either team wins" }[market.selection] ?? market.selection)
+      : market.market === "total" ? `${market.selection === "over" ? "Over" : "Under"} ${market.line} goals`
+      : market.market === "btts" ? `Both teams score: ${market.selection}` : `${market.market} ${market.selection}`,
+    value: `${Math.round(market.probability * 100)}%`, market: market.market, selection: market.selection, line: market.line,
+    probability: market.probability, explanation: market.explanation,
   }));
   const rounded = (value: number | undefined) => value === undefined ? undefined : Math.round(value * 100) / 100;
   return { probabilities, predictions: [...outcomes, ...extra], confidence: Math.round((summary.confidence ?? 0) * 100),
