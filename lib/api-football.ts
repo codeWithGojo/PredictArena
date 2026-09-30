@@ -7,6 +7,8 @@ import {
 } from "./sports";
 import { modelForFixture, participantId, type CompletedFixture } from "./model-adapter";
 import manualFixtures from "../data/manual-football-fixtures.json";
+import recordingObservations from "../data/recording-observations.json";
+import { attachRecordingContext, type RecordingBatch } from "./recording-observations";
 
 type FootballFixture = {
   fixture?: {
@@ -288,7 +290,8 @@ export async function buildFootballPayload() {
       existing.away.name.toLowerCase() === match.away.name.toLowerCase())) return [];
     return [match];
   });
-  const matches = [...apiMatches, ...manualMatches];
+  const matches = [...apiMatches, ...manualMatches].map(match =>
+    attachRecordingContext(match, recordingObservations as RecordingBatch, now));
 
   return {
     matches,
