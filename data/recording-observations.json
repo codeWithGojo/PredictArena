@@ -1,0 +1,143 @@
+{
+  "source": "User-supplied FotMob screen recording",
+  "sourceFile": "1000871443.mp4",
+  "recordedDate": "2026-09-30",
+  "observedAt": null,
+  "reviewed": true,
+  "notes": [
+    "Capture time has no verified timezone; recordedDate is date-only.",
+    "Odds are pre-match snapshots, not closing odds.",
+    "Scoring summaries can include multiple competitions.",
+    "Individual historical match dates, confirmed lineups and match-level xG are unavailable; do not invent them."
+  ],
+  "entries": [
+    {
+      "leagueId": "39",
+      "home": "Arsenal",
+      "away": "Leeds United",
+      "fixtureDate": "2026-10-10",
+      "bookmaker": "Bet9ja",
+      "odds": [
+        1.35,
+        4.95,
+        8.6
+      ],
+      "goalsLastFive": {
+        "home": 14,
+        "away": null
+      }
+    },
+    {
+      "leagueId": "39",
+      "home": "Aston Villa",
+      "away": "Brentford",
+      "fixtureDate": "2026-10-10",
+      "bookmaker": "Bet9ja",
+      "odds": [
+        2.6,
+        3.55,
+        2.5
+      ],
+      "goalsLastFive": {
+        "home": 5,
+        "away": 5
+      }
+    },
+    {
+      "leagueId": "39",
+      "home": "Liverpool",
+      "away": "Manchester City",
+      "fixtureDate": "2026-10-10",
+      "bookmaker": "Bet9ja",
+      "odds": [
+        2.6,
+        3.7,
+        2.4
+      ],
+      "goalsLastFive": {
+        "home": 9,
+        "away": 9
+      }
+    },
+    {
+      "leagueId": "140",
+      "home": "Barcelona",
+      "away": "Getafe",
+      "fixtureDate": "2026-10-10",
+      "bookmaker": "Bet9ja",
+      "odds": [
+        1.05,
+        15.05,
+        34.9
+      ],
+      "goalsLastFive": {
+        "home": 13,
+        "away": 1
+      }
+    },
+    {
+      "leagueId": "140",
+      "home": "Deportivo Alaves",
+      "away": "Atletico Madrid",
+      "fixtureDate": "2026-10-10",
+      "bookmaker": "Bet9ja",
+      "odds": [
+        4.1,
+        3.8,
+        1.8
+      ],
+      "goalsLastFive": {
+        "home": 3,
+        "away": 8
+      }
+    },
+    {
+      "leagueId": "78",
+      "home": "Borussia Dortmund",
+      "away": "Werder Bremen",
+      "fixtureDate": "2026-10-09",
+      "bookmaker": "Stake",
+      "odds": [
+        1.3,
+        5.65,
+        7.45
+      ],
+      "goalsLastFive": {
+        "home": null,
+        "away": null
+      }
+    },
+    {
+      "leagueId": "78",
+      "home": "Augsburg",
+      "away": "Bayern Munich",
+      "fixtureDate": "2026-10-10",
+      "bookmaker": "Bet9ja",
+      "odds": [
+        10.65,
+        7.35,
+        1.2
+      ],
+      "goalsLastFive": {
+        "home": 5,
+        "away": 14
+      }
+    },
+    {
+      "leagueId": "78",
+      "home": "Mainz",
+      "away": "Bayer Leverkusen",
+      "fixtureDate": "2026-10-10",
+      "bookmaker": "Bet9ja",
+      "odds": [
+        2.8,
+        3.95,
+        2.15
+      ],
+      "goalsLastFive": {
+        "home": null,
+        "away": null
+      }
+    }
+  ]
+}

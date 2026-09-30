@@ -46,6 +46,7 @@ export type ModelDetails = {
 };
 
 export type Match = {
+  recordingContext?: import('./recording-observations.ts').RecordingContext;
   id: string;
   sport: Exclude<SportId, "all">;
   leagueId?: string;

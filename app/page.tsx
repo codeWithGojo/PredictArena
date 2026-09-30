@@ -130,6 +130,13 @@ function FeaturedSignal({ match, onOpen }: { match: Match; onOpen: (match: Match
       <div className="featured-team away"><Crest team={match.away}/><strong>{match.away.name}</strong><span>Away</span></div>
     </div>
     <ProbabilityBar match={match}/>
+    {match.recordingContext && <section className="drawer-section" aria-label="Recorded match information">
+      <div className="section-heading compact"><div><span className="eyebrow">Recorded {match.recordingContext.recordedDate}</span><h2>Bookmaker comparison</h2></div></div>
+      <p>{match.recordingContext.bookmaker} odds from your FotMob recording. These market estimates do not change the model prediction.</p>
+      <div className="market-grid">{["Home", "Draw", "Away"].map((label, i) => <div className="market-card" key={label}><span>{label}</span><strong>{(match.recordingContext!.marketProbabilities[i] * 100).toFixed(1)}%</strong><p>Decimal odds {match.recordingContext!.odds[i].toFixed(2)}</p></div>)}</div>
+      {(match.recordingContext.goalsLastFive.home !== null || match.recordingContext.goalsLastFive.away !== null) && <p>Goals in the last five matches: {match.home.name} {match.recordingContext.goalsLastFive.home ?? "unknown"}; {match.away.name} {match.recordingContext.goalsLastFive.away ?? "unknown"}. This sample may include other competitions.</p>}
+      <p>{match.recordingContext.stale ? "Historical snapshot; current odds and injuries may have changed." : "Date-only snapshot; exact capture time is unverified."} Historical match dates, confirmed lineups and match-level xG are missing.</p>
+    </section>}
     <div className="featured-bottom"><div><span>Strongest outcome</span><strong>{read.label} · {read.value}%</strong></div><div><span>Model confidence</span><strong>{match.confidence}%</strong></div><button onClick={() => onOpen(match)}>Open full analysis <Icon name="arrow" size={16}/></button></div>
   </section>;
 }
