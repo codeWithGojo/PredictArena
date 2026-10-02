@@ -698,3 +698,12 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 .clean-app .mobile-dock { border-radius: 0; box-shadow: none; left: 0; right: 0; bottom: 0; border-inline: 0; border-bottom: 0; }
 .clean-app .mobile-dock a { border-radius: 0; }
 @media (max-width: 760px) { .clean-app .pa-footer { margin: 0; } }
+body { min-width: 280px; }
+.week-select select { min-width: 0; flex: 1; }
+@media (max-width: 360px) {
+  .feed-control-top { flex-wrap: wrap; gap: 0; padding-bottom: 8px; }
+  .manage-leagues { margin-left: auto; }
+  .clean-app .filter-row { display: grid; grid-template-columns: repeat(2, 1fr); overflow: visible; }
+  .clean-app .section-heading { flex-wrap: wrap; gap: 8px; }
+  .slip-browse { flex-direction: column; }
+}
