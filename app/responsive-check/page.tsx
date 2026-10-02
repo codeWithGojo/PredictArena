@@ -1,0 +1,1 @@
+export default function ResponsiveCheck() { return <main style={{padding: 24, display: "flex", gap: 24, flexWrap: "wrap", alignItems: "start"}}>{[390, 320].map((width) => <section key={width}><h1 style={{fontSize: 18}}>Viewport {width}px</h1><iframe title={`PredictArena ${width}px`} src="/" style={{width, height: 844, border: "1px solid #263143"}} /></section>)}</main>; }
