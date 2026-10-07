@@ -9,10 +9,12 @@ import { usePreferences } from "@/hooks/use-preferences";
 import { AuthControls } from "@/components/auth/auth-controls";
 import { PremiumGate } from "@/components/auth/premium-gate";
 import { useSlip } from "@/hooks/use-slip";
-import { bestOddsOption, bookmakerOptions } from "@/lib/odds-slip";
-import { canRecommend, choices, confidenceLabel, headlinePick, type SlipPick } from "@/lib/selections";
+import { bestOddsOption, bookmakerOptions, estimatedOdds } from "@/lib/odds-slip";
+import { choices, confidenceLabel, headlinePick, type SlipPick } from "@/lib/selections";
 import type { Match, SportId, Team } from "@/lib/sports";
 import { matchweekLabel, matchweekStart, relativeMatchweekStart } from "@/lib/matchweeks";
+import { MatchSummary } from "@/components/match-summary";
+import { WeekTabs } from "@/components/week-tabs";
 
 type FeedPayload = {
   matches: Match[];
@@ -162,15 +164,12 @@ function samePick(a: SlipPick, b: SlipPick) {
 }
 
 function PickCard({ match, onOpen, onAdd, picks }: { match: Match; onOpen: (match: Match) => void; onAdd: (pick: SlipPick) => void; picks: SlipPick[] }) {
-  const pick = headlinePick(match) ?? bestOddsOption(match, 1, "bookmaker");
-  const qualified = canRecommend(match);
-  const added = pick && picks.some((item) => samePick(item, pick));
-  return <article className="pick-card">
-    <div className="pick-meta"><span>{match.league}</span><time dateTime={match.kickoffISO}>{match.date} · {match.time} WAT</time></div>
-    <button className="pick-match" onClick={() => onOpen(match)} aria-label={`Analyse ${match.home.name} vs ${match.away.name}`}><span><Crest team={match.home} compact/><strong>{match.home.name}</strong></span><span><Crest team={match.away} compact/><strong>{match.away.name}</strong></span></button>
-    <div className="pick-details"><div><span>{pick?.probabilityBasis === "bookmaker" ? "Market-only estimate" : qualified ? "Suggested market" : "Model estimate"}</span><strong>{pick?.label ?? "Awaiting history"}</strong></div><div><span>Probability</span><strong>{pick ? `${Math.round(pick.probability * 100)}%` : "—"}</strong></div></div>
-    <p className="pick-confidence">{confidenceLabel(match)}{match.probabilities.length ? ` · ${match.confidence}/100` : ""}</p>
-    <div className="pick-actions"><button className="pick-add" disabled={!pick} onClick={() => pick && onAdd(pick)}>{added ? "In your slip" : "Add to slip"}</button><button className="pick-analysis" onClick={() => onOpen(match)}>Full analysis</button></div>
+  const pick = bestOddsOption(match, 1, "auto") ?? headlinePick(match);
+  const added = pick && picks.some(item => samePick(item, pick));
+  return <article className="pick-card match-row">
+    <MatchSummary match={match} pick={pick} onOpen={() => onOpen(match)}/>
+    <div className="match-row-pick"><span>{pick?.probabilityBasis === "bookmaker" ? "Market pick" : "Model pick"}</span><strong>{pick?.label ?? "Awaiting history"}</strong>{pick && <b>{Math.round(pick.probability * 100)}%</b>}</div>
+    <div className="match-row-actions"><small>{pick ? pick.odds ? `Captured odds ${Number(pick.odds).toFixed(2)}` : `Estimated odds ${estimatedOdds(pick).toFixed(2)}` : "No eligible selection"}{pick && !pick.probabilityBasis ? ` · ${confidenceLabel(match)}` : ""}</small><div><button className="row-analysis" onClick={() => onOpen(match)} aria-label={`Full analysis for ${match.home.name} vs ${match.away.name}`}>Analysis <Icon name="chevron" size={15}/></button><button className="row-add" disabled={!pick} onClick={() => pick && onAdd(pick)} aria-label={`${added ? "In your slip" : "Add to slip"}: ${match.home.name} vs ${match.away.name}`}>{added ? "Added" : "Add"}<Icon name={added ? "check" : "bookmark"} size={15}/></button></div></div>
   </article>;
 }
 
@@ -191,6 +190,7 @@ export default function Home() {
   const preferences = usePreferences();
   const following = preferences.leagues;
   const [preferencesOpen, setPreferencesOpen] = useState(false);
+  const [filtersOpen, setFiltersOpen] = useState(false);
   const [now, setNow] = useState(0);
   const [notice, setNotice] = useState("");
   const { picks, addPick } = useSlip();
@@ -243,7 +243,6 @@ export default function Home() {
     for (const match of visibleMatches) { const key = matchweekStart(match.kickoffISO); groups.set(key, [...(groups.get(key) ?? []), match]); }
     return [...groups.entries()].sort(([a], [b]) => a.localeCompare(b));
   }, [visibleMatches]);
-  const standout = useMemo(() => visibleMatches.filter(canRecommend).sort((a, b) => b.confidence - a.confidence).slice(0, 2), [visibleMatches]);
   const leagues = feed?.leagueCatalog ?? defaultLeagueCatalog;
   const updated = feed?.generatedAt ? new Date(feed.generatedAt).toLocaleTimeString("en-NG", { hour: "2-digit", minute: "2-digit", timeZone: "Africa/Lagos" }) : null;
   const selectSport = (sport: typeof activeSport) => { setActiveSport(sport); setActiveLeague("all"); };
@@ -251,31 +250,36 @@ export default function Home() {
   const add = (pick: SlipPick) => { addPick(pick); setNotice(`${pick.label} added to your slip.`); };
   const closeAnalysis = useCallback(() => setSelectedMatch(null), []);
 
-  return <div className="pa-app clean-app">
+  return <div className="pa-app clean-app matchweek-app">
     <a className="skip-link" href="#board">Skip to predictions</a>
-    <header className="top-nav"><div className="nav-left"><Brand/><nav aria-label="Main navigation"><a href="#board">Predictions</a><Link href="/slips">My slip <span className="nav-count">{picks.length}</span></Link><Link href="/performance">Results</Link><Link href="/premium">Premium</Link></nav></div><div className="nav-right"><AuthControls/></div></header>
+    <header className="top-nav"><div className="nav-left"><Brand/><nav aria-label="Main navigation"><a href="#board">Predictions</a><Link href="/slips">My slip <span className="nav-count">{picks.length}</span></Link><Link href="/performance">Results</Link><Link href="/premium">Premium</Link></nav></div><div className="nav-right"><AuthControls/><Link href="/slips" className="build-slip-link">Build slip <Icon name="arrow" size={16}/></Link></div></header>
     <main className="dashboard-main" id="board">
-      <section className="dashboard-intro"><div><h1>Find your next pick</h1><p>Football, basketball and tennis. The numbers, with the context.</p></div><div className="board-actions"><span>{updated ? `Last checked ${updated} WAT` : "Fetching fixtures"}</span><button onClick={() => void loadMatches(true)} disabled={loading} aria-label="Refresh fixtures"><Icon name="refresh" size={16}/>{loading ? "Updating" : "Refresh"}</button></div></section>
+      <section className="dashboard-intro"><div><h1>Your matchweek</h1><p>Compare the probabilities. Choose your next pick.</p></div><div className="board-actions"><span>{updated ? `Last checked ${updated} WAT` : "Fetching fixtures"}</span><button onClick={() => void loadMatches(true)} disabled={loading} aria-label="Refresh fixtures"><Icon name="refresh" size={16}/>{loading ? "Updating" : "Refresh"}</button></div></section>
       {(feed?.freshness?.stale || leagues.some(l => !l.available)) && <p className="freshness-warning" role="status">{feed?.freshness?.stale ? "The feed is over an hour old. Showing the last available fixtures." : "Some competitions could not refresh. Their last available fixtures are retained."} Check kickoff times before relying on a forecast.</p>}
       <section className="feed-controls" aria-label="Prediction filters">
-        <div className="feed-control-top"><div className="view-tabs" aria-label="Feed view"><button aria-pressed={view === "all"} onClick={() => setView("all")}>All predictions</button><button aria-pressed={view === "following"} onClick={() => setView("following")}>For you</button></div><button className="manage-leagues" aria-expanded={preferencesOpen} aria-controls="league-preferences" onClick={() => setPreferencesOpen(!preferencesOpen)}>Your leagues{following.length ? ` (${following.length})` : ""}</button></div>
+        <WeekTabs value={selectedWeek} onChange={setSelectedWeek} now={now}/>
+        <div className="filter-row sport-tabs" aria-label="Sport">{sports.map(sport => <button aria-pressed={activeSport === sport.id} key={sport.id} onClick={() => selectSport(sport.id)}>{sport.label}</button>)}</div>
+        <div className="feed-control-top"><div className="view-tabs" aria-label="Feed view"><button aria-pressed={view === "all"} onClick={() => setView("all")}>All matches</button><button aria-pressed={view === "following"} onClick={() => setView("following")}>For you</button></div><button className="filters-toggle" aria-expanded={filtersOpen} aria-controls="prediction-filters" onClick={() => setFiltersOpen(!filtersOpen)}><Icon name="menu" size={16}/>Filters{activeLeague !== "all" || query ? " · active" : ""}</button></div>
+        {filtersOpen && <div id="prediction-filters" className="feed-expanded-filters"><div className="search-and-league"><label className="league-select"><span>Competition</span><select value={activeLeague} disabled={activeSport !== "football"} onChange={event => setActiveLeague(event.target.value)}><option value="all">All competitions</option>{leagues.filter(league => league.sport === "football").map(league => <option value={league.id} key={league.id}>{league.name}</option>)}</select></label><label className="feed-search"><span>Search teams</span><input value={query} onChange={event => setQuery(event.target.value)} placeholder="Team or league"/></label></div>
+          <label className="week-select">More weeks<select value={selectedWeek} onChange={event => setSelectedWeek(event.target.value)}><option value="this">This week</option><option value="next">Next week</option><option value="all">All upcoming weeks</option>{weeks.filter(week => ![thisWeek,nextWeek].includes(week)).map(week => <option key={week} value={week}>{matchweekLabel(week)}</option>)}</select></label>
+          <button className="manage-leagues" aria-expanded={preferencesOpen} aria-controls="league-preferences" onClick={() => setPreferencesOpen(!preferencesOpen)}>Your leagues{following.length ? ` (${following.length})` : ""}</button>
         {preferencesOpen && <div id="league-preferences" className="league-preferences"><p>{preferences.signedIn ? "Choose competitions for your feed. Synced with your account." : "Choose competitions for your feed. Saved on this device; sign in to sync."}</p><div>{leagues.filter((league) => league.sport === "football").map((league) => <label key={league.id}><input type="checkbox" checked={following.includes(league.id)} disabled={!preferences.ready} onChange={() => toggleLeague(league.id)}/>{league.name}</label>)}</div><p>Open a match to follow either team.{preferences.teams.length ? ` Following ${preferences.teams.length} teams.` : ""}</p>{!!preferences.teams.length && <div className="team-follow-row">{preferences.teams.map(name => <button key={name} disabled={!preferences.ready} onClick={() => preferences.toggleTeam(name)} aria-label={`Unfollow ${name}`}>{name} ×</button>)}</div>}{preferences.error && <p role="alert">{preferences.error}</p>}</div>}
-        <div className="browse-controls"><div className="filter-row" aria-label="Sport">{sports.map((sport) => <button aria-pressed={activeSport === sport.id} key={sport.id} onClick={() => selectSport(sport.id)}>{sport.label}</button>)}</div><div className="search-and-league"><label className="league-select"><span className="sr-only">Competition</span><select value={activeLeague} disabled={activeSport !== "football"} onChange={(event) => { setActiveLeague(event.target.value); }}><option value="all">All competitions</option>{leagues.filter((league) => league.sport === "football").map((league) => <option value={league.id} key={league.id}>{league.name}</option>)}</select></label><label className="global-search"><Icon name="search" size={17}/><input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Search teams" aria-label="Search team or league"/></label></div></div>
+        </div>}
       </section>
       {error && <p className="feed-error" role="alert">{error}{feed && " Showing the last available fixtures."} <button onClick={() => void loadMatches(true)}>Try again</button></p>}
-      {view === "following" && !following.length && !preferences.teams.length ? <section className="feed-empty"><h2>Which leagues do you follow?</h2><p>Choose your competitions to build your feed.</p><button onClick={() => setPreferencesOpen(true)}>Choose leagues</button></section> : <>
-        {!!standout.length && <section className="standout-section"><div className="section-heading"><h2>Worth a closer look</h2><span>In this matchweek</span></div><div className="pick-grid">{standout.map((match) => <PickCard match={match} onOpen={setSelectedMatch} onAdd={add} picks={picks} key={match.id}/>)}</div></section>}
-        <section className="all-predictions"><div className="section-heading"><h2>{view === "following" ? "Your competitions" : "Upcoming matches"}</h2><span>{loading && !feed ? "Loading" : `${visibleMatches.length} matches`}</span></div>
-          <label className="week-select">Matchweek<select value={selectedWeek} onChange={(event) => setSelectedWeek(event.target.value)}><option value="this">This week{now ? ` · ${matchweekLabel(thisWeek)}` : ""}</option><option value="next">Next week{now ? ` · ${matchweekLabel(nextWeek)}` : ""}</option><option value="all">All upcoming weeks</option>{weeks.filter(week => ![thisWeek, nextWeek].includes(week)).map((week) => <option value={week} key={week}>{matchweekLabel(week)}</option>)}</select></label>
-          {loading && !feed ? <LoadingCards/> : weeklyGroups.length ? weeklyGroups.map(([week, matches]) => <section className="week-group" key={week}><div className="week-heading"><h3>{matchweekLabel(week)}</h3><span>Kickoffs in WAT</span></div><div className="pick-grid">{matches.map((match) => <PickCard match={match} onOpen={setSelectedMatch} onAdd={add} picks={picks} key={match.id}/>)}</div></section>) : <div className="feed-empty"><h3>No upcoming matches in this view</h3><p>Try another competition or clear your search.</p><button onClick={() => { setQuery(""); setActiveLeague("all"); setView("all"); setSelectedWeek("this"); }}>Reset filters</button></div>}
-          {!!visibleMatches.length && <p className="feed-note">Lower-confidence estimates remain available for analysis. Featured picks require at least 62/100 confidence. Automatic slips compare enabled markets and require sufficient history for model-based selections.</p>}
+      {view === "following" && !following.length && !preferences.teams.length ? <section className="feed-empty"><h2>Which leagues do you follow?</h2><p>Choose your competitions to build your feed.</p><button onClick={() => { setFiltersOpen(true); setPreferencesOpen(true); }}>Choose leagues</button></section> : <>
+
+        <section className="all-predictions"><div className="section-heading"><h2>{view === "following" ? "Your matches" : selectedWeek === "this" ? "This week’s matches" : selectedWeek === "next" ? "Next week’s matches" : "Upcoming matches"}</h2><span>{loading && !feed ? "Loading" : `${visibleMatches.length} matches`}</span></div>
+
+          {loading && !feed ? <LoadingCards/> : weeklyGroups.length ? weeklyGroups.map(([week, matches]) => <section className="week-group" key={week}><div className="week-heading"><h3>{matchweekLabel(week)}</h3><span>Kickoffs in WAT</span></div><div className="match-list pick-grid">{matches.map((match) => <PickCard match={match} onOpen={setSelectedMatch} onAdd={add} picks={picks} key={match.id}/>)}</div></section>) : <div className="feed-empty"><h3>No upcoming matches in this view</h3><p>Try another competition or clear your search.</p><button onClick={() => { setQuery(""); setActiveLeague("all"); setView("all"); setSelectedWeek("this"); }}>Reset filters</button></div>}
+          {!!visibleMatches.length && <p className="feed-note">Lower-confidence estimates remain available for analysis. Automatic slips compare enabled markets and require sufficient history for model-based selections.</p>}
         </section>
       </>}
       <section className="performance-section" id="performance"><div className="performance-copy"><h2>How the model measures up</h2><p>The bookmaker benchmark still outperforms our current football model on the historical test set. These results cover 4,560 predictions across the Premier League and La Liga.</p><Link href="/performance">View the published forecast record</Link></div><div className="benchmark-card"><div className="benchmark-head"><strong>Historical log loss</strong><span>Lower is better</span></div><dl className="benchmark-results"><div><dt>Bookmaker closing probabilities</dt><dd>0.963</dd></div><div><dt>50:50 model and market blend</dt><dd>0.974</dd></div><div><dt>PredictArena default</dt><dd>0.999</dd></div></dl><p className="feed-note">Historical benchmark, not a record of today’s published picks. Confidence scores are not measured win rates.</p></div></section>
       <section className="membership-note" id="plans"><div><h2>Free to explore</h2><p>Save forecasts to your account and check every published result. Premium early access is open.</p></div><Link className="growth-link" href="/premium">Explore Premium</Link></section>
     </main>
     <footer className="pa-footer"><Brand/><p>Statistical estimates. No guaranteed outcomes.</p><div><a href="#performance">Method</a><Link href="/tracker">Saved forecasts</Link><span>© 2026</span></div></footer>
-    <nav className="mobile-dock" aria-label="Mobile navigation"><a href="#board" className="active"><Icon name="football"/><span>Predictions</span></a><Link href="/slips"><Icon name="bookmark"/><span>My slip ({picks.length})</span></Link><Link href="/performance"><Icon name="chart"/><span>Results</span></Link><Link href="/tracker"><Icon name="target"/><span>Saved</span></Link></nav>
+
     {notice && <div className="slip-notice" role="status"><span>{notice}</span><Link href="/slips">View slip ({picks.length})</Link><button aria-label="Dismiss notification" onClick={() => setNotice("")}>×</button></div>}
     <PredictionDrawer match={selectedMatch} onClose={closeAnalysis} onAdd={add} picks={picks} followedTeams={preferences.teams} onFollowTeam={preferences.toggleTeam} preferencesReady={preferences.ready}/>
   </div>;
