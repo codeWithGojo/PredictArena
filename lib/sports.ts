@@ -46,6 +46,8 @@ export type ModelDetails = {
 };
 
 export type Match = {
+  bookmakerInput?: import('./bookmaker-inputs.ts').BookmakerInput;
+  fixtureCorrection?: { previousKickoffISO: string; source: string; sourceFile: string; reviewedAt: string; timezone: string };
   archiveId?: string;
   recordingContext?: import('./recording-observations.ts').RecordingContext;
   id: string;

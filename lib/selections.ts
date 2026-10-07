@@ -1,6 +1,6 @@
 import type { Match, Prediction } from "./sports.ts";
 
-export type SlipPick = { fixtureId: string; market: string; selection: string; line: number | null; label: string; probability: number; odds: string; kickoffISO: string; home: string; away: string; league: string };
+export type SlipPick = { fixtureId: string; market: string; selection: string; line: number | null; label: string; probability: number; odds: string; kickoffISO: string; home: string; away: string; league: string; probabilityBasis?: 'bookmaker'; oddsCapturedDate?: string; oddsSource?: string };
 type Pick = SlipPick;
 
 // This is a display/selection quality gate, not a calibrated accuracy claim.
@@ -67,6 +67,9 @@ export function validatePicks(value: unknown, now: number): SlipPick[] {
     if (!pick || typeof pick !== "object" || typeof pick.fixtureId !== "string" || seen.has(pick.fixtureId) ||
       typeof pick.market !== "string" || !["1x2", "winner", "double-chance", "total", "btts"].includes(pick.market) ||
       typeof pick.selection !== "string" || typeof pick.label !== "string" || typeof pick.odds !== "string" ||
+      (pick.probabilityBasis !== undefined && pick.probabilityBasis !== 'bookmaker') ||
+      (pick.oddsCapturedDate !== undefined && (typeof pick.oddsCapturedDate !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(pick.oddsCapturedDate))) ||
+      (pick.oddsSource !== undefined && typeof pick.oddsSource !== 'string') ||
       typeof pick.home !== "string" || typeof pick.away !== "string" || typeof pick.league !== "string" ||
       !(pick.line === null || (typeof pick.line === "number" && Number.isFinite(pick.line))) ||
       typeof pick.probability !== "number" || !(pick.probability > 0 && pick.probability < 1) ||

@@ -1,0 +1,2564 @@
+{
+  "source": "User-supplied SportyBet screenshots",
+  "bookmaker": "SportyBet",
+  "capturedDate": "2026-10-07",
+  "captureWindowWAT": [
+    "17:35",
+    "17:39"
+  ],
+  "receivedAt": "2026-10-07T16:41:29Z",
+  "timezone": "Africa/Lagos",
+  "reviewed": true,
+  "notes": [
+    "Capture time is a screenshot clock window, not a live quote timestamp.",
+    "Kickoff times are interpreted as WAT from the Nigeria site and user timezone.",
+    "Only visible current green 1X2 prices are transcribed; crossed-out prices and obscured values are excluded.",
+    "Dates use screenshot headings and overlapping scrolling rows; incomplete rows have no imported price."
+  ],
+  "entries": [
+    {
+      "leagueId": "39",
+      "fixtureDate": "2026-10-10",
+      "timeWAT": "12:30",
+      "home": "Arsenal",
+      "away": "Leeds United",
+      "odds": [
+        1.41,
+        5.3,
+        8.32
+      ],
+      "bookmakerFixtureId": "29490",
+      "sourceFile": "1000888525.jpg",
+      "providerFixtureId": "open-football-401879268",
+      "providerHome": "Arsenal",
+      "providerAway": "Leeds United",
+      "originalKickoffISO": "2026-10-10T11:30:00.000Z",
+      "status": "matched",
+      "kickoffISO": "2026-10-10T11:30:00.000Z"
+    },
+    {
+      "leagueId": "39",
+      "fixtureDate": "2026-10-10",
+      "timeWAT": "15:00",
+      "home": "Aston Villa",
+      "away": "Brentford",
+      "odds": [
+        2.7,
+        3.62,
+        2.61
+      ],
+      "bookmakerFixtureId": "22471",
+      "sourceFile": "1000888525.jpg",
+      "providerFixtureId": "open-football-401878776",
+      "providerHome": "Aston Villa",
+      "providerAway": "Brentford",
+      "originalKickoffISO": "2026-10-10T14:00:00.000Z",
+      "status": "matched",
+      "kickoffISO": "2026-10-10T14:00:00.000Z"
+    },
+    {
+      "leagueId": "39",
+      "fixtureDate": "2026-10-10",
+      "timeWAT": "15:00",
+      "home": "Chelsea",
+      "away": "Bournemouth",
+      "odds": [
+        1.73,
+        4.4,
+        4.63
+      ],
+      "bookmakerFixtureId": "29602",
+      "sourceFile": "1000888525.jpg",
+      "providerFixtureId": "open-football-401878775",
+      "providerHome": "Chelsea",
+      "providerAway": "AFC Bournemouth",
+      "originalKickoffISO": "2026-10-10T14:00:00.000Z",
+      "status": "matched",
+      "kickoffISO": "2026-10-10T14:00:00.000Z"
+    },
+    {
+      "leagueId": "39",
+      "fixtureDate": "2026-10-10",
+      "timeWAT": "15:00",
+      "home": "Ipswich Town",
+      "away": "Fulham",
+      "odds": [
+        2.89,
+        3.59,
+        2.47
+      ],
+      "bookmakerFixtureId": "29711",
+      "sourceFile": "1000888525.jpg",
+      "providerFixtureId": "open-football-401879265",
+      "providerHome": "Ipswich Town",
+      "providerAway": "Fulham",
+      "originalKickoffISO": "2026-10-10T14:00:00.000Z",
+      "status": "matched",
+      "kickoffISO": "2026-10-10T14:00:00.000Z"
+    },
+    {
+      "leagueId": "39",
+      "fixtureDate": "2026-10-10",
+      "timeWAT": "15:00",
+      "home": "Sunderland",
+      "away": "Brighton",
+      "odds": null,
+      "bookmakerFixtureId": "31100",
+      "sourceFile": "1000888525.jpg",
+      "providerFixtureId": "open-football-401878772",
+      "providerHome": "Sunderland",
+      "providerAway": "Brighton & Hove Albion",
+      "originalKickoffISO": "2026-10-10T14:00:00.000Z",
+      "status": "matched",
+      "kickoffISO": "2026-10-10T14:00:00.000Z"
+    },
+    {
+      "leagueId": "39",
+      "fixtureDate": "2026-10-10",
+      "timeWAT": "17:30",
+      "home": "Man Utd",
+      "away": "Tottenham",
+      "odds": [
+        1.75,
+        4.25,
+        4.49
+      ],
+      "bookmakerFixtureId": "31220",
+      "sourceFile": "1000888525.jpg",
+      "providerFixtureId": "open-football-401878773",
+      "providerHome": "Manchester United",
+      "providerAway": "Tottenham Hotspur",
+      "originalKickoffISO": "2026-10-10T16:30:00.000Z",
+      "status": "matched",
+      "kickoffISO": "2026-10-10T16:30:00.000Z"
+    },
+    {
+      "leagueId": "39",
+      "fixtureDate": "2026-10-11",
+      "timeWAT": "14:00",
+      "home": "Crystal Palace",
+      "away": "Nottingham Forest",
+      "odds": [
+        2.71,
+        3.38,
+        2.74
+      ],
+      "bookmakerFixtureId": "29904",
+      "sourceFile": "1000888526.jpg",
+      "providerFixtureId": "open-football-401879266",
+      "providerHome": "Crystal Palace",
+      "providerAway": "Nottingham Forest",
+      "originalKickoffISO": "2026-10-10T14:00:00.000Z",
+      "status": "matched",
+      "kickoffISO": "2026-10-11T13:00:00.000Z"
+    },
+    {
+      "leagueId": "39",
+      "fixtureDate": "2026-10-11",
+      "timeWAT": "14:00",
+      "home": "Hull City",
+      "away": "Everton",
+      "odds": [
+        3.67,
+        3.46,
+        2.13
+      ],
+      "bookmakerFixtureId": "30680",
+      "sourceFile": "1000888526.jpg",
+      "providerFixtureId": "open-football-401878774",
+      "providerHome": "Hull City",
+      "providerAway": "Everton",
+      "originalKickoffISO": "2026-10-10T14:00:00.000Z",
+      "status": "matched",
+      "kickoffISO": "2026-10-11T13:00:00.000Z"
+    },
+    {
+      "leagueId": "39",
+      "fixtureDate": "2026-10-11",
+      "timeWAT": "16:30",
+      "home": "Liverpool",
+      "away": "Man City",
+      "odds": [
+        2.63,
+        3.75,
+        2.62
+      ],
+      "bookmakerFixtureId": "31236",
+      "sourceFile": "1000888526.jpg",
+      "providerFixtureId": "open-football-401879264",
+      "providerHome": "Liverpool",
+      "providerAway": "Manchester City",
+      "originalKickoffISO": "2026-10-10T14:00:00.000Z",
+      "status": "matched",
+      "kickoffISO": "2026-10-11T15:30:00.000Z"
+    },
+    {
+      "leagueId": "39",
+      "fixtureDate": "2026-10-12",
+      "timeWAT": "20:00",
+      "home": "Coventry City",
+      "away": "Newcastle",
+      "odds": [
+        3.33,
+        3.68,
+        2.14
+      ],
+      "bookmakerFixtureId": "30740",
+      "sourceFile": "1000888526.jpg",
+      "providerFixtureId": "open-football-401879267",
+      "providerHome": "Coventry City",
+      "providerAway": "Newcastle United",
+      "originalKickoffISO": "2026-10-10T14:00:00.000Z",
+      "status": "matched",
+      "kickoffISO": "2026-10-12T19:00:00.000Z"
+    },
+    {
+      "leagueId": "39",
+      "fixtureDate": "2026-10-17",
+      "timeWAT": "12:30",
+      "home": "Everton",
+      "away": "Chelsea",
+      "odds": [
+        2.94,
+        3.72,
+        2.32
+      ],
+      "bookmakerFixtureId": "40202",
+      "sourceFile": "1000888527.jpg",
+      "providerFixtureId": "open-football-401878771",
+      "providerHome": "Everton",
+      "providerAway": "Chelsea",
+      "originalKickoffISO": "2026-10-17T14:00:00.000Z",
+      "status": "matched",
+      "kickoffISO": "2026-10-17T11:30:00.000Z"
+    },
+    {
+      "leagueId": "39",
+      "fixtureDate": "2026-10-17",
+      "timeWAT": "15:00",
+      "home": "Brentford",
+      "away": "Liverpool",
+      "odds": [
+        2.82,
+        3.78,
+        2.38
+      ],
+      "bookmakerFixtureId": "40402",
+      "sourceFile": "1000888527.jpg",
+      "providerFixtureId": "open-football-401879262",
+      "providerHome": "Brentford",
+      "providerAway": "Liverpool",
+      "originalKickoffISO": "2026-10-17T14:00:00.000Z",
+      "status": "matched",
+      "kickoffISO": "2026-10-17T14:00:00.000Z"
+    },
+    {
+      "leagueId": "39",
+      "fixtureDate": "2026-10-17",
+      "timeWAT": "15:00",
+      "home": "Fulham",
+      "away": "Hull City",
+      "odds": [
+        1.7,
+        4.08,
+        4.82
+      ],
+      "bookmakerFixtureId": "40409",
+      "sourceFile": "1000888527.jpg",
+      "providerFixtureId": "open-football-401878770",
+      "providerHome": "Fulham",
+      "providerAway": "Hull City",
+      "originalKickoffISO": "2026-10-17T14:00:00.000Z",
+      "status": "matched",
+      "kickoffISO": "2026-10-17T14:00:00.000Z"
+    },
+    {
+      "leagueId": "39",
+      "fixtureDate": "2026-10-17",
+      "timeWAT": "15:00",
+      "home": "Man City",
+      "away": "Ipswich Town",
+      "odds": [
+        1.24,
+        7.44,
+        11.45
+      ],
+      "bookmakerFixtureId": "40374",
+      "sourceFile": "1000888527.jpg",
+      "providerFixtureId": "open-football-401879259",
+      "providerHome": "Manchester City",
+      "providerAway": "Ipswich Town",
+      "originalKickoffISO": "2026-10-17T14:00:00.000Z",
+      "status": "matched",
+      "kickoffISO": "2026-10-17T14:00:00.000Z"
+    },
+    {
+      "leagueId": "39",
+      "fixtureDate": "2026-10-17",
+      "timeWAT": "17:30",
+      "home": "Newcastle",
+      "away": "Aston Villa",
+      "odds": [
+        2.09,
+        3.79,
+        3.35
+      ],
+      "bookmakerFixtureId": "26779",
+      "sourceFile": "1000888527.jpg",
+      "providerFixtureId": "open-football-401879258",
+      "providerHome": "Newcastle United",
+      "providerAway": "Aston Villa",
+      "originalKickoffISO": "2026-10-17T14:00:00.000Z",
+      "status": "matched",
+      "kickoffISO": "2026-10-17T16:30:00.000Z"
+    },
+    {
+      "leagueId": "39",
+      "fixtureDate": "2026-10-18",
+      "timeWAT": "14:00",
+      "home": "Bournemouth",
+      "away": "Sunderland",
+      "odds": [
+        2.05,
+        3.62,
+        3.62
+      ],
+      "bookmakerFixtureId": "40446",
+      "sourceFile": "1000888527.jpg",
+      "providerFixtureId": "open-football-401879263",
+      "providerHome": "AFC Bournemouth",
+      "providerAway": "Sunderland",
+      "originalKickoffISO": "2026-10-17T14:00:00.000Z",
+      "status": "matched",
+      "kickoffISO": "2026-10-18T13:00:00.000Z"
+    },
+    {
+      "leagueId": "39",
+      "fixtureDate": "2026-10-18",
+      "timeWAT": "14:00",
+      "home": "Brighton",
+      "away": "Crystal Palace",
+      "odds": [
+        1.66,
+        4.32,
+        4.88
+      ],
+      "bookmakerFixtureId": "36622",
+      "sourceFile": "1000888528.jpg",
+      "providerFixtureId": "open-football-401879261",
+      "providerHome": "Brighton & Hove Albion",
+      "providerAway": "Crystal Palace",
+      "originalKickoffISO": "2026-10-17T14:00:00.000Z",
+      "status": "matched",
+      "kickoffISO": "2026-10-18T13:00:00.000Z"
+    },
+    {
+      "leagueId": "39",
+      "fixtureDate": "2026-10-18",
+      "timeWAT": "14:00",
+      "home": "Leeds United",
+      "away": "Man Utd",
+      "odds": [
+        2.91,
+        3.7,
+        2.35
+      ],
+      "bookmakerFixtureId": "27036",
+      "sourceFile": "1000888528.jpg",
+      "providerFixtureId": "open-football-401879260",
+      "providerHome": "Leeds United",
+      "providerAway": "Manchester United",
+      "originalKickoffISO": "2026-10-17T14:00:00.000Z",
+      "status": "matched",
+      "kickoffISO": "2026-10-18T13:00:00.000Z"
+    },
+    {
+      "leagueId": "39",
+      "fixtureDate": "2026-10-18",
+      "timeWAT": "16:30",
+      "home": "Nottingham Forest",
+      "away": "Arsenal",
+      "odds": [
+        5.6,
+        4.07,
+        1.62
+      ],
+      "bookmakerFixtureId": "19760",
+      "sourceFile": "1000888528.jpg",
+      "providerFixtureId": "open-football-401878769",
+      "providerHome": "Nottingham Forest",
+      "providerAway": "Arsenal",
+      "originalKickoffISO": "2026-10-17T14:00:00.000Z",
+      "status": "matched",
+      "kickoffISO": "2026-10-18T15:30:00.000Z"
+    },
+    {
+      "leagueId": "39",
+      "fixtureDate": "2026-10-19",
+      "timeWAT": "20:00",
+      "home": "Tottenham",
+      "away": "Coventry City",
+      "odds": [
+        1.5,
+        4.81,
+        6.07
+      ],
+      "bookmakerFixtureId": "27109",
+      "sourceFile": "1000888528.jpg",
+      "providerFixtureId": "open-football-401879257",
+      "providerHome": "Tottenham Hotspur",
+      "providerAway": "Coventry City",
+      "originalKickoffISO": "2026-10-17T14:00:00.000Z",
+      "status": "matched",
+      "kickoffISO": "2026-10-19T19:00:00.000Z"
+    },
+    {
+      "leagueId": "140",
+      "fixtureDate": "2026-10-09",
+      "timeWAT": "20:00",
+      "home": "Malaga CF",
+      "away": "Espanyol",
+      "odds": [
+        2.79,
+        3.26,
+        2.74
+      ],
+      "bookmakerFixtureId": "37263",
+      "sourceFile": "1000888529.jpg",
+      "providerFixtureId": "open-football-401882851",
+      "providerHome": "M\u00e1laga",
+      "providerAway": "Espanyol",
+      "originalKickoffISO": "2026-10-09T19:00:00.000Z",
+      "status": "matched",
+      "kickoffISO": "2026-10-09T19:00:00.000Z"
+    },
+    {
+      "leagueId": "140",
+      "fixtureDate": "2026-10-10",
+      "timeWAT": "13:00",
+      "home": "Rayo Vallecano",
+      "away": "Athletic Bilbao",
+      "odds": [
+        2.76,
+        3.47,
+        2.64
+      ],
+      "bookmakerFixtureId": "39429",
+      "sourceFile": "1000888529.jpg",
+      "providerFixtureId": "open-football-401882849",
+      "providerHome": "Rayo Vallecano",
+      "providerAway": "Athletic Club",
+      "originalKickoffISO": "2026-10-11T18:00:00.000Z",
+      "status": "matched",
+      "kickoffISO": "2026-10-10T12:00:00.000Z"
+    },
+    {
+      "leagueId": "140",
+      "fixtureDate": "2026-10-10",
+      "timeWAT": "15:15",
+      "home": "Alaves",
+      "away": "Atletico Madrid",
+      "odds": [
+        4.54,
+        3.83,
+        1.82
+      ],
+      "bookmakerFixtureId": "41115",
+      "sourceFile": "1000888529.jpg",
+      "providerFixtureId": "open-football-401882856",
+      "providerHome": "Alav\u00e9s",
+      "providerAway": "Atl\u00e9tico Madrid",
+      "originalKickoffISO": "2026-10-11T18:00:00.000Z",
+      "status": "matched",
+      "kickoffISO": "2026-10-10T14:15:00.000Z"
+    },
+    {
+      "leagueId": "140",
+      "fixtureDate": "2026-10-10",
+      "timeWAT": "17:30",
+      "home": "Barcelona",
+      "away": "Getafe",
+      "odds": [
+        1.1,
+        12.34,
+        27.3
+      ],
+      "bookmakerFixtureId": "47926",
+      "sourceFile": "1000888529.jpg",
+      "providerFixtureId": "open-football-401882853",
+      "providerHome": "Barcelona",
+      "providerAway": "Getafe",
+      "originalKickoffISO": "2026-10-11T18:00:00.000Z",
+      "status": "matched",
+      "kickoffISO": "2026-10-10T16:30:00.000Z"
+    },
+    {
+      "leagueId": "140",
+      "fixtureDate": "2026-10-10",
+      "timeWAT": "20:00",
+      "home": "Real Madrid",
+      "away": "Villarreal",
+      "odds": [
+        1.38,
+        6.12,
+        7.13
+      ],
+      "bookmakerFixtureId": "49870",
+      "sourceFile": "1000888529.jpg",
+      "providerFixtureId": "open-football-401882848",
+      "providerHome": "Real Madrid",
+      "providerAway": "Villarreal",
+      "originalKickoffISO": "2026-10-11T18:00:00.000Z",
+      "status": "matched",
+      "kickoffISO": "2026-10-10T19:00:00.000Z"
+    },
+    {
+      "leagueId": "140",
+      "fixtureDate": "2026-10-11",
+      "timeWAT": "13:00",
+      "home": "Elche CF",
+      "away": "Celta",
+      "odds": [
+        2.83,
+        3.32,
+        2.67
+      ],
+      "bookmakerFixtureId": "49871",
+      "sourceFile": "1000888530.jpg",
+      "providerFixtureId": "open-football-401882854",
+      "providerHome": "Elche",
+      "providerAway": "Celta Vigo",
+      "originalKickoffISO": "2026-10-11T18:00:00.000Z",
+      "status": "matched",
+      "kickoffISO": "2026-10-11T12:00:00.000Z"
+    },
+    {
+      "leagueId": "140",
+      "fixtureDate": "2026-10-11",
+      "timeWAT": "15:15",
+      "home": "Real Sociedad",
+      "away": "RC Deportivo de a Coruna",
+      "odds": [
+        1.65,
+        4.1,
+        5.54
+      ],
+      "bookmakerFixtureId": "49872",
+      "sourceFile": "1000888530.jpg",
+      "providerFixtureId": "open-football-401882847",
+      "providerHome": "Real Sociedad",
+      "providerAway": "Deportivo La Coru\u00f1a",
+      "originalKickoffISO": "2026-10-11T18:00:00.000Z",
+      "status": "matched",
+      "kickoffISO": "2026-10-11T14:15:00.000Z"
+    },
+    {
+      "leagueId": "140",
+      "fixtureDate": "2026-10-11",
+      "timeWAT": "17:30",
+      "home": "Betis",
+      "away": "Osasuna",
+      "odds": [
+        1.59,
+        4.35,
+        5.78
+      ],
+      "bookmakerFixtureId": "49885",
+      "sourceFile": "1000888530.jpg",
+      "providerFixtureId": "open-football-401882855",
+      "providerHome": "Real Betis",
+      "providerAway": "Osasuna",
+      "originalKickoffISO": "2026-10-11T18:00:00.000Z",
+      "status": "matched",
+      "kickoffISO": "2026-10-11T16:30:00.000Z"
+    },
+    {
+      "leagueId": "140",
+      "fixtureDate": "2026-10-11",
+      "timeWAT": "20:00",
+      "home": "Racing Santander",
+      "away": "Valencia",
+      "odds": [
+        2.33,
+        3.58,
+        3.02
+      ],
+      "bookmakerFixtureId": "49898",
+      "sourceFile": "1000888530.jpg",
+      "providerFixtureId": "open-football-401882850",
+      "providerHome": "Racing Santander",
+      "providerAway": "Valencia",
+      "originalKickoffISO": "2026-10-11T18:00:00.000Z",
+      "status": "matched",
+      "kickoffISO": "2026-10-11T19:00:00.000Z"
+    },
+    {
+      "leagueId": "140",
+      "fixtureDate": "2026-10-12",
+      "timeWAT": "20:00",
+      "home": "Levante",
+      "away": "Sevilla",
+      "odds": [
+        2.68,
+        3.33,
+        2.73
+      ],
+      "bookmakerFixtureId": "49916",
+      "sourceFile": "1000888530.jpg",
+      "providerFixtureId": "open-football-401882852",
+      "providerHome": "Levante",
+      "providerAway": "Sevilla",
+      "originalKickoffISO": "2026-10-11T18:00:00.000Z",
+      "status": "matched",
+      "kickoffISO": "2026-10-12T19:00:00.000Z"
+    },
+    {
+      "leagueId": "140",
+      "fixtureDate": "2026-10-16",
+      "timeWAT": "20:00",
+      "home": "RC Deportivo de a Coruna",
+      "away": "Levante",
+      "odds": [
+        2.13,
+        3.51,
+        3.51
+      ],
+      "bookmakerFixtureId": "41475",
+      "sourceFile": "1000888530.jpg",
+      "providerFixtureId": "open-football-401882844",
+      "providerHome": "Deportivo La Coru\u00f1a",
+      "providerAway": "Levante",
+      "originalKickoffISO": "2026-10-18T18:00:00.000Z",
+      "status": "matched",
+      "kickoffISO": "2026-10-16T19:00:00.000Z"
+    },
+    {
+      "leagueId": "140",
+      "fixtureDate": "2026-10-17",
+      "timeWAT": "13:00",
+      "home": "Espanyol",
+      "away": "Atletico Madrid",
+      "odds": [
+        4.18,
+        3.76,
+        1.87
+      ],
+      "bookmakerFixtureId": "41588",
+      "sourceFile": "1000888531.jpg",
+      "providerFixtureId": "open-football-401882843",
+      "providerHome": "Espanyol",
+      "providerAway": "Atl\u00e9tico Madrid",
+      "originalKickoffISO": "2026-10-18T18:00:00.000Z",
+      "status": "matched",
+      "kickoffISO": "2026-10-17T12:00:00.000Z"
+    },
+    {
+      "leagueId": "140",
+      "fixtureDate": "2026-10-17",
+      "timeWAT": "15:15",
+      "home": "Villarreal",
+      "away": "Elche CF",
+      "odds": [
+        1.49,
+        4.94,
+        5.97
+      ],
+      "bookmakerFixtureId": "42513",
+      "sourceFile": "1000888531.jpg",
+      "providerFixtureId": "open-football-401882837",
+      "providerHome": "Villarreal",
+      "providerAway": "Elche",
+      "originalKickoffISO": "2026-10-18T18:00:00.000Z",
+      "status": "matched",
+      "kickoffISO": "2026-10-17T14:15:00.000Z"
+    },
+    {
+      "leagueId": "140",
+      "fixtureDate": "2026-10-17",
+      "timeWAT": "17:30",
+      "home": "Betis",
+      "away": "Barcelona",
+      "odds": [
+        6.16,
+        5.71,
+        1.42
+      ],
+      "bookmakerFixtureId": "42515",
+      "sourceFile": "1000888531.jpg",
+      "providerFixtureId": "open-football-401882846",
+      "providerHome": "Real Betis",
+      "providerAway": "Barcelona",
+      "originalKickoffISO": "2026-10-18T18:00:00.000Z",
+      "status": "matched",
+      "kickoffISO": "2026-10-17T16:30:00.000Z"
+    },
+    {
+      "leagueId": "140",
+      "fixtureDate": "2026-10-17",
+      "timeWAT": "20:00",
+      "home": "Valencia",
+      "away": "Athletic Bilbao",
+      "odds": [
+        3.49,
+        3.51,
+        2.14
+      ],
+      "bookmakerFixtureId": "42535",
+      "sourceFile": "1000888531.jpg",
+      "providerFixtureId": "open-football-401882838",
+      "providerHome": "Valencia",
+      "providerAway": "Athletic Club",
+      "originalKickoffISO": "2026-10-18T18:00:00.000Z",
+      "status": "matched",
+      "kickoffISO": "2026-10-17T19:00:00.000Z"
+    },
+    {
+      "leagueId": "140",
+      "fixtureDate": "2026-10-18",
+      "timeWAT": "13:00",
+      "home": "Osasuna",
+      "away": "Racing Santander",
+      "odds": [
+        1.92,
+        3.74,
+        3.97
+      ],
+      "bookmakerFixtureId": "38337",
+      "sourceFile": "1000888531.jpg",
+      "providerFixtureId": "open-football-401882840",
+      "providerHome": "Osasuna",
+      "providerAway": "Racing Santander",
+      "originalKickoffISO": "2026-10-18T18:00:00.000Z",
+      "status": "matched",
+      "kickoffISO": "2026-10-18T12:00:00.000Z"
+    },
+    {
+      "leagueId": "140",
+      "fixtureDate": "2026-10-18",
+      "timeWAT": "15:15",
+      "home": "Celta",
+      "away": "Alaves",
+      "odds": [
+        2.06,
+        3.42,
+        3.83
+      ],
+      "bookmakerFixtureId": "39035",
+      "sourceFile": "1000888531.jpg",
+      "providerFixtureId": "open-football-401882845",
+      "providerHome": "Celta Vigo",
+      "providerAway": "Alav\u00e9s",
+      "originalKickoffISO": "2026-10-18T18:00:00.000Z",
+      "status": "matched",
+      "kickoffISO": "2026-10-18T14:15:00.000Z"
+    },
+    {
+      "leagueId": "140",
+      "fixtureDate": "2026-10-18",
+      "timeWAT": "17:30",
+      "home": "Malaga CF",
+      "away": "Real Sociedad",
+      "odds": [
+        3.16,
+        3.58,
+        2.25
+      ],
+      "bookmakerFixtureId": "42433",
+      "sourceFile": "1000888532.jpg",
+      "providerFixtureId": "open-football-401882841",
+      "providerHome": "M\u00e1laga",
+      "providerAway": "Real Sociedad",
+      "originalKickoffISO": "2026-10-18T18:00:00.000Z",
+      "status": "matched",
+      "kickoffISO": "2026-10-18T16:30:00.000Z"
+    },
+    {
+      "leagueId": "140",
+      "fixtureDate": "2026-10-18",
+      "timeWAT": "20:00",
+      "home": "Real Madrid",
+      "away": "Sevilla",
+      "odds": [
+        1.27,
+        6.67,
+        9.88
+      ],
+      "bookmakerFixtureId": "42434",
+      "sourceFile": "1000888532.jpg",
+      "providerFixtureId": "open-football-401882839",
+      "providerHome": "Real Madrid",
+      "providerAway": "Sevilla",
+      "originalKickoffISO": "2026-10-18T18:00:00.000Z",
+      "status": "matched",
+      "kickoffISO": "2026-10-18T19:00:00.000Z"
+    },
+    {
+      "leagueId": "140",
+      "fixtureDate": "2026-10-19",
+      "timeWAT": "20:00",
+      "home": "Getafe",
+      "away": "Rayo Vallecano",
+      "odds": [
+        2.88,
+        3.14,
+        2.67
+      ],
+      "bookmakerFixtureId": "42405",
+      "sourceFile": "1000888532.jpg",
+      "providerFixtureId": "open-football-401882842",
+      "providerHome": "Getafe",
+      "providerAway": "Rayo Vallecano",
+      "originalKickoffISO": "2026-10-18T18:00:00.000Z",
+      "status": "matched",
+      "kickoffISO": "2026-10-19T19:00:00.000Z"
+    },
+    {
+      "leagueId": "78",
+      "fixtureDate": "2026-10-09",
+      "timeWAT": "19:30",
+      "home": "Borussia Dortmund",
+      "away": "Werder Bremen",
+      "odds": [
+        1.37,
+        6.1,
+        7.98
+      ],
+      "bookmakerFixtureId": "45021",
+      "sourceFile": "1000888533.jpg",
+      "providerFixtureId": "football-data-565820",
+      "providerHome": "Borussia Dortmund",
+      "providerAway": "SV Werder Bremen",
+      "originalKickoffISO": "2026-10-09T18:30:00.000Z",
+      "status": "matched",
+      "kickoffISO": "2026-10-09T18:30:00.000Z"
+    },
+    {
+      "leagueId": "78",
+      "fixtureDate": "2026-10-10",
+      "timeWAT": "14:30",
+      "home": "Augsburg",
+      "away": "Bayern Munich",
+      "odds": [
+        12.15,
+        9.46,
+        1.2
+      ],
+      "bookmakerFixtureId": "51399",
+      "sourceFile": "1000888533.jpg",
+      "providerFixtureId": "football-data-565819",
+      "providerHome": "FC Augsburg",
+      "providerAway": "FC Bayern M\u00fcnchen",
+      "originalKickoffISO": "2026-10-10T13:30:00.000Z",
+      "status": "matched",
+      "kickoffISO": "2026-10-10T13:30:00.000Z"
+    },
+    {
+      "leagueId": "78",
+      "fixtureDate": "2026-10-10",
+      "timeWAT": "14:30",
+      "home": "Hoffenheim",
+      "away": "Hamburger SV",
+      "odds": [
+        1.45,
+        5.4,
+        6.53
+      ],
+      "bookmakerFixtureId": "51398",
+      "sourceFile": "1000888533.jpg",
+      "providerFixtureId": "football-data-565818",
+      "providerHome": "TSG 1899 Hoffenheim",
+      "providerAway": "Hamburger SV",
+      "originalKickoffISO": "2026-10-10T13:30:00.000Z",
+      "status": "matched",
+      "kickoffISO": "2026-10-10T13:30:00.000Z"
+    },
+    {
+      "leagueId": "78",
+      "fixtureDate": "2026-10-10",
+      "timeWAT": "14:30",
+      "home": "Mainz",
+      "away": "Bayer Leverkusen",
+      "odds": [
+        2.99,
+        3.92,
+        2.27
+      ],
+      "bookmakerFixtureId": "15539",
+      "sourceFile": "1000888533.jpg",
+      "providerFixtureId": "football-data-565812",
+      "providerHome": "1. FSV Mainz 05",
+      "providerAway": "Bayer 04 Leverkusen",
+      "originalKickoffISO": "2026-10-10T13:30:00.000Z",
+      "status": "matched",
+      "kickoffISO": "2026-10-10T13:30:00.000Z"
+    },
+    {
+      "leagueId": "78",
+      "fixtureDate": "2026-10-10",
+      "timeWAT": "14:30",
+      "home": "Paderborn",
+      "away": "Stuttgart",
+      "odds": [
+        5.0,
+        4.79,
+        1.61
+      ],
+      "bookmakerFixtureId": "38882",
+      "sourceFile": "1000888533.jpg",
+      "providerFixtureId": "football-data-565813",
+      "providerHome": "SC Paderborn 07",
+      "providerAway": "VfB Stuttgart",
+      "originalKickoffISO": "2026-10-10T13:30:00.000Z",
+      "status": "matched",
+      "kickoffISO": "2026-10-10T13:30:00.000Z"
+    },
+    {
+      "leagueId": "78",
+      "fixtureDate": "2026-10-10",
+      "timeWAT": "14:30",
+      "home": "Union Berlin",
+      "away": "SV 07 Elversberg",
+      "odds": [
+        2.38,
+        3.79,
+        2.88
+      ],
+      "bookmakerFixtureId": "49923",
+      "sourceFile": "1000888533.jpg",
+      "providerFixtureId": "football-data-565817",
+      "providerHome": "1. FC Union Berlin",
+      "providerAway": "SV 07 Elversberg",
+      "originalKickoffISO": "2026-10-10T13:30:00.000Z",
+      "status": "matched",
+      "kickoffISO": "2026-10-10T13:30:00.000Z"
+    },
+    {
+      "leagueId": "78",
+      "fixtureDate": "2026-10-10",
+      "timeWAT": "17:30",
+      "home": "RB Leipzig",
+      "away": "Eintracht Frankfurt",
+      "odds": [
+        1.58,
+        5.02,
+        5.07
+      ],
+      "bookmakerFixtureId": "41630",
+      "sourceFile": "1000888534.jpg",
+      "providerFixtureId": "football-data-565815",
+      "providerHome": "RB Leipzig",
+      "providerAway": "Eintracht Frankfurt",
+      "originalKickoffISO": "2026-10-10T16:30:00.000Z",
+      "status": "matched",
+      "kickoffISO": "2026-10-10T16:30:00.000Z"
+    },
+    {
+      "leagueId": "78",
+      "fixtureDate": "2026-10-11",
+      "timeWAT": "14:30",
+      "home": "Cologne",
+      "away": "Borussia M'gladbach",
+      "odds": [
+        2.08,
+        4.01,
+        3.32
+      ],
+      "bookmakerFixtureId": "51401",
+      "sourceFile": "1000888534.jpg",
+      "providerFixtureId": "football-data-565814",
+      "providerHome": "1. FC K\u00f6ln",
+      "providerAway": "Borussia M\u00f6nchengladbach",
+      "originalKickoffISO": "2026-10-11T13:30:00.000Z",
+      "status": "matched",
+      "kickoffISO": "2026-10-11T13:30:00.000Z"
+    },
+    {
+      "leagueId": "78",
+      "fixtureDate": "2026-10-11",
+      "timeWAT": "16:30",
+      "home": "Freiburg",
+      "away": "Schalke",
+      "odds": [
+        1.68,
+        4.19,
+        5.09
+      ],
+      "bookmakerFixtureId": "44999",
+      "sourceFile": "1000888534.jpg",
+      "providerFixtureId": "football-data-565816",
+      "providerHome": "SC Freiburg",
+      "providerAway": "FC Schalke 04",
+      "originalKickoffISO": "2026-10-11T15:30:00.000Z",
+      "status": "matched",
+      "kickoffISO": "2026-10-11T15:30:00.000Z"
+    },
+    {
+      "leagueId": "78",
+      "fixtureDate": "2026-10-16",
+      "timeWAT": "19:30",
+      "home": "Eintracht Frankfurt",
+      "away": "Cologne",
+      "odds": [
+        1.96,
+        4.15,
+        3.47
+      ],
+      "bookmakerFixtureId": "41236",
+      "sourceFile": "1000888534.jpg",
+      "providerFixtureId": "football-data-565828",
+      "providerHome": "Eintracht Frankfurt",
+      "providerAway": "1. FC K\u00f6ln",
+      "originalKickoffISO": "2026-10-16T18:30:00.000Z",
+      "status": "matched",
+      "kickoffISO": "2026-10-16T18:30:00.000Z"
+    },
+    {
+      "leagueId": "78",
+      "fixtureDate": "2026-10-17",
+      "timeWAT": "14:30",
+      "home": "Hamburger SV",
+      "away": "Stuttgart",
+      "odds": [
+        3.76,
+        4.2,
+        1.87
+      ],
+      "bookmakerFixtureId": "41390",
+      "sourceFile": "1000888535.jpg",
+      "providerFixtureId": "football-data-565822",
+      "providerHome": "Hamburger SV",
+      "providerAway": "VfB Stuttgart",
+      "originalKickoffISO": "2026-10-17T13:30:00.000Z",
+      "status": "matched",
+      "kickoffISO": "2026-10-17T13:30:00.000Z"
+    },
+    {
+      "leagueId": "78",
+      "fixtureDate": "2026-10-17",
+      "timeWAT": "14:30",
+      "home": "Schalke",
+      "away": "Mainz",
+      "odds": [
+        2.89,
+        3.71,
+        2.36
+      ],
+      "bookmakerFixtureId": "25863",
+      "sourceFile": "1000888535.jpg",
+      "providerFixtureId": "football-data-565829",
+      "providerHome": "FC Schalke 04",
+      "providerAway": "1. FSV Mainz 05",
+      "originalKickoffISO": "2026-10-17T13:30:00.000Z",
+      "status": "matched",
+      "kickoffISO": "2026-10-17T13:30:00.000Z"
+    },
+    {
+      "leagueId": "78",
+      "fixtureDate": "2026-10-17",
+      "timeWAT": "14:30",
+      "home": "SV 07 Elversberg",
+      "away": "Augsburg",
+      "odds": [
+        2.49,
+        3.89,
+        2.62
+      ],
+      "bookmakerFixtureId": "41239",
+      "sourceFile": "1000888535.jpg",
+      "providerFixtureId": "football-data-565824",
+      "providerHome": "SV 07 Elversberg",
+      "providerAway": "FC Augsburg",
+      "originalKickoffISO": "2026-10-17T13:30:00.000Z",
+      "status": "matched",
+      "kickoffISO": "2026-10-17T13:30:00.000Z"
+    },
+    {
+      "leagueId": "78",
+      "fixtureDate": "2026-10-17",
+      "timeWAT": "14:30",
+      "home": "Union Berlin",
+      "away": "Borussia Dortmund",
+      "odds": [
+        4.64,
+        4.35,
+        1.68
+      ],
+      "bookmakerFixtureId": "23852",
+      "sourceFile": "1000888535.jpg",
+      "providerFixtureId": "football-data-565821",
+      "providerHome": "1. FC Union Berlin",
+      "providerAway": "Borussia Dortmund",
+      "originalKickoffISO": "2026-10-17T13:30:00.000Z",
+      "status": "matched",
+      "kickoffISO": "2026-10-17T13:30:00.000Z"
+    },
+    {
+      "leagueId": "78",
+      "fixtureDate": "2026-10-17",
+      "timeWAT": "14:30",
+      "home": "Werder Bremen",
+      "away": "Paderborn",
+      "odds": [
+        1.85,
+        4.03,
+        3.99
+      ],
+      "bookmakerFixtureId": "41443",
+      "sourceFile": "1000888535.jpg",
+      "providerFixtureId": "football-data-565823",
+      "providerHome": "SV Werder Bremen",
+      "providerAway": "SC Paderborn 07",
+      "originalKickoffISO": "2026-10-17T13:30:00.000Z",
+      "status": "matched",
+      "kickoffISO": "2026-10-17T13:30:00.000Z"
+    },
+    {
+      "leagueId": "78",
+      "fixtureDate": "2026-10-17",
+      "timeWAT": "17:30",
+      "home": "Bayern Munich",
+      "away": "RB Leipzig",
+      "odds": [
+        1.25,
+        7.85,
+        10.1
+      ],
+      "bookmakerFixtureId": "26234",
+      "sourceFile": "1000888535.jpg",
+      "providerFixtureId": "football-data-565825",
+      "providerHome": "FC Bayern M\u00fcnchen",
+      "providerAway": "RB Leipzig",
+      "originalKickoffISO": "2026-10-17T16:30:00.000Z",
+      "status": "matched",
+      "kickoffISO": "2026-10-17T16:30:00.000Z"
+    },
+    {
+      "leagueId": "78",
+      "fixtureDate": "2026-10-18",
+      "timeWAT": "14:30",
+      "home": "Bayer Leverkusen",
+      "away": "Freiburg",
+      "odds": [
+        1.69,
+        4.35,
+        4.59
+      ],
+      "bookmakerFixtureId": "26579",
+      "sourceFile": "1000888536.jpg",
+      "providerFixtureId": "football-data-565827",
+      "providerHome": "Bayer 04 Leverkusen",
+      "providerAway": "SC Freiburg",
+      "originalKickoffISO": "2026-10-18T13:30:00.000Z",
+      "status": "matched",
+      "kickoffISO": "2026-10-18T13:30:00.000Z"
+    },
+    {
+      "leagueId": "78",
+      "fixtureDate": "2026-10-18",
+      "timeWAT": "16:30",
+      "home": "Borussia M'gladbach",
+      "away": "Hoffenheim",
+      "odds": [
+        3.37,
+        4.11,
+        2.0
+      ],
+      "bookmakerFixtureId": "10620",
+      "sourceFile": "1000888536.jpg",
+      "providerFixtureId": "football-data-565826",
+      "providerHome": "Borussia M\u00f6nchengladbach",
+      "providerAway": "TSG 1899 Hoffenheim",
+      "originalKickoffISO": "2026-10-18T15:30:00.000Z",
+      "status": "matched",
+      "kickoffISO": "2026-10-18T15:30:00.000Z"
+    },
+    {
+      "leagueId": "61",
+      "fixtureDate": "2026-10-09",
+      "timeWAT": "19:45",
+      "home": "Lens",
+      "away": "Lyon",
+      "odds": [
+        2.46,
+        3.8,
+        2.78
+      ],
+      "bookmakerFixtureId": "14752",
+      "sourceFile": "1000888537.jpg",
+      "providerFixtureId": "football-data-559669",
+      "providerHome": "Racing Club de Lens",
+      "providerAway": "Olympique Lyonnais",
+      "originalKickoffISO": "2026-10-09T18:45:00.000Z",
+      "status": "matched",
+      "kickoffISO": "2026-10-09T18:45:00.000Z"
+    },
+    {
+      "leagueId": "61",
+      "fixtureDate": "2026-10-10",
+      "timeWAT": "16:15",
+      "home": "Lille",
+      "away": "Le Havre",
+      "odds": [
+        1.45,
+        5.14,
+        7.27
+      ],
+      "bookmakerFixtureId": "41338",
+      "sourceFile": "1000888537.jpg",
+      "providerFixtureId": "football-data-559674",
+      "providerHome": "Lille OSC",
+      "providerAway": "Le Havre AC",
+      "originalKickoffISO": "2026-10-10T15:15:00.000Z",
+      "status": "matched",
+      "kickoffISO": "2026-10-10T15:15:00.000Z"
+    },
+    {
+      "leagueId": "61",
+      "fixtureDate": "2026-10-10",
+      "timeWAT": "19:45",
+      "home": "Brest",
+      "away": "Angers",
+      "odds": [
+        2.06,
+        3.72,
+        3.64
+      ],
+      "bookmakerFixtureId": "51400",
+      "sourceFile": "1000888537.jpg",
+      "providerFixtureId": "football-data-559666",
+      "providerHome": "Stade Brestois 29",
+      "providerAway": "Angers SCO",
+      "originalKickoffISO": "2026-10-10T18:45:00.000Z",
+      "status": "matched",
+      "kickoffISO": "2026-10-10T18:45:00.000Z"
+    },
+    {
+      "leagueId": "61",
+      "fixtureDate": "2026-10-10",
+      "timeWAT": "19:45",
+      "home": "Lorient",
+      "away": "Paris FC",
+      "odds": [
+        3.29,
+        3.45,
+        2.29
+      ],
+      "bookmakerFixtureId": "44947",
+      "sourceFile": "1000888537.jpg",
+      "providerFixtureId": "football-data-559668",
+      "providerHome": "FC Lorient",
+      "providerAway": "Paris FC",
+      "originalKickoffISO": "2026-10-10T18:45:00.000Z",
+      "status": "matched",
+      "kickoffISO": "2026-10-10T18:45:00.000Z"
+    },
+    {
+      "leagueId": "61",
+      "fixtureDate": "2026-10-10",
+      "timeWAT": "19:45",
+      "home": "Monaco",
+      "away": "Toulouse",
+      "odds": null,
+      "bookmakerFixtureId": "44980",
+      "sourceFile": "1000888537.jpg",
+      "providerFixtureId": "football-data-559673",
+      "providerHome": "AS Monaco FC",
+      "providerAway": "Toulouse FC",
+      "originalKickoffISO": "2026-10-10T18:45:00.000Z",
+      "status": "matched",
+      "kickoffISO": "2026-10-10T18:45:00.000Z"
+    },
+    {
+      "leagueId": "61",
+      "fixtureDate": "2026-10-10",
+      "timeWAT": "19:45",
+      "home": "PSG",
+      "away": "Le Mans FC",
+      "odds": [
+        1.09,
+        14.3,
+        32.59
+      ],
+      "bookmakerFixtureId": "45043",
+      "sourceFile": "1000888538.jpg",
+      "providerFixtureId": "football-data-559672",
+      "providerHome": "Paris Saint-Germain FC",
+      "providerAway": "Le Mans FC",
+      "originalKickoffISO": "2026-10-10T18:45:00.000Z",
+      "status": "matched",
+      "kickoffISO": "2026-10-10T18:45:00.000Z"
+    },
+    {
+      "leagueId": "61",
+      "fixtureDate": "2026-10-11",
+      "timeWAT": "14:00",
+      "home": "Nice",
+      "away": "Strasbourg",
+      "odds": [
+        2.34,
+        3.67,
+        3.02
+      ],
+      "bookmakerFixtureId": "38631",
+      "sourceFile": "1000888538.jpg",
+      "providerFixtureId": "football-data-559670",
+      "providerHome": "OGC Nice",
+      "providerAway": "RC Strasbourg Alsace",
+      "originalKickoffISO": "2026-10-11T13:00:00.000Z",
+      "status": "matched",
+      "kickoffISO": "2026-10-11T13:00:00.000Z"
+    },
+    {
+      "leagueId": "61",
+      "fixtureDate": "2026-10-11",
+      "timeWAT": "16:15",
+      "home": "Rennes",
+      "away": "AJ Auxerre",
+      "odds": [
+        1.46,
+        5.19,
+        6.52
+      ],
+      "bookmakerFixtureId": "21564",
+      "sourceFile": "1000888538.jpg",
+      "providerFixtureId": "football-data-559667",
+      "providerHome": "Stade Rennais FC 1901",
+      "providerAway": "AJ Auxerre",
+      "originalKickoffISO": "2026-10-11T15:15:00.000Z",
+      "status": "matched",
+      "kickoffISO": "2026-10-11T15:15:00.000Z"
+    },
+    {
+      "leagueId": "61",
+      "fixtureDate": "2026-10-11",
+      "timeWAT": "19:45",
+      "home": "Troyes",
+      "away": "Marseille",
+      "odds": [
+        3.82,
+        3.9,
+        1.92
+      ],
+      "bookmakerFixtureId": "21910",
+      "sourceFile": "1000888538.jpg",
+      "providerFixtureId": "football-data-559671",
+      "providerHome": "ES Troyes AC",
+      "providerAway": "Olympique de Marseille",
+      "originalKickoffISO": "2026-10-11T18:45:00.000Z",
+      "status": "matched",
+      "kickoffISO": "2026-10-11T18:45:00.000Z"
+    },
+    {
+      "leagueId": "61",
+      "fixtureDate": "2026-10-16",
+      "timeWAT": "19:45",
+      "home": "Le Mans FC",
+      "away": "Toulouse",
+      "odds": [
+        3.07,
+        3.59,
+        2.29
+      ],
+      "bookmakerFixtureId": "30065",
+      "sourceFile": "1000888538.jpg",
+      "providerFixtureId": "football-data-559661",
+      "providerHome": "Le Mans FC",
+      "providerAway": "Toulouse FC",
+      "originalKickoffISO": "2026-10-16T18:45:00.000Z",
+      "status": "matched",
+      "kickoffISO": "2026-10-16T18:45:00.000Z"
+    },
+    {
+      "leagueId": "61",
+      "fixtureDate": "2026-10-17",
+      "timeWAT": "16:15",
+      "home": "Strasbourg",
+      "away": "PSG",
+      "odds": [
+        6.19,
+        5.46,
+        1.44
+      ],
+      "bookmakerFixtureId": "30146",
+      "sourceFile": "1000888538.jpg",
+      "providerFixtureId": "football-data-559662",
+      "providerHome": "RC Strasbourg Alsace",
+      "providerAway": "Paris Saint-Germain FC",
+      "originalKickoffISO": "2026-10-17T15:15:00.000Z",
+      "status": "matched",
+      "kickoffISO": "2026-10-17T15:15:00.000Z"
+    },
+    {
+      "leagueId": "61",
+      "fixtureDate": "2026-10-17",
+      "timeWAT": "19:45",
+      "home": "Lille",
+      "away": "Brest",
+      "odds": [
+        1.65,
+        4.25,
+        5.04
+      ],
+      "bookmakerFixtureId": "30511",
+      "sourceFile": "1000888539.jpg",
+      "providerFixtureId": "football-data-559660",
+      "providerHome": "Lille OSC",
+      "providerAway": "Stade Brestois 29",
+      "originalKickoffISO": "2026-10-17T18:45:00.000Z",
+      "status": "matched",
+      "kickoffISO": "2026-10-17T18:45:00.000Z"
+    },
+    {
+      "leagueId": "61",
+      "fixtureDate": "2026-10-17",
+      "timeWAT": "19:45",
+      "home": "Troyes",
+      "away": "Lens",
+      "odds": [
+        3.97,
+        3.99,
+        1.86
+      ],
+      "bookmakerFixtureId": "34268",
+      "sourceFile": "1000888539.jpg",
+      "providerFixtureId": "football-data-559659",
+      "providerHome": "ES Troyes AC",
+      "providerAway": "Racing Club de Lens",
+      "originalKickoffISO": "2026-10-17T18:45:00.000Z",
+      "status": "matched",
+      "kickoffISO": "2026-10-17T18:45:00.000Z"
+    },
+    {
+      "leagueId": "61",
+      "fixtureDate": "2026-10-18",
+      "timeWAT": "14:00",
+      "home": "Angers",
+      "away": "Marseille",
+      "odds": [
+        3.18,
+        3.77,
+        2.17
+      ],
+      "bookmakerFixtureId": "34494",
+      "sourceFile": "1000888539.jpg",
+      "providerFixtureId": "football-data-559664",
+      "providerHome": "Angers SCO",
+      "providerAway": "Olympique de Marseille",
+      "originalKickoffISO": "2026-10-18T13:00:00.000Z",
+      "status": "matched",
+      "kickoffISO": "2026-10-18T13:00:00.000Z"
+    },
+    {
+      "leagueId": "61",
+      "fixtureDate": "2026-10-18",
+      "timeWAT": "16:15",
+      "home": "Le Havre",
+      "away": "AJ Auxerre",
+      "odds": [
+        2.46,
+        3.48,
+        2.89
+      ],
+      "bookmakerFixtureId": "32602",
+      "sourceFile": "1000888539.jpg",
+      "providerFixtureId": "football-data-559663",
+      "providerHome": "Le Havre AC",
+      "providerAway": "AJ Auxerre",
+      "originalKickoffISO": "2026-10-18T15:15:00.000Z",
+      "status": "matched",
+      "kickoffISO": "2026-10-18T15:15:00.000Z"
+    },
+    {
+      "leagueId": "61",
+      "fixtureDate": "2026-10-18",
+      "timeWAT": "16:15",
+      "home": "Lorient",
+      "away": "Monaco",
+      "odds": [
+        3.4,
+        3.59,
+        2.14
+      ],
+      "bookmakerFixtureId": "32646",
+      "sourceFile": "1000888539.jpg",
+      "providerFixtureId": "football-data-559657",
+      "providerHome": "FC Lorient",
+      "providerAway": "AS Monaco FC",
+      "originalKickoffISO": "2026-10-18T15:15:00.000Z",
+      "status": "matched",
+      "kickoffISO": "2026-10-18T15:15:00.000Z"
+    },
+    {
+      "leagueId": "61",
+      "fixtureDate": "2026-10-18",
+      "timeWAT": "16:15",
+      "home": "Paris FC",
+      "away": "Rennes",
+      "odds": [
+        2.28,
+        3.61,
+        3.09
+      ],
+      "bookmakerFixtureId": "32767",
+      "sourceFile": "1000888540.jpg",
+      "providerFixtureId": "football-data-559658",
+      "providerHome": "Paris FC",
+      "providerAway": "Stade Rennais FC 1901",
+      "originalKickoffISO": "2026-10-18T15:15:00.000Z",
+      "status": "matched",
+      "kickoffISO": "2026-10-18T15:15:00.000Z"
+    },
+    {
+      "leagueId": "61",
+      "fixtureDate": "2026-10-18",
+      "timeWAT": "19:45",
+      "home": "Lyon",
+      "away": "Nice",
+      "odds": [
+        1.69,
+        4.12,
+        4.86
+      ],
+      "bookmakerFixtureId": "34165",
+      "sourceFile": "1000888540.jpg",
+      "providerFixtureId": "football-data-559665",
+      "providerHome": "Olympique Lyonnais",
+      "providerAway": "OGC Nice",
+      "originalKickoffISO": "2026-10-18T18:45:00.000Z",
+      "status": "matched",
+      "kickoffISO": "2026-10-18T18:45:00.000Z"
+    },
+    {
+      "leagueId": "135",
+      "fixtureDate": "2026-10-10",
+      "timeWAT": "14:00",
+      "home": "Genoa",
+      "away": "Fiorentina",
+      "odds": [
+        3.26,
+        3.37,
+        2.34
+      ],
+      "bookmakerFixtureId": "18280",
+      "sourceFile": "1000888516.jpg",
+      "providerFixtureId": "football-data-558588",
+      "providerHome": "Genoa CFC",
+      "providerAway": "ACF Fiorentina",
+      "originalKickoffISO": "2026-10-10T13:00:00.000Z",
+      "status": "matched",
+      "kickoffISO": "2026-10-10T13:00:00.000Z"
+    },
+    {
+      "leagueId": "135",
+      "fixtureDate": "2026-10-10",
+      "timeWAT": "17:00",
+      "home": "Inter",
+      "away": "Parma Calcio",
+      "odds": [
+        1.16,
+        9.48,
+        17.78
+      ],
+      "bookmakerFixtureId": "22771",
+      "sourceFile": "1000888516.jpg",
+      "providerFixtureId": "football-data-558582",
+      "providerHome": "FC Internazionale Milano",
+      "providerAway": "Parma Calcio 1913",
+      "originalKickoffISO": "2026-10-10T16:00:00.000Z",
+      "status": "matched",
+      "kickoffISO": "2026-10-10T16:00:00.000Z"
+    },
+    {
+      "leagueId": "135",
+      "fixtureDate": "2026-10-10",
+      "timeWAT": "19:45",
+      "home": "Napoli",
+      "away": "Frosinone",
+      "odds": [
+        1.46,
+        5.32,
+        6.84
+      ],
+      "bookmakerFixtureId": "22786",
+      "sourceFile": "1000888516.jpg",
+      "providerFixtureId": "football-data-558586",
+      "providerHome": "SSC Napoli",
+      "providerAway": "Frosinone Calcio",
+      "originalKickoffISO": "2026-10-10T18:45:00.000Z",
+      "status": "matched",
+      "kickoffISO": "2026-10-10T18:45:00.000Z"
+    },
+    {
+      "leagueId": "135",
+      "fixtureDate": "2026-10-11",
+      "timeWAT": "11:30",
+      "home": "Como 1907",
+      "away": "Roma",
+      "odds": [
+        2.58,
+        3.67,
+        2.71
+      ],
+      "bookmakerFixtureId": "22979",
+      "sourceFile": "1000888516.jpg",
+      "providerFixtureId": "football-data-558585",
+      "providerHome": "Como 1907",
+      "providerAway": "AS Roma",
+      "originalKickoffISO": "2026-10-11T10:30:00.000Z",
+      "status": "matched",
+      "kickoffISO": "2026-10-11T10:30:00.000Z"
+    },
+    {
+      "leagueId": "135",
+      "fixtureDate": "2026-10-11",
+      "timeWAT": "14:00",
+      "home": "Lazio",
+      "away": "Monza",
+      "odds": [
+        1.6,
+        4.21,
+        6.0
+      ],
+      "bookmakerFixtureId": "38238",
+      "sourceFile": "1000888516.jpg",
+      "providerFixtureId": "football-data-558583",
+      "providerHome": "SS Lazio",
+      "providerAway": "AC Monza",
+      "originalKickoffISO": "2026-10-11T13:00:00.000Z",
+      "status": "matched",
+      "kickoffISO": "2026-10-11T13:00:00.000Z"
+    },
+    {
+      "leagueId": "135",
+      "fixtureDate": "2026-10-11",
+      "timeWAT": "14:00",
+      "home": "Lecce",
+      "away": "Bologna",
+      "odds": [
+        4.23,
+        3.43,
+        1.99
+      ],
+      "bookmakerFixtureId": "41418",
+      "sourceFile": "1000888516.jpg",
+      "providerFixtureId": "football-data-558581",
+      "providerHome": "US Lecce",
+      "providerAway": "Bologna FC 1909",
+      "originalKickoffISO": "2026-10-11T13:00:00.000Z",
+      "status": "matched",
+      "kickoffISO": "2026-10-11T13:00:00.000Z"
+    },
+    {
+      "leagueId": "135",
+      "fixtureDate": "2026-10-11",
+      "timeWAT": "17:00",
+      "home": "Sassuolo",
+      "away": "AC Milan",
+      "odds": [
+        4.34,
+        3.88,
+        1.85
+      ],
+      "bookmakerFixtureId": "23381",
+      "sourceFile": "1000888518.jpg",
+      "providerFixtureId": "football-data-558580",
+      "providerHome": "US Sassuolo Calcio",
+      "providerAway": "AC Milan",
+      "originalKickoffISO": "2026-10-11T16:00:00.000Z",
+      "status": "matched",
+      "kickoffISO": "2026-10-11T16:00:00.000Z"
+    },
+    {
+      "leagueId": "135",
+      "fixtureDate": "2026-10-11",
+      "timeWAT": "19:45",
+      "home": "Cagliari",
+      "away": "Juventus",
+      "odds": [
+        6.23,
+        4.03,
+        1.58
+      ],
+      "bookmakerFixtureId": "41812",
+      "sourceFile": "1000888518.jpg",
+      "providerFixtureId": "football-data-558584",
+      "providerHome": "Cagliari Calcio",
+      "providerAway": "Juventus FC",
+      "originalKickoffISO": "2026-10-11T18:45:00.000Z",
+      "status": "matched",
+      "kickoffISO": "2026-10-11T18:45:00.000Z"
+    },
+    {
+      "leagueId": "135",
+      "fixtureDate": "2026-10-12",
+      "timeWAT": "17:30",
+      "home": "Atalanta",
+      "away": "Venezia FC",
+      "odds": [
+        1.59,
+        4.42,
+        5.47
+      ],
+      "bookmakerFixtureId": "20219",
+      "sourceFile": "1000888518.jpg",
+      "providerFixtureId": "football-data-558579",
+      "providerHome": "Atalanta BC",
+      "providerAway": "Venezia FC",
+      "originalKickoffISO": "2026-10-12T16:30:00.000Z",
+      "status": "matched",
+      "kickoffISO": "2026-10-12T16:30:00.000Z"
+    },
+    {
+      "leagueId": "135",
+      "fixtureDate": "2026-10-12",
+      "timeWAT": "19:45",
+      "home": "Torino",
+      "away": "Udinese",
+      "odds": [
+        2.4,
+        3.28,
+        3.14
+      ],
+      "bookmakerFixtureId": "45708",
+      "sourceFile": "1000888518.jpg",
+      "providerFixtureId": "football-data-558587",
+      "providerHome": "Torino FC",
+      "providerAway": "Udinese Calcio",
+      "originalKickoffISO": "2026-10-12T18:45:00.000Z",
+      "status": "matched",
+      "kickoffISO": "2026-10-12T18:45:00.000Z"
+    },
+    {
+      "leagueId": "135",
+      "fixtureDate": "2026-10-16",
+      "timeWAT": "19:45",
+      "home": "Frosinone",
+      "away": "Sassuolo",
+      "odds": [
+        2.46,
+        3.63,
+        2.79
+      ],
+      "bookmakerFixtureId": "40770",
+      "sourceFile": "1000888518.jpg",
+      "providerFixtureId": "football-data-558573",
+      "providerHome": "Frosinone Calcio",
+      "providerAway": "US Sassuolo Calcio",
+      "originalKickoffISO": "2026-10-16T18:45:00.000Z",
+      "status": "matched",
+      "kickoffISO": "2026-10-16T18:45:00.000Z"
+    },
+    {
+      "leagueId": "135",
+      "fixtureDate": "2026-10-17",
+      "timeWAT": "14:00",
+      "home": "Venezia FC",
+      "away": "Napoli",
+      "odds": [
+        4.7,
+        4.03,
+        1.73
+      ],
+      "bookmakerFixtureId": "40706",
+      "sourceFile": "1000888521.jpg",
+      "providerFixtureId": "football-data-558575",
+      "providerHome": "Venezia FC",
+      "providerAway": "SSC Napoli",
+      "originalKickoffISO": "2026-10-17T13:00:00.000Z",
+      "status": "matched",
+      "kickoffISO": "2026-10-17T13:00:00.000Z"
+    },
+    {
+      "leagueId": "135",
+      "fixtureDate": "2026-10-17",
+      "timeWAT": "17:00",
+      "home": "Bologna",
+      "away": "Inter",
+      "odds": [
+        5.09,
+        4.13,
+        1.66
+      ],
+      "bookmakerFixtureId": "40771",
+      "sourceFile": "1000888521.jpg",
+      "providerFixtureId": "football-data-558571",
+      "providerHome": "Bologna FC 1909",
+      "providerAway": "FC Internazionale Milano",
+      "originalKickoffISO": "2026-10-17T16:00:00.000Z",
+      "status": "matched",
+      "kickoffISO": "2026-10-17T16:00:00.000Z"
+    },
+    {
+      "leagueId": "135",
+      "fixtureDate": "2026-10-17",
+      "timeWAT": "19:45",
+      "home": "Roma",
+      "away": "Genoa",
+      "odds": [
+        1.35,
+        5.77,
+        9.17
+      ],
+      "bookmakerFixtureId": "36888",
+      "sourceFile": "1000888521.jpg",
+      "providerFixtureId": "football-data-558572",
+      "providerHome": "AS Roma",
+      "providerAway": "Genoa CFC",
+      "originalKickoffISO": "2026-10-17T18:45:00.000Z",
+      "status": "matched",
+      "kickoffISO": "2026-10-17T18:45:00.000Z"
+    },
+    {
+      "leagueId": "135",
+      "fixtureDate": "2026-10-18",
+      "timeWAT": "11:30",
+      "home": "Udinese",
+      "away": "Lecce",
+      "odds": [
+        1.9,
+        3.59,
+        4.28
+      ],
+      "bookmakerFixtureId": "40774",
+      "sourceFile": "1000888521.jpg",
+      "providerFixtureId": "football-data-558574",
+      "providerHome": "Udinese Calcio",
+      "providerAway": "US Lecce",
+      "originalKickoffISO": "2026-10-18T10:30:00.000Z",
+      "status": "matched",
+      "kickoffISO": "2026-10-18T10:30:00.000Z"
+    },
+    {
+      "leagueId": "135",
+      "fixtureDate": "2026-10-18",
+      "timeWAT": "14:00",
+      "home": "Fiorentina",
+      "away": "Como 1907",
+      "odds": [
+        3.36,
+        3.66,
+        2.13
+      ],
+      "bookmakerFixtureId": "40776",
+      "sourceFile": "1000888521.jpg",
+      "providerFixtureId": "football-data-558577",
+      "providerHome": "ACF Fiorentina",
+      "providerAway": "Como 1907",
+      "originalKickoffISO": "2026-10-18T13:00:00.000Z",
+      "status": "matched",
+      "kickoffISO": "2026-10-18T13:00:00.000Z"
+    },
+    {
+      "leagueId": "135",
+      "fixtureDate": "2026-10-18",
+      "timeWAT": "17:00",
+      "home": "AC Milan",
+      "away": "Atalanta",
+      "odds": [
+        1.93,
+        3.69,
+        3.99
+      ],
+      "bookmakerFixtureId": "40740",
+      "sourceFile": "1000888521.jpg",
+      "providerFixtureId": "football-data-558569",
+      "providerHome": "AC Milan",
+      "providerAway": "Atalanta BC",
+      "originalKickoffISO": "2026-10-18T16:00:00.000Z",
+      "status": "matched",
+      "kickoffISO": "2026-10-18T16:00:00.000Z"
+    },
+    {
+      "leagueId": "135",
+      "fixtureDate": "2026-10-18",
+      "timeWAT": "19:45",
+      "home": "Juventus",
+      "away": "Lazio",
+      "odds": [
+        1.68,
+        3.92,
+        5.27
+      ],
+      "bookmakerFixtureId": "40781",
+      "sourceFile": "1000888522.jpg",
+      "providerFixtureId": "football-data-558570",
+      "providerHome": "Juventus FC",
+      "providerAway": "SS Lazio",
+      "originalKickoffISO": "2026-10-18T18:45:00.000Z",
+      "status": "matched",
+      "kickoffISO": "2026-10-18T18:45:00.000Z"
+    },
+    {
+      "leagueId": "135",
+      "fixtureDate": "2026-10-19",
+      "timeWAT": "17:30",
+      "home": "Monza",
+      "away": "Cagliari",
+      "odds": [
+        2.28,
+        3.3,
+        3.36
+      ],
+      "bookmakerFixtureId": "41932",
+      "sourceFile": "1000888522.jpg",
+      "providerFixtureId": "football-data-558576",
+      "providerHome": "AC Monza",
+      "providerAway": "Cagliari Calcio",
+      "originalKickoffISO": "2026-10-19T16:30:00.000Z",
+      "status": "matched",
+      "kickoffISO": "2026-10-19T16:30:00.000Z"
+    },
+    {
+      "leagueId": "135",
+      "fixtureDate": "2026-10-19",
+      "timeWAT": "19:45",
+      "home": "Parma Calcio",
+      "away": "Torino",
+      "odds": [
+        3.09,
+        3.18,
+        2.49
+      ],
+      "bookmakerFixtureId": "31877",
+      "sourceFile": "1000888522.jpg",
+      "providerFixtureId": "football-data-558578",
+      "providerHome": "Parma Calcio 1913",
+      "providerAway": "Torino FC",
+      "originalKickoffISO": "2026-10-19T18:45:00.000Z",
+      "status": "matched",
+      "kickoffISO": "2026-10-19T18:45:00.000Z"
+    },
+    {
+      "leagueId": "2",
+      "fixtureDate": "2026-10-13",
+      "timeWAT": "17:45",
+      "home": "Lens",
+      "away": "Sporting",
+      "odds": [
+        2.51,
+        3.77,
+        2.65
+      ],
+      "bookmakerFixtureId": "52586",
+      "sourceFile": "1000888541.jpg",
+      "providerFixtureId": "football-data-575341",
+      "providerHome": "Racing Club de Lens",
+      "providerAway": "Sporting Clube de Portugal",
+      "originalKickoffISO": "2026-10-13T16:45:00.000Z",
+      "status": "matched",
+      "kickoffISO": "2026-10-13T16:45:00.000Z"
+    },
+    {
+      "leagueId": "2",
+      "fixtureDate": "2026-10-13",
+      "timeWAT": "17:45",
+      "home": "Sabah Masazir",
+      "away": "Slavia Prague",
+      "odds": [
+        3.51,
+        3.78,
+        2.04
+      ],
+      "bookmakerFixtureId": "11186",
+      "sourceFile": "1000888541.jpg",
+      "providerFixtureId": "football-data-575342",
+      "providerHome": "Sabah FK",
+      "providerAway": "SK Slavia Praha",
+      "originalKickoffISO": "2026-10-13T16:45:00.000Z",
+      "status": "matched",
+      "kickoffISO": "2026-10-13T16:45:00.000Z"
+    },
+    {
+      "leagueId": "2",
+      "fixtureDate": "2026-10-13",
+      "timeWAT": "20:00",
+      "home": "Arsenal",
+      "away": "Lille",
+      "odds": [
+        1.27,
+        6.16,
+        11.23
+      ],
+      "bookmakerFixtureId": "52587",
+      "sourceFile": "1000888541.jpg",
+      "providerFixtureId": "football-data-575346",
+      "providerHome": "Arsenal FC",
+      "providerAway": "Lille OSC",
+      "originalKickoffISO": "2026-10-13T19:00:00.000Z",
+      "status": "matched",
+      "kickoffISO": "2026-10-13T19:00:00.000Z"
+    },
+    {
+      "leagueId": "2",
+      "fixtureDate": "2026-10-13",
+      "timeWAT": "20:00",
+      "home": "Atletico Madrid",
+      "away": "Man Utd",
+      "odds": [
+        2.17,
+        3.87,
+        3.11
+      ],
+      "bookmakerFixtureId": "52588",
+      "sourceFile": "1000888541.jpg",
+      "providerFixtureId": "football-data-575345",
+      "providerHome": "Club Atl\u00e9tico de Madrid",
+      "providerAway": "Manchester United FC",
+      "originalKickoffISO": "2026-10-13T19:00:00.000Z",
+      "status": "matched",
+      "kickoffISO": "2026-10-13T19:00:00.000Z"
+    },
+    {
+      "leagueId": "2",
+      "fixtureDate": "2026-10-13",
+      "timeWAT": "20:00",
+      "home": "Galatasaray Istanbul",
+      "away": "Barcelona",
+      "odds": [
+        7.94,
+        6.8,
+        1.3
+      ],
+      "bookmakerFixtureId": "52590",
+      "sourceFile": "1000888541.jpg",
+      "providerFixtureId": "football-data-575344",
+      "providerHome": "Galatasaray SK",
+      "providerAway": "FC Barcelona",
+      "originalKickoffISO": "2026-10-13T19:00:00.000Z",
+      "status": "matched",
+      "kickoffISO": "2026-10-13T19:00:00.000Z"
+    },
+    {
+      "leagueId": "2",
+      "fixtureDate": "2026-10-13",
+      "timeWAT": "20:00",
+      "home": "Inter",
+      "away": "Club Brugge",
+      "odds": [
+        1.29,
+        6.1,
+        9.78
+      ],
+      "bookmakerFixtureId": "52589",
+      "sourceFile": "1000888541.jpg",
+      "providerFixtureId": "football-data-575343",
+      "providerHome": "FC Internazionale Milano",
+      "providerAway": "Club Brugge KV",
+      "originalKickoffISO": "2026-10-13T19:00:00.000Z",
+      "status": "matched",
+      "kickoffISO": "2026-10-13T19:00:00.000Z"
+    },
+    {
+      "leagueId": "2",
+      "fixtureDate": "2026-10-13",
+      "timeWAT": "20:00",
+      "home": "RB Leipzig",
+      "away": "PSV Eindhoven",
+      "odds": [
+        2.06,
+        4.06,
+        3.25
+      ],
+      "bookmakerFixtureId": "52591",
+      "sourceFile": "1000888542.jpg",
+      "providerFixtureId": "football-data-575348",
+      "providerHome": "RB Leipzig",
+      "providerAway": "PSV",
+      "originalKickoffISO": "2026-10-13T19:00:00.000Z",
+      "status": "matched",
+      "kickoffISO": "2026-10-13T19:00:00.000Z"
+    },
+    {
+      "leagueId": "2",
+      "fixtureDate": "2026-10-13",
+      "timeWAT": "20:00",
+      "home": "Viking FK",
+      "away": "Bayern Munich",
+      "odds": [
+        19.99,
+        11.83,
+        1.1
+      ],
+      "bookmakerFixtureId": "52592",
+      "sourceFile": "1000888542.jpg",
+      "providerFixtureId": "football-data-575347",
+      "providerHome": "Viking FK",
+      "providerAway": "FC Bayern M\u00fcnchen",
+      "originalKickoffISO": "2026-10-13T19:00:00.000Z",
+      "status": "matched",
+      "kickoffISO": "2026-10-13T19:00:00.000Z"
+    },
+    {
+      "leagueId": "2",
+      "fixtureDate": "2026-10-13",
+      "timeWAT": "20:00",
+      "home": "Villarreal",
+      "away": "Napoli",
+      "odds": [
+        2.26,
+        3.59,
+        3.14
+      ],
+      "bookmakerFixtureId": "52593",
+      "sourceFile": "1000888542.jpg",
+      "providerFixtureId": "football-data-575349",
+      "providerHome": "Villarreal CF",
+      "providerAway": "SSC Napoli",
+      "originalKickoffISO": "2026-10-13T19:00:00.000Z",
+      "status": "matched",
+      "kickoffISO": "2026-10-13T19:00:00.000Z"
+    },
+    {
+      "leagueId": "2",
+      "fixtureDate": "2026-10-14",
+      "timeWAT": "17:45",
+      "home": "Feyenoord",
+      "away": "Como 1907",
+      "odds": [
+        3.55,
+        4.09,
+        1.95
+      ],
+      "bookmakerFixtureId": "52594",
+      "sourceFile": "1000888542.jpg",
+      "providerFixtureId": "football-data-575351",
+      "providerHome": "Feyenoord Rotterdam",
+      "providerAway": "Como 1907",
+      "originalKickoffISO": "2026-10-14T16:45:00.000Z",
+      "status": "matched",
+      "kickoffISO": "2026-10-14T16:45:00.000Z"
+    },
+    {
+      "leagueId": "2",
+      "fixtureDate": "2026-10-14",
+      "timeWAT": "17:45",
+      "home": "LASK Linz",
+      "away": "Liverpool",
+      "odds": [
+        10.62,
+        6.81,
+        1.25
+      ],
+      "bookmakerFixtureId": "52595",
+      "sourceFile": "1000888542.jpg",
+      "status": "matched",
+      "providerFixtureId": "football-data-575350",
+      "providerHome": "LASK Linz",
+      "providerAway": "Liverpool FC",
+      "originalKickoffISO": "2026-10-14T16:45:00.000Z",
+      "kickoffISO": "2026-10-14T16:45:00.000Z"
+    },
+    {
+      "leagueId": "2",
+      "fixtureDate": "2026-10-14",
+      "timeWAT": "20:00",
+      "home": "Aston Villa",
+      "away": "Fenerbahce Istanbul",
+      "odds": [
+        1.71,
+        4.07,
+        4.74
+      ],
+      "bookmakerFixtureId": "52597",
+      "sourceFile": "1000888543.jpg",
+      "status": "matched",
+      "providerFixtureId": "football-data-575355",
+      "providerHome": "Aston Villa FC",
+      "providerAway": "Fenerbah\u00e7e SK",
+      "originalKickoffISO": "2026-10-14T19:00:00.000Z",
+      "kickoffISO": "2026-10-14T19:00:00.000Z"
+    },
+    {
+      "leagueId": "2",
+      "fixtureDate": "2026-10-14",
+      "timeWAT": "20:00",
+      "home": "Betis",
+      "away": "Porto",
+      "odds": [
+        2.22,
+        3.65,
+        3.17
+      ],
+      "bookmakerFixtureId": "52601",
+      "sourceFile": "1000888543.jpg",
+      "providerFixtureId": "football-data-575356",
+      "providerHome": "Real Betis Balompi\u00e9",
+      "providerAway": "FC Porto",
+      "originalKickoffISO": "2026-10-14T19:00:00.000Z",
+      "status": "matched",
+      "kickoffISO": "2026-10-14T19:00:00.000Z"
+    },
+    {
+      "leagueId": "2",
+      "fixtureDate": "2026-10-14",
+      "timeWAT": "20:00",
+      "home": "Bodoe/Glimt",
+      "away": "Borussia Dortmund",
+      "odds": [
+        3.16,
+        4.05,
+        2.1
+      ],
+      "bookmakerFixtureId": "52599",
+      "sourceFile": "1000888543.jpg",
+      "status": "matched",
+      "providerFixtureId": "football-data-575354",
+      "providerHome": "FK Bod\u00f8/Glimt",
+      "providerAway": "Borussia Dortmund",
+      "originalKickoffISO": "2026-10-14T19:00:00.000Z",
+      "kickoffISO": "2026-10-14T19:00:00.000Z"
+    },
+    {
+      "leagueId": "2",
+      "fixtureDate": "2026-10-14",
+      "timeWAT": "20:00",
+      "home": "Man City",
+      "away": "PSG",
+      "odds": [
+        2.35,
+        3.95,
+        2.77
+      ],
+      "bookmakerFixtureId": "52600",
+      "sourceFile": "1000888543.jpg",
+      "providerFixtureId": "football-data-575353",
+      "providerHome": "Manchester City FC",
+      "providerAway": "Paris Saint-Germain FC",
+      "originalKickoffISO": "2026-10-14T19:00:00.000Z",
+      "status": "matched",
+      "kickoffISO": "2026-10-14T19:00:00.000Z"
+    },
+    {
+      "leagueId": "2",
+      "fixtureDate": "2026-10-14",
+      "timeWAT": "20:00",
+      "home": "Roma",
+      "away": "Real Madrid",
+      "odds": [
+        3.62,
+        4.04,
+        1.94
+      ],
+      "bookmakerFixtureId": "52596",
+      "sourceFile": "1000888543.jpg",
+      "providerFixtureId": "football-data-575352",
+      "providerHome": "AS Roma",
+      "providerAway": "Real Madrid CF",
+      "originalKickoffISO": "2026-10-14T19:00:00.000Z",
+      "status": "matched",
+      "kickoffISO": "2026-10-14T19:00:00.000Z"
+    },
+    {
+      "leagueId": "2",
+      "fixtureDate": "2026-10-14",
+      "timeWAT": "20:00",
+      "home": "Shakhtar D",
+      "away": "AEK Athens",
+      "odds": null,
+      "bookmakerFixtureId": "52598",
+      "sourceFile": "1000888543.jpg",
+      "providerFixtureId": "football-data-575357",
+      "providerHome": "FK Shakhtar Donetsk",
+      "providerAway": "PAE AEK",
+      "originalKickoffISO": "2026-10-14T19:00:00.000Z",
+      "status": "matched",
+      "kickoffISO": "2026-10-14T19:00:00.000Z"
+    },
+    {
+      "leagueId": "94",
+      "fixtureDate": "2026-10-09",
+      "timeWAT": "18:45",
+      "home": "Moreirense FC",
+      "away": "Gil Vicente Barcelos",
+      "odds": [
+        3.39,
+        3.17,
+        2.28
+      ],
+      "bookmakerFixtureId": "26131",
+      "sourceFile": "1000888544.jpg",
+      "status": "unmatched"
+    },
+    {
+      "leagueId": "94",
+      "fixtureDate": "2026-10-09",
+      "timeWAT": "20:15",
+      "home": "Braga",
+      "away": "Sporting",
+      "odds": [
+        3.53,
+        3.45,
+        2.1
+      ],
+      "bookmakerFixtureId": "30899",
+      "sourceFile": "1000888544.jpg",
+      "status": "unmatched"
+    },
+    {
+      "leagueId": "94",
+      "fixtureDate": "2026-10-10",
+      "timeWAT": "15:30",
+      "home": "Casa Pia Lisbon",
+      "away": "Santa Clara Azores",
+      "odds": [
+        4.27,
+        3.28,
+        1.96
+      ],
+      "bookmakerFixtureId": "32549",
+      "sourceFile": "1000888544.jpg",
+      "status": "unmatched"
+    },
+    {
+      "leagueId": "94",
+      "fixtureDate": "2026-10-10",
+      "timeWAT": "18:00",
+      "home": "Maritimo Madeira",
+      "away": "Porto",
+      "odds": [
+        9.28,
+        5.28,
+        1.33
+      ],
+      "bookmakerFixtureId": "41220",
+      "sourceFile": "1000888544.jpg",
+      "status": "unmatched"
+    },
+    {
+      "leagueId": "94",
+      "fixtureDate": "2026-10-10",
+      "timeWAT": "20:30",
+      "home": "Academico de Viseu FC",
+      "away": "Estoril Praia",
+      "odds": [
+        2.27,
+        3.46,
+        3.12
+      ],
+      "bookmakerFixtureId": "23968",
+      "sourceFile": "1000888544.jpg",
+      "status": "unmatched"
+    },
+    {
+      "leagueId": "94",
+      "fixtureDate": "2026-10-11",
+      "timeWAT": "15:30",
+      "home": "Rio Ave FC",
+      "away": "Nacional da Madeira",
+      "odds": [
+        2.32,
+        3.3,
+        3.17
+      ],
+      "bookmakerFixtureId": "41364",
+      "sourceFile": "1000888544.jpg",
+      "status": "unmatched"
+    },
+    {
+      "leagueId": "179",
+      "fixtureDate": "2026-10-10",
+      "timeWAT": "15:00",
+      "home": "Dundee United",
+      "away": "Hibernian FC",
+      "odds": [
+        2.72,
+        3.73,
+        2.47
+      ],
+      "bookmakerFixtureId": "31791",
+      "sourceFile": "1000888545.jpg",
+      "status": "unmatched"
+    },
+    {
+      "leagueId": "179",
+      "fixtureDate": "2026-10-10",
+      "timeWAT": "15:00",
+      "home": "Falkirk FC",
+      "away": "Dundee FC",
+      "odds": [
+        2.13,
+        3.61,
+        3.4
+      ],
+      "bookmakerFixtureId": "32185",
+      "sourceFile": "1000888545.jpg",
+      "status": "unmatched"
+    },
+    {
+      "leagueId": "179",
+      "fixtureDate": "2026-10-10",
+      "timeWAT": "15:00",
+      "home": "Heart of Midlothian FC",
+      "away": "St Mirren FC",
+      "odds": [
+        1.48,
+        4.98,
+        6.15
+      ],
+      "bookmakerFixtureId": "32621",
+      "sourceFile": "1000888545.jpg",
+      "status": "unmatched"
+    },
+    {
+      "leagueId": "179",
+      "fixtureDate": "2026-10-10",
+      "timeWAT": "15:00",
+      "home": "Rangers",
+      "away": "Kilmarnock FC",
+      "odds": [
+        1.15,
+        9.89,
+        18.26
+      ],
+      "bookmakerFixtureId": "33253",
+      "sourceFile": "1000888545.jpg",
+      "status": "unmatched"
+    },
+    {
+      "leagueId": "179",
+      "fixtureDate": "2026-10-11",
+      "timeWAT": "12:00",
+      "home": "Motherwell FC",
+      "away": "Celtic",
+      "odds": [
+        4.94,
+        4.57,
+        1.59
+      ],
+      "bookmakerFixtureId": "42462",
+      "sourceFile": "1000888546.jpg",
+      "status": "unmatched"
+    },
+    {
+      "leagueId": "179",
+      "fixtureDate": "2026-10-11",
+      "timeWAT": "14:00",
+      "home": "Aberdeen",
+      "away": "St. Johnstone FC",
+      "odds": [
+        2.22,
+        3.46,
+        3.22
+      ],
+      "bookmakerFixtureId": "34015",
+      "sourceFile": "1000888546.jpg",
+      "status": "unmatched"
+    },
+    {
+      "leagueId": "179",
+      "fixtureDate": "2026-10-17",
+      "timeWAT": "15:00",
+      "home": "Aberdeen",
+      "away": "St Mirren FC",
+      "odds": [
+        1.82,
+        3.81,
+        4.02
+      ],
+      "bookmakerFixtureId": "43856",
+      "sourceFile": "1000888546.jpg",
+      "status": "unmatched"
+    },
+    {
+      "leagueId": "179",
+      "fixtureDate": "2026-10-17",
+      "timeWAT": "15:00",
+      "home": "Hibernian FC",
+      "away": "Falkirk FC",
+      "odds": [
+        1.7,
+        3.97,
+        4.54
+      ],
+      "bookmakerFixtureId": "43879",
+      "sourceFile": "1000888546.jpg",
+      "status": "unmatched"
+    },
+    {
+      "leagueId": "307",
+      "fixtureDate": null,
+      "timeWAT": "14:50",
+      "home": "Al-Kholood",
+      "away": "Al Qadsiah",
+      "odds": [
+        5.2,
+        4.5,
+        1.57
+      ],
+      "bookmakerFixtureId": "52428",
+      "sourceFile": "1000888547.jpg",
+      "status": "unmatched"
+    },
+    {
+      "leagueId": "307",
+      "fixtureDate": null,
+      "timeWAT": "15:55",
+      "home": "Al-Fateh SC",
+      "away": "Al Ahli Saudi FC",
+      "odds": [
+        5.9,
+        5.0,
+        1.47
+      ],
+      "bookmakerFixtureId": "47445",
+      "sourceFile": "1000888547.jpg",
+      "status": "unmatched"
+    },
+    {
+      "leagueId": "307",
+      "fixtureDate": null,
+      "timeWAT": "19:00",
+      "home": "Al Nassr Club",
+      "away": "Diriyah Club",
+      "odds": [
+        1.43,
+        5.2,
+        6.2
+      ],
+      "bookmakerFixtureId": "18706",
+      "sourceFile": "1000888547.jpg",
+      "status": "unmatched"
+    },
+    {
+      "leagueId": "307",
+      "fixtureDate": "2026-10-10",
+      "timeWAT": "14:50",
+      "home": "Al-Hazm",
+      "away": "Neom SC",
+      "odds": [
+        4.2,
+        3.9,
+        1.79
+      ],
+      "bookmakerFixtureId": "28497",
+      "sourceFile": "1000888547.jpg",
+      "status": "unmatched"
+    },
+    {
+      "leagueId": "307",
+      "fixtureDate": "2026-10-10",
+      "timeWAT": "15:55",
+      "home": "Al-Ettifaq FC",
+      "away": "Al-Khaleej Club",
+      "odds": [
+        2.0,
+        3.7,
+        3.5
+      ],
+      "bookmakerFixtureId": "41770",
+      "sourceFile": "1000888547.jpg",
+      "status": "unmatched"
+    },
+    {
+      "leagueId": "307",
+      "fixtureDate": "2026-10-10",
+      "timeWAT": "19:00",
+      "home": "Al Hilal SFC",
+      "away": "Al-Ittihad Club",
+      "odds": null,
+      "bookmakerFixtureId": "39802",
+      "sourceFile": "1000888547.jpg",
+      "status": "unmatched"
+    }
+  ]
+}

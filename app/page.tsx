@@ -9,6 +9,7 @@ import { usePreferences } from "@/hooks/use-preferences";
 import { AuthControls } from "@/components/auth/auth-controls";
 import { PremiumGate } from "@/components/auth/premium-gate";
 import { useSlip } from "@/hooks/use-slip";
+import { bestOddsOption, bookmakerOptions } from "@/lib/odds-slip";
 import { canRecommend, choices, confidenceLabel, headlinePick, type SlipPick } from "@/lib/selections";
 import type { Match, SportId, Team } from "@/lib/sports";
 import { matchweekLabel, matchweekStart } from "@/lib/matchweeks";
@@ -94,14 +95,14 @@ function outcomeLabels(match: Match) {
 }
 
 function topRead(match: Match) {
-  if (!match.probabilities.length) return { value: 0, label: "Awaiting history" };
+  if (!match.probabilities.length) { const pick = bestOddsOption(match, 1, "bookmaker"); return { value: pick ? Math.round(pick.probability * 100) : 0, label: pick?.label ?? "Awaiting history" }; }
   const best = Math.max(...match.probabilities);
   const index = match.probabilities.indexOf(best);
   return { value: best, label: outcomeLabels(match)[index] ?? "Top outcome" };
 }
 
 function ProbabilityBar({ match }: { match: Match }) {
-  if (!match.probabilities.length) return <div className="small-empty">No model probabilities yet. Historical completed results are required.</div>;
+  if (!match.probabilities.length) return <div className="small-empty">History-model probabilities require completed results. {match.bookmakerInput ? "Captured bookmaker estimates are shown below." : "No captured bookmaker prices are available."}</div>;
   const labels = outcomeLabels(match);
   return <div className="probability-row" aria-label="Model outcome probabilities">{match.probabilities.map((probability, index) => <div className="probability-item" key={`${match.id}-${labels[index]}`}><div><span>{labels[index]}</span><strong>{probability}%</strong></div><div className="probability-track"><i style={{ width: `${probability}%` }}/></div></div>)}</div>;
 }
@@ -131,12 +132,20 @@ function PredictionDrawer({ match, onClose, onAdd, picks, followedTeams, onFollo
   return <div className="drawer-layer" role="dialog" aria-modal="true" aria-label={`${match.home.name} versus ${match.away.name} analysis`}><button className="drawer-backdrop" onClick={onClose} aria-label="Close analysis"/><aside ref={drawerRef} className="prediction-drawer">
     <div className="drawer-head"><div><span className="eyebrow"><i/> Match intelligence</span><small>{match.model.version}</small></div><button onClick={onClose} aria-label="Close analysis"><Icon name="close"/></button></div>
     <div className="drawer-match"><div><Crest team={match.home}/><strong>{match.home.name}</strong><small>{match.home.short}</small></div><span><b>{match.time}</b><small>{match.date}</small></span><div><Crest team={match.away}/><strong>{match.away.name}</strong><small>{match.away.short}</small></div></div>
-    <div className="drawer-lead"><span>Model&apos;s strongest read</span><div><strong>{read.label}</strong>{match.probabilities.length > 0 && <b>{read.value}%</b>}</div><p>{match.model.method} · {match.model.sampleSize} historical matches in the available sample</p></div>
+    <div className="drawer-lead"><span>{!match.probabilities.length && match.bookmakerInput ? "Market-only strongest read" : "Model’s strongest read"}</span><div><strong>{read.label}</strong>{read.value > 0 && <b>{read.value}%</b>}</div><p>{match.model.method} · {match.model.sampleSize} historical matches in the available sample</p></div>
     <div className="team-follow-row">{[match.home.name,match.away.name].map(name => <button key={name} disabled={!preferencesReady} aria-pressed={followedTeams.includes(name)} onClick={() => onFollowTeam(name)}>{followedTeams.includes(name) ? "Following" : "Follow"} {name}</button>)}</div>
     <ProbabilityBar match={match}/><MatchActions key={match.id} match={match}/>
     {match.probabilities.length > 0 && <div className="drawer-metrics"><div><span>Confidence</span><strong>{match.confidence}%</strong><small>{confidenceLabel(match)}</small></div>{match.model.expectedHome !== undefined && <div><span>{match.sport === "football" ? "Home xG" : "Home points"}</span><strong>{match.model.expectedHome}</strong><small>{match.sport === "football" ? "Expected goals" : "Projected points"}</small></div>}{match.model.expectedAway !== undefined && <div><span>{match.sport === "football" ? "Away xG" : "Away points"}</span><strong>{match.model.expectedAway}</strong><small>{match.sport === "football" ? "Expected goals" : "Projected points"}</small></div>}{match.model.expectedTotal !== undefined && <div><span>Total</span><strong>{match.model.expectedTotal}</strong><small>Model projection</small></div>}</div>}
     {choices(match).length > 0 && <section className="drawer-section"><h2>Choose a market</h2><div className="drawer-markets">{choices(match).map((pick) => { const added = picks.some((item) => samePick(item, pick)); return <button key={`${pick.market}-${pick.selection}-${pick.line}`} className={added ? "selected" : ""} onClick={() => onAdd(pick)}><span>{pick.label}</span><strong>{Math.round(pick.probability * 100)}%</strong><small>{added ? "In your slip" : "Add to slip"}</small></button>; })}</div><p className="feed-note">{confidenceLabel(match)} · Confidence is a data-quality score, not the chance of winning.</p></section>}
+    {!match.probabilities.length && match.bookmakerInput && <section className="drawer-section"><h2>Captured 1X2 markets</h2><div className="drawer-markets">{bookmakerOptions(match).map(pick => <button key={pick.selection} onClick={() => onAdd(pick)}><span>{pick.label}</span><strong>{Number(pick.odds).toFixed(2)}</strong><small>{Math.round(pick.probability * 100)}% market · Add to slip</small></button>)}</div></section>}
     {match.probabilities.length > 0 && <PremiumGate title="Advanced model read"><PremiumAnalysis key={match.id} fixtureId={match.id}/></PremiumGate>}
+    {match.fixtureCorrection && <p className="feed-note">Kickoff corrected from the reviewed SportyBet screenshot. Times are shown in WAT.</p>}
+    {match.bookmakerInput && <section className="drawer-section" aria-label="Bookmaker model input">
+      <div className="section-heading compact"><div><span className="eyebrow">Captured {match.bookmakerInput.capturedDate}</span><h2>Odds-informed 1X2 input</h2></div></div>
+      <p>{match.bookmakerInput.bookmaker} screenshot prices converted to market probabilities after normalizing the bookmaker margin. The slip generator can use this bookmaker basis; the history model remains available separately.</p>
+      <div className="market-grid">{["Home", "Draw", "Away"].map((label, i) => <div className="market-card" key={label}><span>{label}</span><strong>{(match.bookmakerInput!.probabilities[i] * 100).toFixed(1)}%</strong><p>Captured odds {match.bookmakerInput!.odds[i].toFixed(2)}</p></div>)}</div>
+      <p>Captured prices are not live quotes. This market input has not been validated as an improvement to the history model.</p>
+    </section>}
     {match.recordingContext && <section className="drawer-section" aria-label="Recorded match information">
       <div className="section-heading compact"><div><span className="eyebrow">Recorded {match.recordingContext.recordedDate}</span><h2>Bookmaker comparison</h2></div></div>
       <p>{match.recordingContext.bookmaker} odds from your FotMob recording. These market estimates do not change the model prediction.</p>
@@ -153,13 +162,13 @@ function samePick(a: SlipPick, b: SlipPick) {
 }
 
 function PickCard({ match, onOpen, onAdd, picks }: { match: Match; onOpen: (match: Match) => void; onAdd: (pick: SlipPick) => void; picks: SlipPick[] }) {
-  const pick = headlinePick(match);
+  const pick = headlinePick(match) ?? bestOddsOption(match, 1, "bookmaker");
   const qualified = canRecommend(match);
   const added = pick && picks.some((item) => samePick(item, pick));
   return <article className="pick-card">
     <div className="pick-meta"><span>{match.league}</span><time dateTime={match.kickoffISO}>{match.date} · {match.time} WAT</time></div>
     <button className="pick-match" onClick={() => onOpen(match)} aria-label={`Analyse ${match.home.name} vs ${match.away.name}`}><span><Crest team={match.home} compact/><strong>{match.home.name}</strong></span><span><Crest team={match.away} compact/><strong>{match.away.name}</strong></span></button>
-    <div className="pick-details"><div><span>{qualified ? "Suggested market" : "Model estimate"}</span><strong>{pick?.label ?? "Awaiting history"}</strong></div><div><span>Probability</span><strong>{pick ? `${Math.round(pick.probability * 100)}%` : "—"}</strong></div></div>
+    <div className="pick-details"><div><span>{pick?.probabilityBasis === "bookmaker" ? "Market-only estimate" : qualified ? "Suggested market" : "Model estimate"}</span><strong>{pick?.label ?? "Awaiting history"}</strong></div><div><span>Probability</span><strong>{pick ? `${Math.round(pick.probability * 100)}%` : "—"}</strong></div></div>
     <p className="pick-confidence">{confidenceLabel(match)}{match.probabilities.length ? ` · ${match.confidence}/100` : ""}</p>
     <div className="pick-actions"><button className="pick-add" disabled={!pick} onClick={() => pick && onAdd(pick)}>{added ? "In your slip" : "Add to slip"}</button><button className="pick-analysis" onClick={() => onOpen(match)}>Full analysis</button></div>
   </article>;
