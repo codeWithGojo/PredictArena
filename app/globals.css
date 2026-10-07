@@ -473,7 +473,7 @@ a { color: inherit; text-decoration: none; }
 .slips-tools { display: flex; flex-wrap: wrap; align-items: end; gap: 12px; }
 .slips-tools label, .slips-fixture label, .slip-leg label, .slip-stake { display: grid; gap: 7px; color: var(--muted); font-size: .7rem; }
 .slips-tools select, .slips-tools input, .slips-fixture select, .slip-leg input, .slip-stake input { width: 100%; min-height: 42px; border: 1px solid var(--line); border-radius: 7px; padding: 0 11px; background: #0b1119; color: var(--text); font: inherit; font-size: .82rem; }
-.slips-tools label:first-child { min-width: 130px; } .slips-tools label:nth-child(2) { width: 70px; } .slips-tools label:nth-child(3) { min-width: 180px; }
+.slips-tools label:first-child { min-width: 130px; } .slips-tools label:nth-child(2) { width: 160px; } .slips-tools label:nth-child(3) { min-width: 180px; }
 .slips-tools button, .slip-copy { min-height: 42px; border: 0; border-radius: 7px; padding: 0 18px; background: var(--lime); color: #0c1600; font-weight: 800; cursor: pointer; }
 .slips-tools button:disabled { opacity: .45; cursor: not-allowed; }
 .slips-hint, .slip-note { color: var(--muted); font-size: .72rem; line-height: 1.6; }
