@@ -1,5 +1,5 @@
 import type { Match } from "./sports.ts";
-import { canRecommend, choices, type SlipPick } from "./selections.ts";
+import { choices, type SlipPick } from "./selections.ts";
 
 export const MAX_TARGET_ODDS = 10_000;
 export function estimatedOdds(pick: SlipPick): number {
@@ -9,17 +9,34 @@ export function estimatedTotal(picks: SlipPick[]): number | null {
   return picks.length ? picks.reduce((total, pick) => total * estimatedOdds(pick), 1) : null;
 }
 
+// Confidence describes model coverage, not a calibrated chance of winning.
+// Use it to rank games; require real history rather than an arbitrary score.
+export function bestOddsOption(match: Match, minimum: number): SlipPick | undefined {
+  if (!Number.isFinite(minimum) || minimum <= 0 || minimum >= 100 ||
+    !Number.isFinite(match.confidence) || match.confidence <= 0 ||
+    !Number.isFinite(match.model.sampleSize) || match.model.sampleSize < 10 ||
+    /LOW_SAMPLE|NO_HISTORY/.test(match.model.caveat) ||
+    !["live-api", "manual"].includes(match.source)) return undefined;
+  return choices(match).filter((pick) => pick.probability * 100 >= minimum && estimatedOdds(pick) > 1)
+    .sort((a, b) => b.probability - a.probability || `${a.market}:${a.selection}:${a.line}`.localeCompare(`${b.market}:${b.selection}:${b.line}`))[0];
+}
+
 type State = { logOdds: number; quality: number; picks: SlipPick[] };
 
 // Bounded log-space search: retain a high-confidence combination in each odds
-// bucket. Each fixture is processed once, so mutually exclusive markets cannot
-// share a slip. This finds a close suggestion, not a guaranteed global optimum.
+// bucket. Lock each game to its strongest eligible market before combining it.
+// This finds a close suggestion, not a guaranteed global optimum.
 export function generateForOdds(matches: Match[], target: number, minimum: number, now = Date.now()): SlipPick[] {
   if (!Number.isFinite(target) || target <= 1 || target > MAX_TARGET_ODDS || !Number.isFinite(minimum)) return [];
-  const groups = matches.filter((match) => canRecommend(match) && Date.parse(match.kickoffISO) > now)
+  const groups = matches.filter((match) => Date.parse(match.kickoffISO) > now)
     .sort((a, b) => a.id.localeCompare(b.id))
     .filter((match, index, all) => index === 0 || match.id !== all[index - 1].id)
-    .map((match) => ({ confidence: match.confidence, picks: choices(match).filter((pick) => pick.probability * 100 >= minimum && pick.probability <= .85) }))
+    .map((match) => {
+      const best = bestOddsOption(match, minimum);
+      // Longer histories improve ranking, without inflating probabilities.
+      const coverage = Math.min(1, match.model.sampleSize / 50);
+      return { confidence: Math.min(100, match.confidence) * (.75 + .25 * coverage), picks: best ? [best] : [] };
+    })
     .filter((group) => group.picks.length);
   if (!groups.length) return [];
   const goal = Math.log(target);
@@ -31,7 +48,13 @@ export function generateForOdds(matches: Match[], target: number, minimum: numbe
   const consider = (candidate: State) => {
     const distance = Math.abs(candidate.logOdds - goal);
     const previous = closest ? Math.abs(closest.logOdds - goal) : Infinity;
-    if (distance < previous - 1e-10 || (Math.abs(distance - previous) <= 1e-10 && candidate.quality > (closest?.quality ?? -Infinity))) closest = candidate;
+    const nearTarget = Math.abs(Math.exp(candidate.logOdds) / target - 1) <= .05;
+    const previousNear = closest ? Math.abs(Math.exp(closest.logOdds) / target - 1) <= .05 : false;
+    if ((nearTarget && !previousNear) ||
+      (nearTarget && previousNear && (candidate.quality > closest!.quality + 1e-10 ||
+        (Math.abs(candidate.quality - closest!.quality) <= 1e-10 && distance < previous))) ||
+      (!nearTarget && !previousNear && (distance < previous - 1e-10 ||
+        (Math.abs(distance - previous) <= 1e-10 && candidate.quality > (closest?.quality ?? -Infinity))))) closest = candidate;
   };
   for (const group of groups) {
     const next = new Map(states);
