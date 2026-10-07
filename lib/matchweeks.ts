@@ -21,3 +21,14 @@ export function matchweekLabel(start: string): string {
   }).format(date);
   return `${label(monday)} – ${label(sunday)}${monday.getUTCFullYear() !== sunday.getUTCFullYear() ? ` ${sunday.getUTCFullYear()}` : ""}`;
 }
+
+export type MatchweekScope = 'this' | 'next' | 'all';
+export function relativeMatchweekStart(now: number, offset = 0): string {
+  const start = matchweekStart(new Date(now).toISOString());
+  const monday = new Date(`${start}T00:00:00Z`);
+  monday.setUTCDate(monday.getUTCDate() + offset * 7);
+  return monday.toISOString().slice(0, 10);
+}
+export function inMatchweek(kickoffISO: string, scope: MatchweekScope, now: number): boolean {
+  return scope === 'all' || matchweekStart(kickoffISO) === relativeMatchweekStart(now, scope === 'next' ? 1 : 0);
+}

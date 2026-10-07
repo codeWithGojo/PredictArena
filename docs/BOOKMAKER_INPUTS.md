@@ -36,3 +36,20 @@ history coverage and are excluded from history-model performance statistics.
 
 Bookmaker snapshots may change before kickoff. Dates and source are displayed
 with picks. User-edited prices are not labelled as captured prices when copied.
+
+## All-market and matchweek selection
+
+The slip builder defaults to all available markets. It compares captured 1X2
+options, double-chance probabilities derived by summing mutually exclusive 1X2
+outcomes, and eligible history-model goals/BTTS options. Double-chance prices are
+unknown: their target contribution is explicitly estimated as 1 / probability.
+Market-type controls also let the user restrict the pool before choosing the
+strongest option per game. Each fixture still contributes at most one selection.
+The captured-prices-only mode remains limited to the recorded 1X2 quotes.
+
+Both the predictions feed and slip builder default to the actual current Lagos
+calendar week, Monday through Sunday. Next week and all upcoming weeks require
+an explicit filter selection. Featured cards use the same week as the feed.
+There is no fallback to the next available week when the selected week is empty.
+Saved slips retain their selections; a notice identifies games outside the
+currently selected matchweek until the user generates a replacement.

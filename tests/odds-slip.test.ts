@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { bestOddsOption, estimatedTotal, generateForOdds } from '../lib/odds-slip.ts';
+import { bestOddsOption, estimatedTotal, generateForOdds, selectionOptions, targetTotal } from '../lib/odds-slip.ts';
 import type { Match } from '../lib/sports.ts';
 
 const fixture = (id: string, probabilities = [.8, .6], confidence = 75): Match => ({
@@ -73,4 +73,33 @@ test('within five percent of target, prefer stronger coverage over a slightly cl
   const result = generateForOdds([fixture('strong', [.8], 90), fixture('weak-exact', [.79], 49)], 1.27, 55);
   assert.equal(result.length, 1);
   assert.equal(result[0].fixtureId, 'strong');
+});
+
+const withSnapshot = (match: Match): Match => ({ ...match, bookmakerInput: {
+  bookmaker: 'SportyBet', fixtureId: 'test', capturedDate: '2026-10-07', receivedAt: '2026-10-07T16:00:00Z',
+  sourceFile: 'test.jpg', odds: [1.8, 3, 4.5], probabilities: [.5, .3, .2], method: 'Normalized implied 1X2 probabilities',
+} });
+test('all-market mode compares goals, BTTS, double chance and captured match-result prices', () => {
+  const goals = withSnapshot(fixture('goals', [.85]));
+  const btts = withSnapshot({ ...fixture('btts'), predictions: [{ label: 'Both teams score: yes', value:'86%', market:'btts', selection:'yes', probability:.86 }] });
+  assert.equal(bestOddsOption(goals,55,'auto')?.market,'total');
+  assert.equal(bestOddsOption(btts,55,'auto')?.market,'btts');
+  const picks=generateForOdds([goals,btts],1.18*1.16,55,Date.parse('2026-10-07'),'auto');
+  assert.deepEqual(new Set(picks.map(p=>p.market)),new Set(['total','btts']));
+  assert.equal(new Set(picks.map(p=>p.fixtureId)).size,picks.length);
+  const dc=bestOddsOption(goals,55,'auto',['double-chance'])!;
+  assert.equal(dc.selection,'home-draw');assert.equal(dc.probability,.8);
+  assert.equal(dc.odds,'');assert.equal(targetTotal([dc]),1.25);
+  const result=bestOddsOption(goals,45,'auto',['result'])!;
+  assert.equal(result.odds,'1.8');assert.equal(targetTotal([result]),1.8);
+  assert.deepEqual(generateForOdds([goals],2,55,Date.now(),'auto',[]),[]);
+  assert.ok(selectionOptions(goals,'bookmaker').every(p=>p.market==='1x2'&&p.odds));
+});
+test('market-only leagues derive double chance without inventing goals history or actual prices', () => {
+  const match=withSnapshot({ ...fixture('market-only'), probabilities:[],predictions:[],confidence:0,model:{...fixture('a').model,sampleSize:0,caveat:'NO_HISTORY'} });
+  const options=selectionOptions(match,'auto');
+  assert.equal(options.length,6);
+  assert.ok(options.every(p=>['1x2','double-chance'].includes(p.market)));
+  assert.deepEqual(selectionOptions(match,'auto',['total','btts']),[]);
+  assert.equal(bestOddsOption(match,55,'auto')?.market,'double-chance');
 });

@@ -2,7 +2,19 @@ import type { Match } from "./sports.ts";
 import { choices, type SlipPick } from "./selections.ts";
 
 export const MAX_TARGET_ODDS = 10_000;
-export type PredictionBasis = 'model' | 'bookmaker';
+export type PredictionBasis = 'auto' | 'model' | 'bookmaker';
+export const MARKET_GROUPS = [
+  { id: 'result', label: 'Match result' }, { id: 'double-chance', label: 'Double chance' },
+  { id: 'total', label: 'Over / under goals' }, { id: 'btts', label: 'Both teams to score' },
+] as const;
+export type MarketGroup = typeof MARKET_GROUPS[number]['id'];
+export const ALL_MARKETS: MarketGroup[] = MARKET_GROUPS.map(group => group.id);
+const marketGroup = (pick: SlipPick): string => ['1x2', 'winner'].includes(pick.market) ? 'result' : pick.market;
+function hasHistory(match: Match): boolean {
+  return Number.isFinite(match.confidence) && match.confidence > 0 &&
+    Number.isFinite(match.model.sampleSize) && match.model.sampleSize >= 10 &&
+    !/LOW_SAMPLE|NO_HISTORY/.test(match.model.caveat) && ['live-api', 'manual'].includes(match.source);
+}
 export function bookmakerOptions(match: Match): SlipPick[] {
   const input = match.bookmakerInput;
   if (!input || match.sport !== 'football' || input.odds.length !== 3 || input.probabilities.length !== 3 ||
@@ -17,8 +29,30 @@ export function bookmakerOptions(match: Match): SlipPick[] {
     probabilityBasis: 'bookmaker', oddsCapturedDate: input.capturedDate, oddsSource: input.bookmaker,
   }));
 }
+export function selectionOptions(match: Match, basis: PredictionBasis, markets: MarketGroup[] = ALL_MARKETS): SlipPick[] {
+  let options: SlipPick[];
+  if (basis === 'bookmaker') options = bookmakerOptions(match);
+  else if (basis === 'model') options = choices(match);
+  else {
+    const captured = bookmakerOptions(match);
+    const history = hasHistory(match) ? choices(match) : [];
+    if (!captured.length) options = history;
+    else {
+      // Double chance is a union of 1X2 outcomes. Its probability is identifiable
+      // from the snapshot; its actual price is not. Never manufacture a quote.
+      const doubleChance = [
+        { selection: 'home-draw', label: 'Home or draw', indexes: [0, 1] },
+        { selection: 'away-draw', label: 'Away or draw', indexes: [1, 2] },
+        { selection: 'home-away', label: 'Either team wins', indexes: [0, 2] },
+      ].map(option => ({ ...captured[0], market: 'double-chance', selection: option.selection, label: option.label,
+        probability: option.indexes.reduce((sum, i) => sum + captured[i].probability, 0), odds: '', oddsSource: undefined }));
+      options = [...captured, ...doubleChance, ...history.filter(pick => ['total', 'btts'].includes(pick.market))];
+    }
+  }
+  return options.filter(pick => markets.includes(marketGroup(pick) as MarketGroup));
+}
 export function targetTotal(picks: SlipPick[]): number | null {
-  return picks.length ? picks.reduce((total, pick) => total * (pick.probabilityBasis === 'bookmaker' ? Number(pick.odds) : estimatedOdds(pick)), 1) : null;
+  return picks.length ? picks.reduce((total, pick) => total * (pick.probabilityBasis === 'bookmaker' && Number(pick.odds) > 1 ? Number(pick.odds) : estimatedOdds(pick)), 1) : null;
 }
 export function estimatedOdds(pick: SlipPick): number {
   return Math.round(100 / pick.probability) / 100;
@@ -29,16 +63,10 @@ export function estimatedTotal(picks: SlipPick[]): number | null {
 
 // Confidence describes model coverage, not a calibrated chance of winning.
 // Use it to rank games; require real history rather than an arbitrary score.
-export function bestOddsOption(match: Match, minimum: number, basis: PredictionBasis = 'model'): SlipPick | undefined {
+export function bestOddsOption(match: Match, minimum: number, basis: PredictionBasis = 'model', markets: MarketGroup[] = ALL_MARKETS): SlipPick | undefined {
   if (!Number.isFinite(minimum) || minimum <= 0 || minimum >= 100) return undefined;
-  if (basis === 'bookmaker') return bookmakerOptions(match).filter(p => p.probability * 100 >= minimum)
-    .sort((a, b) => b.probability - a.probability)[0];
-  if (!Number.isFinite(minimum) || minimum <= 0 || minimum >= 100 ||
-    !Number.isFinite(match.confidence) || match.confidence <= 0 ||
-    !Number.isFinite(match.model.sampleSize) || match.model.sampleSize < 10 ||
-    /LOW_SAMPLE|NO_HISTORY/.test(match.model.caveat) ||
-    !["live-api", "manual"].includes(match.source)) return undefined;
-  return choices(match).filter((pick) => pick.probability * 100 >= minimum && estimatedOdds(pick) > 1)
+  if (basis === 'model' && !hasHistory(match)) return undefined;
+  return selectionOptions(match, basis, markets).filter((pick) => pick.probability * 100 >= minimum && targetTotal([pick])! > 1)
     .sort((a, b) => b.probability - a.probability || `${a.market}:${a.selection}:${a.line}`.localeCompare(`${b.market}:${b.selection}:${b.line}`))[0];
 }
 
@@ -47,21 +75,21 @@ type State = { logOdds: number; quality: number; picks: SlipPick[] };
 // Bounded log-space search: retain a high-confidence combination in each odds
 // bucket. Lock each game to its strongest eligible market before combining it.
 // This finds a close suggestion, not a guaranteed global optimum.
-export function generateForOdds(matches: Match[], target: number, minimum: number, now = Date.now(), basis: PredictionBasis = 'model'): SlipPick[] {
+export function generateForOdds(matches: Match[], target: number, minimum: number, now = Date.now(), basis: PredictionBasis = 'model', markets: MarketGroup[] = ALL_MARKETS): SlipPick[] {
   if (!Number.isFinite(target) || target <= 1 || target > MAX_TARGET_ODDS || !Number.isFinite(minimum)) return [];
   const groups = matches.filter((match) => Date.parse(match.kickoffISO) > now)
     .sort((a, b) => a.id.localeCompare(b.id))
     .filter((match, index, all) => index === 0 || match.id !== all[index - 1].id)
     .map((match) => {
-      const best = bestOddsOption(match, minimum, basis);
+      const best = bestOddsOption(match, minimum, basis, markets);
       // Longer histories improve ranking, without inflating probabilities.
       const coverage = Math.min(1, match.model.sampleSize / 50);
-      return { confidence: basis === 'bookmaker' ? (best?.probability ?? 0) * 100 : Math.min(100, match.confidence) * (.75 + .25 * coverage), picks: best ? [best] : [] };
+      return { confidence: best?.probabilityBasis === 'bookmaker' ? best.probability * 100 : Math.min(100, match.confidence) * (.75 + .25 * coverage), picks: best ? [best] : [] };
     })
     .filter((group) => group.picks.length);
   if (!groups.length) return [];
   const goal = Math.log(target);
-  const legOdds = (pick: SlipPick) => basis === 'bookmaker' ? Number(pick.odds) : estimatedOdds(pick);
+  const legOdds = (pick: SlipPick) => targetTotal([pick])!;
   const largestLeg = Math.max(...groups.flatMap((group) => group.picks.map((pick) => Math.log(legOdds(pick)))));
   const limit = goal + largestLeg;
   const width = goal / 1024;
