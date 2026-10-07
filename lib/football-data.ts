@@ -6,13 +6,13 @@ export type FootballDataMatch = {
   season?: { startDate?: string };
   homeTeam?: { id?: number; name?: string; crest?: string };
   awayTeam?: { id?: number; name?: string; crest?: string };
-  score?: { fullTime?: { home?: number | null; away?: number | null } };
+  score?: { duration?: string; regularTime?: { home?: number | null; away?: number | null }; fullTime?: { home?: number | null; away?: number | null } };
 };
 
 export function footballDataToFixture(match: FootballDataMatch, league: { id: string; name: string }) {
   if (!match.id || !match.utcDate || !match.homeTeam?.name || !match.awayTeam?.name) return null;
   const finished = match.status === "FINISHED";
-  const score = match.score?.fullTime;
+  const score = match.score?.regularTime ?? (match.score?.duration && match.score.duration !== "REGULAR" ? undefined : match.score?.fullTime);
   const validScore = finished && Number.isSafeInteger(score?.home) && Number.isSafeInteger(score?.away) &&
     (score?.home ?? -1) >= 0 && (score?.away ?? -1) >= 0;
   return {

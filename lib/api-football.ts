@@ -47,7 +47,7 @@ export const footballLeagues: FootballLeague[] = [
 const API_ROOT = "https://v3.football.api-sports.io";
 const OPEN_API_ROOT = "https://worldcup26.ir";
 const FOOTBALL_DATA_ROOT = "https://api.football-data.org/v4";
-export const FOOTBALL_CACHE_SECONDS = 6 * 60 * 60;
+export const FOOTBALL_CACHE_SECONDS = 5 * 60;
 
 async function requestOpenFixtures(config: FootballLeague, now: Date): Promise<FootballFixture[]> {
   if (!config.openSlug) throw new Error("No open football league mapping");
@@ -295,6 +295,10 @@ export async function buildFootballPayload() {
 
   return {
     matches,
+    completed: bundles.flatMap(bundle => bundle.history.map(item => ({
+      fixtureId: item.id.replace(/^api-football-/, bundle.provider === "worldcup26.ir" ? "open-football-" : bundle.provider === "football-data.org" ? "football-data-" : "api-football-"),
+      leagueId: bundle.config.id, home: item.home, away: item.away, kickoffISO: item.startsAt, homeScore: item.homeScore, awayScore: item.awayScore,
+    }))),
     manualCount: manualMatches.length,
     leagueCatalog: bundles.map((bundle) => ({
       id: bundle.config.id,

@@ -27,3 +27,10 @@ test("accepts final score only for valid finished match", () => {
   assert.notEqual(withoutScore?.fixture.status.short, "FT");
   assert.equal(withoutScore?.goals.home, null);
 });
+
+test("cup forecasts settle on regular time instead of extra time or penalties", () => {
+ const extra = { ...match, status: "FINISHED", score: { duration: "EXTRA_TIME", fullTime: { home: 3, away: 2 }, regularTime: { home: 1, away: 1 } } };
+ assert.deepEqual(footballDataToFixture(extra, league)?.goals,{home:1,away:1});
+ const missing = footballDataToFixture({...extra,score:{duration:"PENALTY_SHOOTOUT",fullTime:{home:3,away:2}}},league);
+ assert.notEqual(missing?.fixture.status.short,"FT");
+});

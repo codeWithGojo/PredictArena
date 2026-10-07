@@ -1,0 +1,2 @@
+[functions.refresh-predictions]
+verify_jwt = false

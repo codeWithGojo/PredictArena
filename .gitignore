@@ -23,3 +23,7 @@ npm-debug.log*
 /upload
 /generated_images
 /predictarena-og.png
+
+# Local compiler and Supabase CLI state
+*.tsbuildinfo
+supabase/.temp/
