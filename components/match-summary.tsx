@@ -18,7 +18,7 @@ export function MatchSummary({ match, pick, onOpen }: { match: Match; pick?: Sli
     <div className="match-row-meta"><span>{match.league}</span><time dateTime={match.kickoffISO}>{new Date(match.kickoffISO).toLocaleString("en-NG", { timeZone: "Africa/Lagos", weekday: "short", day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" })} WAT</time></div>
     {onOpen ? <button className="summary-teams" onClick={onOpen} aria-label={`Analyse ${match.home.name} vs ${match.away.name}`}>{teams}</button> : <div className="summary-teams">{teams}</div>}
     {!!probabilities.length && <div className="match-outcomes" aria-label={`${market ? "Market" : "Model"} outcome probabilities`}>
-      {probabilities.map((probability, index) => <div key={index} aria-label={`${match.sport === "football" ? ["Home", "Draw", "Away"][index] : ["Home", "Away"][index]} ${probability}%`}><div className="match-outcome-track"><i style={{ width: `${probability}%` }}/></div><span>{match.sport === "football" ? ["1", "X", "2"][index] : ["1", "2"][index]} <b>{probability}%</b></span></div>)}
+      {probabilities.map((probability, index) => <div key={index} aria-label={`${match.sport === "football" ? ["Home", "Draw", "Away"][index] : ["Home", "Away"][index]} ${probability}%`}><span>{match.sport === "football" ? ["Home", "Draw", "Away"][index] : ["Home", "Away"][index]} <b>{probability}%</b></span></div>)}
     </div>}
     <small className="match-probability-source">{probabilities.length ? market ? `Market 1X2 estimate · captured ${match.bookmakerInput?.capturedDate}` : "History-model outcome estimates" : "Awaiting model data"}</small>
   </>;
