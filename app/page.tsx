@@ -6,7 +6,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { MatchActions } from "@/components/growth/match-actions";
 import { PremiumAnalysis } from "@/components/growth/premium-analysis";
 import { usePreferences } from "@/hooks/use-preferences";
-import { AuthControls } from "@/components/auth/auth-controls";
+import { SiteHeader } from "@/components/site-header";
 import { PremiumGate } from "@/components/auth/premium-gate";
 import { useSlip } from "@/hooks/use-slip";
 import { bestOddsOption, bookmakerOptions, estimatedOdds } from "@/lib/odds-slip";
@@ -26,6 +26,7 @@ type FeedPayload = {
   communityCount: number;
   status: "live" | "fallback";
   freshness?: { stale: boolean; fetchedAt: string; ageSeconds: number };
+  previewReadOnly?: boolean;
 };
 
 type LeagueSummary = {
@@ -193,7 +194,7 @@ export default function Home() {
   const [filtersOpen, setFiltersOpen] = useState(false);
   const [now, setNow] = useState(0);
   const [notice, setNotice] = useState("");
-  const { picks, addPick } = useSlip();
+  const { picks, addPick, setPicks } = useSlip();
   const lastLoadRef = useRef(0);
   const requestRef = useRef<AbortController | null>(null);
 
@@ -250,18 +251,32 @@ export default function Home() {
   const add = (pick: SlipPick) => { addPick(pick); setNotice(`${pick.label} added to your slip.`); };
   const closeAnalysis = useCallback(() => setSelectedMatch(null), []);
 
-  return <div className="pa-app clean-app matchweek-app">
+  const slipOdds = picks.length ? picks.reduce((total, pick) => total * estimatedOdds(pick), 1) : null;
+  return <div className="pa-app clean-app matchweek-app arena-workspace">
     <a className="skip-link" href="#board">Skip to predictions</a>
-    <header className="top-nav"><div className="nav-left"><Brand/><nav aria-label="Main navigation"><a href="#board">Predictions</a><Link href="/slips">My slip <span className="nav-count">{picks.length}</span></Link><Link href="/performance">Results</Link><Link href="/premium">Premium</Link></nav></div><div className="nav-right"><AuthControls/><Link href="/slips" className="build-slip-link">Build slip <Icon name="arrow" size={16}/></Link></div></header>
+    <SiteHeader/>
+    <aside className="arena-sidebar" aria-label="Competition navigation">
+      <div className="sidebar-label">THE ARENA</div>
+      <a href="#board" className="sidebar-current"><Icon name="grid"/>Match centre</a>
+      <Link href="/slips"><Icon name="bookmark"/>Slip builder<span>{picks.length}</span></Link>
+      <Link href="/performance"><Icon name="chart"/>Forecast record</Link>
+      <div className="sidebar-label competition-label">COMPETITIONS</div>
+      <button aria-pressed={activeLeague === "all"} onClick={() => setActiveLeague("all")}><Icon name="football"/>All competitions</button>
+      {leagues.filter(league => league.sport === "football").map(league => <button key={league.id} aria-pressed={activeSport === "football" && activeLeague === league.id} onClick={() => { setActiveSport("football"); setActiveLeague(league.id); }}><span className="league-monogram">{league.short}</span><span>{league.name}</span></button>)}
+      <div className="sidebar-bottom"><Icon name="shield"/><strong>Every forecast, on record.</strong><p>See the evidence and the results behind the numbers.</p><Link href="/performance">Check the record <Icon name="arrow" size={14}/></Link></div>
+    </aside>
+    <div className="arena-columns"><div className="arena-board">
     <main className="dashboard-main" id="board">
-      <section className="dashboard-intro"><div><h1>Your matchweek</h1><p>Compare the probabilities. Choose your next pick.</p></div><div className="board-actions"><span>{updated ? `Last checked ${updated} WAT` : "Fetching fixtures"}</span><button onClick={() => void loadMatches(true)} disabled={loading} aria-label="Refresh fixtures"><Icon name="refresh" size={16}/>{loading ? "Updating" : "Refresh"}</button></div></section>
+      <section className="dashboard-intro"><div><span className="arena-kicker">MATCH CENTRE <span>/</span> PREDICTARENA</span><h1>The game. The numbers.<br/><em>Your next move.</em></h1><p>Explore the matchweek. Compare markets. Build your slip.</p></div><div className="board-actions"><span>{updated ? `Updated ${updated} WAT` : "Fetching fixtures"}</span><button onClick={() => void loadMatches(true)} disabled={loading} aria-label="Refresh fixtures"><Icon name="refresh" size={16}/>{loading ? "Updating" : "Refresh feed"}</button></div></section>
       {(feed?.freshness?.stale || leagues.some(l => !l.available)) && <p className="freshness-warning" role="status">{feed?.freshness?.stale ? "The feed is over an hour old. Showing the last available fixtures." : "Some competitions could not refresh. Their last available fixtures are retained."} Check kickoff times before relying on a forecast.</p>}
+      {feed?.previewReadOnly && <p className="arena-preview-note">Design preview · Matches use the current public feed. <a href="https://predictarena-favour12.vercel.app/account">Account features are on the main site.</a></p>}
       <section className="feed-controls" aria-label="Prediction filters">
         <WeekTabs value={selectedWeek} onChange={setSelectedWeek} now={now}/>
-        <div className="filter-row sport-tabs" aria-label="Sport">{sports.map(sport => <button aria-pressed={activeSport === sport.id} key={sport.id} onClick={() => selectSport(sport.id)}>{sport.label}</button>)}</div>
+        <div className="filter-row sport-tabs" aria-label="Sport">{sports.map(sport => <button aria-pressed={activeSport === sport.id} key={sport.id} onClick={() => selectSport(sport.id)}><Icon name={sport.icon} size={17}/>{sport.label}</button>)}</div>
+        <div className="arena-search-row"><label className="arena-search"><Icon name="search" size={17}/><span className="sr-only">Search teams or competitions</span><input value={query} onChange={event => setQuery(event.target.value)} placeholder="Find a team or competition"/>{query && <button onClick={() => setQuery("")} aria-label="Clear search"><Icon name="close" size={15}/></button>}</label><span>{activeLeague === "all" ? "All competitions" : leagues.find(league => league.id === activeLeague)?.name}</span></div>
         <div className="feed-control-top"><div className="view-tabs" aria-label="Feed view"><button aria-pressed={view === "all"} onClick={() => setView("all")}>All matches</button><button aria-pressed={view === "following"} onClick={() => setView("following")}>For you</button></div><button className="filters-toggle" aria-expanded={filtersOpen} aria-controls="prediction-filters" onClick={() => setFiltersOpen(!filtersOpen)}><Icon name="menu" size={16}/>Filters{activeLeague !== "all" || query ? " · active" : ""}</button></div>
-        {filtersOpen && <div id="prediction-filters" className="feed-expanded-filters"><div className="search-and-league"><label className="league-select"><span>Competition</span><select value={activeLeague} disabled={activeSport !== "football"} onChange={event => setActiveLeague(event.target.value)}><option value="all">All competitions</option>{leagues.filter(league => league.sport === "football").map(league => <option value={league.id} key={league.id}>{league.name}</option>)}</select></label><label className="feed-search"><span>Search teams</span><input value={query} onChange={event => setQuery(event.target.value)} placeholder="Team or league"/></label></div>
-          <label className="week-select">More weeks<select value={selectedWeek} onChange={event => setSelectedWeek(event.target.value)}><option value="this">This week</option><option value="next">Next week</option><option value="all">All upcoming weeks</option>{weeks.filter(week => ![thisWeek,nextWeek].includes(week)).map(week => <option key={week} value={week}>{matchweekLabel(week)}</option>)}</select></label>
+        {filtersOpen && <div id="prediction-filters" className="feed-expanded-filters"><div className="search-and-league"><label className="league-select"><span>Competition</span><select value={activeLeague} disabled={activeSport !== "football"} onChange={event => setActiveLeague(event.target.value)}><option value="all">All competitions</option>{leagues.filter(league => league.sport === "football").map(league => <option value={league.id} key={league.id}>{league.name}</option>)}</select></label><label className="week-select"><span>More matchweeks</span><select value={selectedWeek} onChange={event => setSelectedWeek(event.target.value)}><option value="this">This week</option><option value="next">Next week</option><option value="all">All upcoming weeks</option>{weeks.filter(week => ![thisWeek,nextWeek].includes(week)).map(week => <option key={week} value={week}>{matchweekLabel(week)}</option>)}</select></label></div>
+
           <button className="manage-leagues" aria-expanded={preferencesOpen} aria-controls="league-preferences" onClick={() => setPreferencesOpen(!preferencesOpen)}>Your leagues{following.length ? ` (${following.length})` : ""}</button>
         {preferencesOpen && <div id="league-preferences" className="league-preferences"><p>{preferences.signedIn ? "Choose competitions for your feed. Synced with your account." : "Choose competitions for your feed. Saved on this device; sign in to sync."}</p><div>{leagues.filter((league) => league.sport === "football").map((league) => <label key={league.id}><input type="checkbox" checked={following.includes(league.id)} disabled={!preferences.ready} onChange={() => toggleLeague(league.id)}/>{league.name}</label>)}</div><p>Open a match to follow either team.{preferences.teams.length ? ` Following ${preferences.teams.length} teams.` : ""}</p>{!!preferences.teams.length && <div className="team-follow-row">{preferences.teams.map(name => <button key={name} disabled={!preferences.ready} onClick={() => preferences.toggleTeam(name)} aria-label={`Unfollow ${name}`}>{name} ×</button>)}</div>}{preferences.error && <p role="alert">{preferences.error}</p>}</div>}
         </div>}
@@ -277,7 +292,15 @@ export default function Home() {
       </>}
       <section className="performance-section" id="performance"><div className="performance-copy"><h2>How the model measures up</h2><p>The bookmaker benchmark still outperforms our current football model on the historical test set. These results cover 4,560 predictions across the Premier League and La Liga.</p><Link href="/performance">View the published forecast record</Link></div><div className="benchmark-card"><div className="benchmark-head"><strong>Historical log loss</strong><span>Lower is better</span></div><dl className="benchmark-results"><div><dt>Bookmaker closing probabilities</dt><dd>0.963</dd></div><div><dt>50:50 model and market blend</dt><dd>0.974</dd></div><div><dt>PredictArena default</dt><dd>0.999</dd></div></dl><p className="feed-note">Historical benchmark, not a record of today’s published picks. Confidence scores are not measured win rates.</p></div></section>
       <section className="membership-note" id="plans"><div><h2>Free to explore</h2><p>Save forecasts to your account and check every published result. Premium early access is open.</p></div><Link className="growth-link" href="/premium">Explore Premium</Link></section>
-    </main>
+    </main></div>
+    <aside className="arena-rail" aria-label="Your slip and match guide">
+      <section className="arena-slip"><div className="arena-slip-heading"><span><Icon name="bookmark"/>YOUR SLIP</span><b>{picks.length}</b></div>
+        {!picks.length ? <div className="arena-slip-empty"><div className="empty-slip-icon"><Icon name="bookmark" size={28}/></div><h2>A good read starts here.</h2><p>Add a match pick, or let the slip builder compare the available markets for you.</p></div> : <><div className="arena-slip-list">{picks.map(pick => <article key={pick.fixtureId}><button onClick={() => setPicks(current => current.filter(item => item.fixtureId !== pick.fixtureId))} aria-label={`Remove ${pick.home} vs ${pick.away}`}><Icon name="close" size={14}/></button><small>{pick.league}</small><strong>{pick.home} <span>vs</span> {pick.away}</strong><div><span>{pick.label}</span><b>{Math.round(pick.probability * 100)}%</b></div></article>)}</div><div className="rail-total"><span>Implied combined odds</span><strong>{slipOdds?.toFixed(2)}</strong><small>Calculated from probabilities, not bookmaker prices.</small></div></>}
+        <Link href="/slips" className="arena-primary">{picks.length ? "Review your slip" : "Open slip builder"}<Icon name="arrow" size={16}/></Link><p className="rail-local">Selections stay saved on this device.</p>
+      </section>
+      <section className="arena-guide"><span className="arena-kicker">READ THE BOARD</span><h2>A probability.<br/>A little perspective.</h2><p>The percentage estimates an outcome. The odds show its price. Open <strong>Analysis</strong> for the evidence and other markets.</p><div><i/> Model estimates <span>·</span> Captured prices</div><Link href="/performance">How we measure results <Icon name="arrow" size={15}/></Link></section>
+      <Link href="/premium" className="arena-premium"><span>PREMIUM / EARLY ACCESS</span><strong>Go deeper into the forecast.</strong><span>Explore membership <Icon name="arrow" size={14}/></span></Link>
+    </aside></div>
     <footer className="pa-footer"><Brand/><p>Statistical estimates. No guaranteed outcomes.</p><div><a href="#performance">Method</a><Link href="/tracker">Saved forecasts</Link><span>© 2026</span></div></footer>
 
     {notice && <div className="slip-notice" role="status"><span>{notice}</span><Link href="/slips">View slip ({picks.length})</Link><button aria-label="Dismiss notification" onClick={() => setNotice("")}>×</button></div>}
