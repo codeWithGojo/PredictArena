@@ -310,19 +310,32 @@ svg {
   color: var(--text);
 }
 
-.league-monogram {
+.league-logo {
   display: grid;
   place-items: center;
   flex-shrink: 0;
-  width: 23px;
-  height: 24px;
-  font-family: 'Barlow Condensed',sans-serif;
-  font-size: 13px;
-  letter-spacing: .5px;
-  border: 0;
-  background: #e0e5ed;
-  color: #4d607b;
-  border-radius: 3px;
+  width: 28px;
+  height: 28px;
+}
+
+.league-logo img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.pa-icon {
+  display: inline-block;
+  flex-shrink: 0;
+  vertical-align: middle;
+}
+
+.growth-actions button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
 }
 
 .arena-columns {

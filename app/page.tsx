@@ -15,6 +15,7 @@ import type { Match, SportId, Team } from "@/lib/sports";
 import { matchweekLabel, matchweekStart, relativeMatchweekStart } from "@/lib/matchweeks";
 import { MatchSummary } from "@/components/match-summary";
 import { WeekTabs } from "@/components/week-tabs";
+import { Icon, type IconName } from "@/components/ui-icon";
 
 type FeedPayload = {
   matches: Match[];
@@ -38,11 +39,6 @@ type LeagueSummary = {
   available: boolean;
 };
 
-type IconName =
-  | "arrow" | "basketball" | "bookmark" | "chart" | "check" | "chevron"
-  | "clock" | "close" | "football" | "grid" | "lock" | "menu" | "model"
-  | "refresh" | "search" | "shield" | "spark" | "target" | "tennis";
-
 const sports: Array<{ id: "all" | "football" | "basketball" | "tennis"; label: string; icon: IconName }> = [
   { id: "all", label: "All sports", icon: "grid" },
   { id: "football", label: "Football", icon: "football" },
@@ -59,33 +55,17 @@ const defaultLeagueCatalog: LeagueSummary[] = [
   { id: "2", name: "Champions League", short: "UCL", sport: "football", matchCount: 0, available: true },
 ];
 
-function Icon({ name, size = 18 }: { name: IconName; size?: number }) {
-  const paths: Record<IconName, React.ReactNode> = {
-    arrow: <><path d="M5 12h14M14 7l5 5-5 5"/></>,
-    basketball: <><circle cx="12" cy="12" r="9"/><path d="M4.7 7c4.4 2.5 8.7 6.8 11.8 11.3M7.4 19.4c1.2-5.7 5.2-10.4 11-12.4M12 3v18M3 12h18"/></>,
-    bookmark: <path d="M6 4.5A1.5 1.5 0 0 1 7.5 3h9A1.5 1.5 0 0 1 18 4.5V21l-6-3.7L6 21z"/>,
-    chart: <><path d="M4 19V9M10 19V5M16 19v-7M22 19H2"/></>,
-    check: <path d="m5 12 4 4L19 6"/>,
-    chevron: <path d="m9 18 6-6-6-6"/>,
-    clock: <><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></>,
-    close: <><path d="m6 6 12 12M18 6 6 18"/></>,
-    football: <><circle cx="12" cy="12" r="9"/><path d="m9.5 9.2 2.5-1.8 2.5 1.8-.9 2.9h-3.2zM5.2 9l4.3.2M7.1 16.2l3.3-4.1M13.6 12.1l3.3 4.1M18.8 9l-4.3.2"/></>,
-    grid: <><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></>,
-    lock: <><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3M12 14v3"/></>,
-    menu: <><path d="M4 7h16M4 12h16M4 17h16"/></>,
-    model: <><path d="M12 3 4 7v10l8 4 8-4V7zM4 7l8 4 8-4M12 11v10"/></>,
-    refresh: <><path d="M20 7v5h-5M4 17v-5h5"/><path d="M18.2 9A7 7 0 0 0 6.3 6.3L4 9M5.8 15A7 7 0 0 0 17.7 17.7L20 15"/></>,
-    search: <><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></>,
-    shield: <><path d="M12 3 5 6v5c0 4.6 2.8 8.3 7 10 4.2-1.7 7-5.4 7-10V6z"/><path d="m9 12 2 2 4-4"/></>,
-    spark: <path d="m12 2 1.7 5.3L19 9l-5.3 1.7L12 16l-1.7-5.3L5 9l5.3-1.7zM19 16l.7 2.3L22 19l-2.3.7L19 22l-.7-2.3L16 19l2.3-.7z"/>,
-    target: <><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.5"/></>,
-    tennis: <><circle cx="12" cy="12" r="9"/><path d="M5.7 5.7c4 4 8.6 8.6 12.6 12.6M18.3 5.7c-3 3-4.7 7.5-4.1 12.5M5.7 18.3c3-3 4.7-7.5 4.1-12.5"/></>,
-  };
-  return <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">{paths[name]}</svg>;
-}
-
 function Brand() {
   return <Link href="/" className="pa-brand" aria-label="PredictArena home"><span className="pa-brand-mark"><i/><i/><i/></span><span>Predict<span>Arena</span></span></Link>;
+}
+
+const competitionLogoIds = new Set(["39", "140", "135", "78", "61", "2", "3", "94", "179", "307"]);
+
+function CompetitionLogo({ id }: { id: string }) {
+  const [failed, setFailed] = useState(false);
+  return <span className="league-logo" aria-hidden="true">{competitionLogoIds.has(id) && !failed
+    ? <Image src={`/competitions/${id}.png`} width={28} height={28} alt="" unoptimized onError={() => setFailed(true)}/>
+    : <Icon name="football" size={22}/>}</span>;
 }
 
 function Crest({ team, compact = false }: { team: Team; compact?: boolean }) {
@@ -170,7 +150,7 @@ function PickCard({ match, onOpen, onAdd, picks }: { match: Match; onOpen: (matc
   return <article className="pick-card match-row">
     <MatchSummary match={match} pick={pick} onOpen={() => onOpen(match)}/>
     <div className="match-row-pick"><span>{pick?.probabilityBasis === "bookmaker" ? "Market pick" : "Model pick"}</span><strong>{pick?.label ?? "Awaiting history"}</strong>{pick && <b>{Math.round(pick.probability * 100)}%</b>}</div>
-    <div className="match-row-actions"><small>{pick ? pick.odds ? `Captured odds ${Number(pick.odds).toFixed(2)}` : `Estimated odds ${estimatedOdds(pick).toFixed(2)}` : "No eligible selection"}{pick && !pick.probabilityBasis ? ` · ${confidenceLabel(match)}` : ""}</small><div><button className="row-analysis" onClick={() => onOpen(match)} aria-label={`Full analysis for ${match.home.name} vs ${match.away.name}`}>Analysis <Icon name="chevron" size={15}/></button><button className="row-add" disabled={!pick} onClick={() => pick && onAdd(pick)} aria-label={`${added ? "In your slip" : "Add to slip"}: ${match.home.name} vs ${match.away.name}`}>{added ? "Added" : "Add"}<Icon name={added ? "check" : "bookmark"} size={15}/></button></div></div>
+    <div className="match-row-actions"><small>{pick ? pick.odds ? `Captured odds ${Number(pick.odds).toFixed(2)}` : `Estimated odds ${estimatedOdds(pick).toFixed(2)}` : "No eligible selection"}{pick && !pick.probabilityBasis ? ` · ${confidenceLabel(match)}` : ""}</small><div><button className="row-analysis" onClick={() => onOpen(match)} aria-label={`Full analysis for ${match.home.name} vs ${match.away.name}`}>Analysis <Icon name="chevron" size={15}/></button><button className="row-add" disabled={!pick} onClick={() => pick && onAdd(pick)} aria-label={`${added ? "In your slip" : "Add to slip"}: ${match.home.name} vs ${match.away.name}`}>{added ? "Added" : "Add"}<Icon name={added ? "check" : "plus"} size={15}/></button></div></div>
   </article>;
 }
 
@@ -258,7 +238,7 @@ export default function Home() {
     <aside className="arena-sidebar" aria-label="Competition navigation">
       <div className="sidebar-label">Football competitions</div>
       <button aria-pressed={activeSport === "football" && activeLeague === "all"} onClick={() => { setActiveSport("football"); setActiveLeague("all"); }}><Icon name="football"/>All competitions</button>
-      {leagues.filter(league => league.sport === "football").map(league => <button key={league.id} aria-pressed={activeSport === "football" && activeLeague === league.id} onClick={() => { setActiveSport("football"); setActiveLeague(league.id); }}><span className="league-monogram">{league.short}</span><span>{league.name}</span></button>)}
+      {leagues.filter(league => league.sport === "football").map(league => <button key={league.id} aria-pressed={activeSport === "football" && activeLeague === league.id} onClick={() => { setActiveSport("football"); setActiveLeague(league.id); }}><CompetitionLogo id={league.id}/><span>{league.name}</span></button>)}
     </aside>
     <div className="arena-columns"><div className="arena-board">
     <main className="dashboard-main" id="board">
@@ -269,11 +249,11 @@ export default function Home() {
         <WeekTabs value={selectedWeek} onChange={setSelectedWeek} now={now}/>
         <div className="filter-row sport-tabs" aria-label="Sport">{sports.map(sport => <button aria-pressed={activeSport === sport.id} key={sport.id} onClick={() => selectSport(sport.id)}><Icon name={sport.icon} size={17}/>{sport.label}</button>)}</div>
         <div className="arena-search-row"><label className="arena-search"><Icon name="search" size={17}/><span className="sr-only">Search teams or competitions</span><input value={query} onChange={event => setQuery(event.target.value)} placeholder="Find a team or competition"/>{query && <button onClick={() => setQuery("")} aria-label="Clear search"><Icon name="close" size={15}/></button>}</label><span>{activeLeague === "all" ? "All competitions" : leagues.find(league => league.id === activeLeague)?.name}</span></div>
-        <div className="feed-control-top"><div className="view-tabs" aria-label="Feed view"><button aria-pressed={view === "all"} onClick={() => setView("all")}>All matches</button><button aria-pressed={view === "following"} onClick={() => setView("following")}>For you</button></div><button className="filters-toggle" aria-expanded={filtersOpen} aria-controls="prediction-filters" onClick={() => setFiltersOpen(!filtersOpen)}><Icon name="menu" size={16}/>Filters{activeLeague !== "all" || query ? " · active" : ""}</button></div>
+        <div className="feed-control-top"><div className="view-tabs" aria-label="Feed view"><button aria-pressed={view === "all"} onClick={() => setView("all")}>All matches</button><button aria-pressed={view === "following"} onClick={() => setView("following")}>For you</button></div><button className="filters-toggle" aria-expanded={filtersOpen} aria-controls="prediction-filters" onClick={() => setFiltersOpen(!filtersOpen)}><Icon name="filters" size={16}/>Filters{activeLeague !== "all" || query ? " · active" : ""}</button></div>
         {filtersOpen && <div id="prediction-filters" className="feed-expanded-filters"><div className="search-and-league"><label className="league-select"><span>Competition</span><select value={activeLeague} disabled={activeSport !== "football"} onChange={event => setActiveLeague(event.target.value)}><option value="all">All competitions</option>{leagues.filter(league => league.sport === "football").map(league => <option value={league.id} key={league.id}>{league.name}</option>)}</select></label><label className="week-select"><span>More matchweeks</span><select value={selectedWeek} onChange={event => setSelectedWeek(event.target.value)}><option value="this">This week</option><option value="next">Next week</option><option value="all">All upcoming weeks</option>{weeks.filter(week => ![thisWeek,nextWeek].includes(week)).map(week => <option key={week} value={week}>{matchweekLabel(week)}</option>)}</select></label></div>
 
           <button className="manage-leagues" aria-expanded={preferencesOpen} aria-controls="league-preferences" onClick={() => setPreferencesOpen(!preferencesOpen)}>Your leagues{following.length ? ` (${following.length})` : ""}</button>
-        {preferencesOpen && <div id="league-preferences" className="league-preferences"><p>{preferences.signedIn ? "Choose competitions for your feed. Synced with your account." : "Choose competitions for your feed. Saved on this device; sign in to sync."}</p><div>{leagues.filter((league) => league.sport === "football").map((league) => <label key={league.id}><input type="checkbox" checked={following.includes(league.id)} disabled={!preferences.ready} onChange={() => toggleLeague(league.id)}/>{league.name}</label>)}</div><p>Open a match to follow either team.{preferences.teams.length ? ` Following ${preferences.teams.length} teams.` : ""}</p>{!!preferences.teams.length && <div className="team-follow-row">{preferences.teams.map(name => <button key={name} disabled={!preferences.ready} onClick={() => preferences.toggleTeam(name)} aria-label={`Unfollow ${name}`}>{name} ×</button>)}</div>}{preferences.error && <p role="alert">{preferences.error}</p>}</div>}
+        {preferencesOpen && <div id="league-preferences" className="league-preferences"><p>{preferences.signedIn ? "Choose competitions for your feed. Synced with your account." : "Choose competitions for your feed. Saved on this device; sign in to sync."}</p><div>{leagues.filter((league) => league.sport === "football").map((league) => <label key={league.id}><input type="checkbox" checked={following.includes(league.id)} disabled={!preferences.ready} onChange={() => toggleLeague(league.id)}/>{league.name}</label>)}</div><p>Open a match to follow either team.{preferences.teams.length ? ` Following ${preferences.teams.length} teams.` : ""}</p>{!!preferences.teams.length && <div className="team-follow-row">{preferences.teams.map(name => <button key={name} disabled={!preferences.ready} onClick={() => preferences.toggleTeam(name)} aria-label={`Unfollow ${name}`}>{name} <Icon name="close" size={14}/></button>)}</div>}{preferences.error && <p role="alert">{preferences.error}</p>}</div>}
         </div>}
       </section>
       {error && <p className="feed-error" role="alert">{error}{feed && " Showing the last available fixtures."} <button onClick={() => void loadMatches(true)}>Try again</button></p>}
