@@ -26,6 +26,7 @@ type FeedPayload = {
   communityCount: number;
   status: "live" | "fallback";
   freshness?: { stale: boolean; fetchedAt: string; ageSeconds: number };
+  previewReadOnly?: boolean;
 };
 
 type LeagueSummary = {
@@ -268,6 +269,7 @@ export default function Home() {
     <main className="dashboard-main" id="board">
       <section className="dashboard-intro"><div><span className="arena-kicker">MATCH CENTRE <span>/</span> PREDICTARENA</span><h1>The game. The numbers.<br/><em>Your next move.</em></h1><p>Explore the matchweek. Compare markets. Build your slip.</p></div><div className="board-actions"><span>{updated ? `Updated ${updated} WAT` : "Fetching fixtures"}</span><button onClick={() => void loadMatches(true)} disabled={loading} aria-label="Refresh fixtures"><Icon name="refresh" size={16}/>{loading ? "Updating" : "Refresh feed"}</button></div></section>
       {(feed?.freshness?.stale || leagues.some(l => !l.available)) && <p className="freshness-warning" role="status">{feed?.freshness?.stale ? "The feed is over an hour old. Showing the last available fixtures." : "Some competitions could not refresh. Their last available fixtures are retained."} Check kickoff times before relying on a forecast.</p>}
+      {feed?.previewReadOnly && <p className="arena-preview-note">Design preview · Matches use the current public feed. <a href="https://predictarena-favour12.vercel.app/account">Account features are on the main site.</a></p>}
       <section className="feed-controls" aria-label="Prediction filters">
         <WeekTabs value={selectedWeek} onChange={setSelectedWeek} now={now}/>
         <div className="filter-row sport-tabs" aria-label="Sport">{sports.map(sport => <button aria-pressed={activeSport === sport.id} key={sport.id} onClick={() => selectSport(sport.id)}><Icon name={sport.icon} size={17}/>{sport.label}</button>)}</div>

@@ -38,3 +38,5 @@ button,input,select,textarea{font:inherit}button{cursor:pointer}button:disabled{
 .arena-workspace .all-predictions>.pick-grid{grid-template-columns:1fr}.arena-workspace .board-actions>span{padding-left:0;font-weight:400}.arena-workspace .feed-expanded-filters .week-select{display:grid;justify-content:stretch;gap:7px;margin:0}.arena-workspace .feed-expanded-filters .week-select select{max-width:none;width:100%}.eyebrow>i{box-shadow:none}.arena-workspace .feed-controls .league-select{width:auto}.arena-workspace .feed-controls .league-select select{width:100%;max-width:none}
 
 .arena-header .auth-link{display:inline-flex;align-items:center}.skip-link{background:#245de6;color:#fff}.benchmark-head>span{border-color:#d1dcec}
+
+.arena-preview-note{margin:0 0 16px;padding:10px 13px;background:#e4edff;border:1px solid #ccdaf5;border-radius:6px;color:#4e6c96;font-size:11px;line-height:1.7}.arena-preview-note a{color:#245de6;text-decoration:underline;text-underline-offset:3px}
