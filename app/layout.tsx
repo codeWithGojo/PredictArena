@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import "./arena.css";
 import { AuthProvider } from "@/components/auth/auth-provider";
 import { MobileNav } from "@/components/mobile-nav";
 
-const fallbackUrl = "https://predictarena.imegufavour30.chatgpt.site";
+const fallbackUrl = "https://predictarena-favour12.vercel.app";
 const productionHost = process.env.VERCEL_PROJECT_PRODUCTION_URL;
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ||
   (productionHost ? `https://${productionHost}` : fallbackUrl);
