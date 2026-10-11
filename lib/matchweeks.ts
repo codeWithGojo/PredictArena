@@ -22,7 +22,16 @@ export function matchweekLabel(start: string): string {
   return `${label(monday)} – ${label(sunday)}${monday.getUTCFullYear() !== sunday.getUTCFullYear() ? ` ${sunday.getUTCFullYear()}` : ""}`;
 }
 
-export type MatchweekScope = 'this' | 'next' | 'all';
+export type MatchweekScope = string;
+export function validMatchweek(value: string): boolean {
+  if (value === 'this' || value === 'next') return true;
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) return false;
+  const date = new Date(`${value}T00:00:00Z`);
+  return Number.isFinite(date.getTime()) && date.toISOString().slice(0, 10) === value && date.getUTCDay() === 1;
+}
+export function selectedMatchweekStart(scope: MatchweekScope, now: number): string {
+  return scope === 'next' ? relativeMatchweekStart(now, 1) : scope === 'this' || !validMatchweek(scope) ? relativeMatchweekStart(now) : scope;
+}
 export function relativeMatchweekStart(now: number, offset = 0): string {
   const start = matchweekStart(new Date(now).toISOString());
   const monday = new Date(`${start}T00:00:00Z`);
@@ -30,5 +39,5 @@ export function relativeMatchweekStart(now: number, offset = 0): string {
   return monday.toISOString().slice(0, 10);
 }
 export function inMatchweek(kickoffISO: string, scope: MatchweekScope, now: number): boolean {
-  return scope === 'all' || matchweekStart(kickoffISO) === relativeMatchweekStart(now, scope === 'next' ? 1 : 0);
+  return scope !== 'all' && matchweekStart(kickoffISO) === selectedMatchweekStart(scope, now);
 }

@@ -52,7 +52,10 @@ export function selectionOptions(match: Match, basis: PredictionBasis, markets: 
   return options.filter(pick => markets.includes(marketGroup(pick) as MarketGroup));
 }
 export function targetTotal(picks: SlipPick[]): number | null {
-  return picks.length ? picks.reduce((total, pick) => total * (pick.probabilityBasis === 'bookmaker' && Number(pick.odds) > 1 ? Number(pick.odds) : estimatedOdds(pick)), 1) : null;
+  return picks.length ? picks.reduce((total, pick) => {
+    const price = Number(pick.odds);
+    return total * (Number.isFinite(price) && price > 1 && price <= 1000 ? price : estimatedOdds(pick));
+  }, 1) : null;
 }
 export function estimatedOdds(pick: SlipPick): number {
   return Math.round(100 / pick.probability) / 100;

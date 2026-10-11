@@ -103,3 +103,9 @@ test('market-only leagues derive double chance without inventing goals history o
   assert.deepEqual(selectionOptions(match,'auto',['total','btts']),[]);
   assert.equal(bestOddsOption(match,55,'auto')?.market,'double-chance');
 });
+
+test('slip totals use entered prices for model markets and reject invalid prices', () => {
+  const pick = selectionOptions(fixture('price'), 'model')[0];
+  assert.equal(targetTotal([{ ...pick, odds: '2.50' }]), 2.5);
+  for (const odds of ['', '0', '1', 'Infinity', '1001']) assert.equal(targetTotal([{ ...pick, odds }]), 1.25);
+});
