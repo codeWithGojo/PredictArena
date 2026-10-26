@@ -231,18 +231,24 @@ export default function Home() {
   const add = (pick: SlipPick) => { addPick(pick); setNotice(`${pick.label} added to your slip.`); };
   const closeAnalysis = useCallback(() => setSelectedMatch(null), []);
 
+  const spotlight = visibleMatches.find(match => match.probabilities.length > 0) ?? visibleMatches[0];
   const slipOdds = picks.length ? picks.reduce((total, pick) => total * estimatedOdds(pick), 1) : null;
   return <div className="pa-app clean-app matchweek-app arena-workspace">
     <a className="skip-link" href="#board">Skip to predictions</a>
     <SiteHeader/>
     <aside className="arena-sidebar" aria-label="Competition navigation">
-      <div className="sidebar-label">Football competitions</div>
+      <div className="sidebar-label">Explore competitions</div>
       <button aria-pressed={activeSport === "football" && activeLeague === "all"} onClick={() => { setActiveSport("football"); setActiveLeague("all"); }}><Icon name="football"/>All competitions</button>
       {leagues.filter(league => league.sport === "football").map(league => <button key={league.id} aria-pressed={activeSport === "football" && activeLeague === league.id} onClick={() => { setActiveSport("football"); setActiveLeague(league.id); }}><CompetitionLogo id={league.id}/><span>{league.name}</span></button>)}
     </aside>
     <div className="arena-columns"><div className="arena-board">
     <main className="dashboard-main" id="board">
-      <section className="dashboard-intro"><div><h1>Match centre</h1><p>Upcoming fixtures, outcome probabilities and markets.</p></div><div className="board-actions"><span>{updated ? `Updated ${updated} WAT` : "Fetching fixtures"}</span><button onClick={() => void loadMatches(true)} disabled={loading} aria-label="Refresh fixtures"><Icon name="refresh" size={16}/>{loading ? "Updating" : "Refresh"}</button></div></section>
+      <section className="dashboard-intro"><div><p className="desk-eyebrow">THE ANALYSIS DESK</p><h1>Read the game.</h1><p>Fixtures, probabilities and the evidence behind every pick.</p></div><div className="board-actions"><span>{updated ? `Updated ${updated} WAT` : "Fetching fixtures"}</span><button onClick={() => void loadMatches(true)} disabled={loading} aria-label="Refresh fixtures"><Icon name="refresh" size={16}/>{loading ? "Updating" : "Refresh"}</button></div></section>
+      <section className="arena-feature" aria-label="Match spotlight">
+        <div className="feature-copy"><p className="feature-kicker"><span/>SPORTS INTELLIGENCE</p><h2>A clearer view<br/>before kick-off.</h2><p>Explore the numbers. Compare the outcomes. Build your own read of the match.</p><Link href="/performance" className="feature-link">Explore the forecast record <Icon name="arrow" size={17}/></Link><div className="feature-bottom"><span>01 / MATCH CENTRE</span><span>Football · Basketball · Tennis</span></div></div>
+        <div className="feature-match">{spotlight ? <><div className="spotlight-top"><span>IN FOCUS</span><span>{spotlight.league}</span></div><div className="spotlight-teams"><div><Crest team={spotlight.home}/><strong>{spotlight.home.short}</strong></div><span>VS<small>{spotlight.time} WAT</small></span><div><Crest team={spotlight.away}/><strong>{spotlight.away.short}</strong></div></div><p className="spotlight-fullnames">{spotlight.home.name} <span>vs</span> {spotlight.away.name}</p><ProbabilityBar match={spotlight}/><button className="spotlight-open" onClick={() => setSelectedMatch(spotlight)}>Open match analysis <Icon name="arrow" size={17}/></button></> : <><div className="spotlight-top"><span>YOUR MATCHDAY WORKSPACE</span><Icon name="football" size={20}/></div><div className="feature-orbit" aria-hidden="true"><Icon name="football" size={55}/></div><h3>{loading ? "Preparing the matchday." : "The next match starts here."}</h3><p>{loading ? "Fetching fixtures and available model estimates." : "Choose another week or competition to explore upcoming fixtures."}</p></>}</div>
+      </section>
+      <div className="desk-stats" aria-label="Current view summary"><div><span>Fixtures in view</span><strong>{feed ? visibleMatches.length : "—"}</strong></div><div><span>Competitions available</span><strong>{feed ? leagues.filter(league => league.available).length : "—"}</strong></div><div><span>Your selections</span><strong>{picks.length.toString().padStart(2,"0")}</strong></div><div><span>Feed status</span><strong className="feed-status-label">{loading ? "Refreshing" : error ? "Unavailable" : feed?.freshness?.stale ? "Saved snapshot" : feed?.status === "live" ? "Connected" : "Fallback feed"}</strong></div></div>
       {(feed?.freshness?.stale || leagues.some(l => !l.available)) && <p className="freshness-warning" role="status">{feed?.freshness?.stale ? "The feed is over an hour old. Showing the last available fixtures." : "Some competitions could not refresh. Their last available fixtures are retained."} Check kickoff times before relying on a forecast.</p>}
       {feed?.previewReadOnly && <p className="arena-preview-note">Design preview · Matches use the current public feed. <a href="https://predictarena-favour12.vercel.app/account">Account features are on the main site.</a></p>}
       <section className="feed-controls" aria-label="Prediction filters">

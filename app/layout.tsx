@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import "./arena.css";
+import "./premium.css";
 import { AuthProvider } from "@/components/auth/auth-provider";
 import { MobileNav } from "@/components/mobile-nav";
 
